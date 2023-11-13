@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap');
+/* font-family: 'Noto Sans', sans-serif; */
+/* font-family: 'IBM Plex Mono', monospace; */
+
+@font-face {
+    font-family: FireCode;
+    src: url(./fonts/FiraCode-Regular.ttf) format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+code {
+    font-weight: 800;
+}
+
+.centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.sidebar-enter {
+    position: fixed;
+    left: -270px;
+    top: 0;
+    width: 270px;
+    height: 100%;
+    z-index: 92;
+}
+
+.sidebar-enter-active {
+    left: 0;
+    transition: all 200ms ease-in-out;
+}
+
+.sidebar-exit {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 270px;
+    height: 100%;
+    z-index: 92;
+}
+
+.sidebar-exit-active {
+    left: -270px;
+    transition: all 200ms ease-in-out;
+}
+
+.shadow {
+    opacity: 0.2;
+}
+
+.shadow-enter {
+    opacity: 0;
+}
+
+.shadow-enter-active {
+    opacity: 0.2;
+    transition: all 200ms ease-in-out;
+}
+
+.shadow-exit {
+    opacity: 0.2;
+}
+
+.shadow-exit-active {
+    opacity: 0;
+    transition: all 200ms ease-in-out;
+}
+
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #565869 #ffffff00;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+}
+
+*::-webkit-scrollbar-track {
+    background: #ffffff00;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #565869;
+    border-radius: 20px;
+    border: 3px solid #ffffff00;
+}
