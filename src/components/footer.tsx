@@ -87,11 +87,6 @@ const Footer = (props: { setHeight: (height: number) => void; newInput: string; 
         try {
             setCanSubmit(false);
 
-            if (!ApiKey.get()) {
-                props.openModal();
-                return;
-            }
-
             if (window.location.pathname === '/') {
                 socket.on('newChat', (data: { chat_id: string }) => {
                     navigate(`/c/${data.chat_id}`);
@@ -99,7 +94,7 @@ const Footer = (props: { setHeight: (height: number) => void; newInput: string; 
 
                 const res = await axios.post(
                     'http://localhost:3051/api/chat/createMessage',
-                    { message: { role: 'user', content: message }, chat_id: undefined, key: ApiKey.get() || '' },
+                    { message: { role: 'user', content: message }, chat_id: undefined },
                     { headers: { Authorization: authHeader() } }
                 );
 
@@ -222,11 +217,6 @@ const Footer = (props: { setHeight: (height: number) => void; newInput: string; 
                             multiline
                             maxRows={8}
                         />
-                        {!!props.openModal && (
-                            <IconButton onClick={props.openModal} disableRipple sx={{ bgcolor: '#00A67E' }}>
-                                <KeyIcon sx={{ color: '#C5C5D2' }} />
-                            </IconButton>
-                        )}
                     </div>
                     <Typography variant='body2' sx={{ color: '#C5C5D2', fontFamily: 'Noto Sans, sans-serif', fontSize: '12px', mb: '15px', textAlign: 'center' }}>
                         Powered by GPT-3.5. Wine Assistant may produce inaccurate information about people, places, or facts.
