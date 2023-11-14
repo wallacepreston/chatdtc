@@ -168,14 +168,14 @@ const ChatPage = () => {
     }, [width]);
 
     useEffect(() => {
-        socket.on('newMessage', (data: { chatID: string }) => {
-            if (data.chatID === id) {
+        socket.on('newMessage', (data: { chat_id: string }) => {
+            if (data.chat_id === id) {
                 getMessages();
             }
         });
 
-        socket.on('chatgptResChunk', (data: { chatID: string; content: string }) => {
-            if (data.chatID === id) {
+        socket.on('chatgptResChunk', (data: { chat_id: string; content: string }) => {
+            if (data.chat_id === id) {
                 setMessages((messages) => {
                     if (scrolledToBottom) {
                         scrollToBottom();
@@ -188,8 +188,8 @@ const ChatPage = () => {
             }
         });
 
-        socket.on('resError', (data: { chatID: string; error: unknown }) => {
-            if (data.chatID === id) {
+        socket.on('resError', (data: { chat_id: string; error: unknown }) => {
+            if (data.chat_id === id) {
                 setMessages((messages) => {
                     if (scrolledToBottom) {
                         scrollToBottom();

@@ -24,7 +24,7 @@ const SideBar = (props: { activeChat?: string }) => {
 
     const getChats = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/chat/getChats', { headers: { Authorization: authHeader() } });
+            const res = await axios.get('http://localhost:3051/api/chat/getChats', { headers: { Authorization: authHeader() } });
             setChats(res.data);
         } catch (err) {
             console.log(err);
@@ -58,7 +58,7 @@ const SideBar = (props: { activeChat?: string }) => {
             return;
         } else {
             setDeleteConfirmation(false);
-            await axios.delete('http://localhost:5000/api/chat/deleteAllChatsByUserID', { headers: { Authorization: authHeader() } });
+            await axios.delete('http://localhost:3051/api/chat/deleteAllChatsByUserID', { headers: { Authorization: authHeader() } });
             navigate('/');
         }
     };

@@ -93,23 +93,23 @@ const Footer = (props: { setHeight: (height: number) => void; newInput: string; 
             }
 
             if (window.location.pathname === '/') {
-                socket.on('newChat', (data: { chatID: string }) => {
-                    navigate(`/c/${data.chatID}`);
+                socket.on('newChat', (data: { chat_id: string }) => {
+                    navigate(`/c/${data.chat_id}`);
                 });
 
                 const res = await axios.post(
-                    'http://localhost:5000/api/chat/createMessage',
-                    { message: { role: 'user', content: message }, chatID: undefined, key: ApiKey.get() || '' },
+                    'http://localhost:3051/api/chat/createMessage',
+                    { message: { role: 'user', content: message }, chat_id: undefined, key: ApiKey.get() || '' },
                     { headers: { Authorization: authHeader() } }
                 );
 
                 if (window.location.pathname.match(chatPathRegex)) return;
 
-                const { chatID } = res.data;
-                navigate(`/c/${chatID}`);
+                const { chat_id } = res.data;
+                navigate(`/c/${chat_id}`);
             } else if (window.location.pathname.match(chatPathRegex)) {
-                const chatID = window.location.pathname.split('/')[2];
-                await axios.post('http://localhost:5000/api/chat/createMessage', { message: { role: 'user', content: message }, chatID }, { headers: { Authorization: authHeader() } });
+                const chat_id = window.location.pathname.split('/')[2];
+                await axios.post('http://localhost:3051/api/chat/createMessage', { message: { role: 'user', content: message }, chat_id }, { headers: { Authorization: authHeader() } });
             }
         } catch (err) {
             console.log(err);
