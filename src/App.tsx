@@ -9,37 +9,40 @@ import VerifyPage from './pages/VerifyPage';
 import MainPage from './pages/MainPage';
 import ChatPage from './pages/ChatPage';
 import NotFoundPage from './pages/NotFoundPage';
+import { ThinkingProvider } from './contexts/thinking';
 
 const App = () => {
     return (
         <div id='App'>
-            <AuthProvider authType='cookie' authName='auth' cookieDomain={window.location.hostname} cookieSecure={false}>
-                <Router>
-                    <Routes>
-                        <Route
-                            path='/'
-                            element={
-                                <RequireAuth loginPath='/auth'>
-                                    <MainPage />
-                                </RequireAuth>
-                            }
-                        />
-                        <Route
-                            path='/c/:id'
-                            element={
-                                <RequireAuth loginPath='/auth'>
-                                    <ChatPage />
-                                </RequireAuth>
-                            }
-                        />
-                        <Route path='/auth' element={<AuthPage />} />
-                        <Route path='/auth/signup' element={<SignupPage />} />
-                        <Route path='/auth/login' element={<LoginPage />} />
-                        <Route path='/auth/verify/:token' element={<VerifyPage />} />
-                        <Route path='*' element={<NotFoundPage />} />
-                    </Routes>
-                </Router>
-            </AuthProvider>
+            <ThinkingProvider>
+                <AuthProvider authType='cookie' authName='auth' cookieDomain={window.location.hostname} cookieSecure={false}>
+                    <Router>
+                        <Routes>
+                            <Route
+                                path='/'
+                                element={
+                                    <RequireAuth loginPath='/auth'>
+                                        <MainPage />
+                                    </RequireAuth>
+                                }
+                            />
+                            <Route
+                                path='/c/:id'
+                                element={
+                                    <RequireAuth loginPath='/auth'>
+                                        <ChatPage />
+                                    </RequireAuth>
+                                }
+                            />
+                            <Route path='/auth' element={<AuthPage />} />
+                            <Route path='/auth/signup' element={<SignupPage />} />
+                            <Route path='/auth/login' element={<LoginPage />} />
+                            <Route path='/auth/verify/:token' element={<VerifyPage />} />
+                            <Route path='*' element={<NotFoundPage />} />
+                        </Routes>
+                    </Router>
+                </AuthProvider>
+            </ThinkingProvider>
         </div>
     );
 };

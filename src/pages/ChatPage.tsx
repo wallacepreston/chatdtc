@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable array-callback-return */
 import React, { useState, useEffect, useRef } from 'react';
-import { Typography, IconButton, Stack } from '@mui/material';
+import { Typography, IconButton, Stack, CircularProgress } from '@mui/material';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import ArrowDownwardRoundedIcon from '@mui/icons-material/ArrowDownwardRounded';
 import Footer from '../components/footer';
@@ -33,6 +33,7 @@ import r from 'highlight.js/lib/languages/r';
 import go from 'highlight.js/lib/languages/go';
 import c from 'highlight.js/lib/languages/c';
 import 'highlight.js/styles/atom-one-dark.css';
+import {useThinking} from '../contexts/thinking';
 
 const socket = io(process.env.REACT_APP_API_URL as string);
 
@@ -59,6 +60,8 @@ hljs.registerLanguage('c', c);
 const PasteIcon = ContentPasteIcon;
 const DownIcon = ArrowDownwardRoundedIcon;
 
+const THINKING_MESSAGE = 'Assistant is thinking...';
+
 const ChatPage = () => {
     const { id } = useParams<{ id: string }>();
     const authHeader = useAuthHeader();
@@ -74,6 +77,12 @@ const ChatPage = () => {
     const [width, setWidth] = useState<number>(window.innerWidth);
     const [title, setTitle] = useState<string>('');
     const [scrolledToBottom, setScrolledToBottom] = useState<boolean>(true);
+    const { thinking, setThinking } = useThinking();
+
+    useEffect(() => {
+        // This function will be called whenever `thinking` changes.
+        // If you need to do something in response to `thinking` changing, do it here.
+    }, [thinking]);
 
     useEffect(() => {
         const updateWidth = () => {
@@ -165,6 +174,9 @@ const ChatPage = () => {
     }, [width]);
 
     useEffect(() => {
+        socket.on('runComplete', (data: { chat_id: string }) => {
+            setThinking(false);
+        });
         socket.on('newMessage', (data: { chat_id: string }) => {
             if (data.chat_id === id) {
                 getMessages();
@@ -259,6 +271,15 @@ const ChatPage = () => {
     */
     const reactRegex = /^import\s+\w+|\{.+?\}\s+from\s+'react'(;)?$/gm;
 
+    let prevRole: 'user' | 'assistant' | null = null;
+
+    let messagesToDisplay = messages;
+
+    if (thinking) {
+        // append thinking message
+        messagesToDisplay = [...messages, { role: 'assistant', content: THINKING_MESSAGE }];
+    }
+
     return (
         <div id='ChatPage' style={{ width: '100%', height: '100vh', display: 'flex', justifyContent: 'center' }}>
             <div id='side' style={{ width: handleWidthSide(), height: '100%' }}>
@@ -268,7 +289,9 @@ const ChatPage = () => {
             <div id='main' style={{ width: handleWidthMain(), height: height, overflowY: 'auto', marginTop: width > 1000 ? '' : '40px' }} ref={scrollDiv} onScroll={handleDivScroll}>
                 <div id='center' style={{ width: '100%' }}>
                     <Stack direction='column' sx={{ width: '100%', height: '100%' }}>
-                        {messages.map((message, index) => {
+                        {messagesToDisplay.map((message, index) => {
+                            const showIcon = prevRole !== message.role;
+                            prevRole = message.role;
                             if (message.role === 'assistant' && message.content.includes('\n' || '```' || '`')) {
                                 const content: string[] = message.content.split('\n' || '```');
                                 let code: boolean = false;
@@ -282,7 +305,7 @@ const ChatPage = () => {
                                             display: 'flex',
                                             justifyContent: 'center'
                                         }}>
-                                        <Icon role={message.role} />
+                                        <Icon role={showIcon ? message.role : 'empty'} />
                                         <div style={{ width: handleMessageWidth(), marginBottom: '15px', marginTop: '15px' }}>
                                             {content.map((line, index) => {
                                                 if (line.includes('```')) {
@@ -388,7 +411,7 @@ const ChatPage = () => {
                                     <div
                                         key={index}
                                         style={{ backgroundColor: message.role === 'user' ? '#343541' : '#444654', width: '100%', display: 'flex', justifyContent: 'center' }}>
-                                        <Icon role={message.role} />
+                                        <Icon role={showIcon ? message.role : 'empty'} />
                                         <div style={{ width: handleMessageWidth() }}>
                                             <Typography
                                                 variant='body1'
@@ -402,7 +425,7 @@ const ChatPage = () => {
                                                     mb: '10px',
                                                     maxWidth: '100%'
                                                 }}>
-                                                {message.content}
+                                                {message.content === THINKING_MESSAGE ? (<CircularProgress color="inherit" />) : message.content}
                                             </Typography>
                                         </div>
                                         {width > 1000 && (

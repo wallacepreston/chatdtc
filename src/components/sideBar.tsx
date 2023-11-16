@@ -89,7 +89,7 @@ const SideBar = (props: { activeChat?: string }) => {
                             <div style={{ marginTop: '20px', overflowY: 'auto', height: 'calc(100% - 179px)' }}>
                                 <Stack>
                                     {chats.map((chat) => {
-                                        const title = chat.title.replaceAll('"', '');
+                                        const title = chat.title?.replaceAll('"', '');
                                         return (
                                             <div id='chatBtn' style={{ width: '244px', height: '40px', marginBottom: '5px' }}>
                                                 <Button
@@ -109,7 +109,7 @@ const SideBar = (props: { activeChat?: string }) => {
                                                         '&:hover': { bgcolor: title === props.activeChat ? '#343541' : '#2A2B32' }
                                                     }}
                                                     startIcon={<ChatBubbleOutlineRoundedIcon fontSize='small' sx={{ ml: '7px' }} />}
-                                                    href={`/c/${chat._id}`}>
+                                                    href={`/c/${chat.id}`}>
                                                     <Typography sx={{ fontSize: '0.8rem', fontFamily: 'Noto Sans, sans-serif' }}>{title}</Typography>
                                                 </Button>
                                                 <div

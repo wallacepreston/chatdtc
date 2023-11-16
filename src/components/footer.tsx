@@ -5,8 +5,7 @@ import axios from 'axios';
 import { useAuthHeader } from 'react-auth-kit';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
-import KeyIcon from '@mui/icons-material/KeyRounded';
-import ApiKey from '../utils/apiKey';
+import {useThinking} from '../contexts/thinking';
 
 const socket = io(process.env.REACT_APP_API_URL as string);
 
@@ -19,6 +18,7 @@ const Footer = (props: { setHeight: (height: number) => void; newInput: string; 
     const [pasteHandler, setPasteHandler] = useState<boolean>(false);
     const [canSubmit, setCanSubmit] = useState<boolean>(true);
     const [width, setWidth] = useState<number>(window.innerWidth);
+    const { setThinking } = useThinking();
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
@@ -76,6 +76,7 @@ const Footer = (props: { setHeight: (height: number) => void; newInput: string; 
 
     const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
         e?.preventDefault();
+        setThinking(true);
         if (canSubmit === false) return;
         const message = input.trim();
         setTimeout(() => setInput(''), 1);
