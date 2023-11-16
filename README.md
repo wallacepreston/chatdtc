@@ -15,7 +15,16 @@ In the project directory, run:
 
 `npm install`
 
-### 3. Run the app
+### 3. Create an `.env` file
+
+This file is ignored by git, so you'll have to create it yourself. It should contain the following:
+
+```sh
+REACT_APP_API_URL=http://localhost:3051 # server port
+PORT=3050 # client port
+```
+
+### 4. Run the app
 
 In the project directory, you can run:
 
@@ -36,6 +45,29 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+## Docker
+To test the Docker deployment, it's useful to run it locally. You'll have to have [Docker](https://www.docker.com/products/docker-desktop/) installed locally.
+
+### 1. Build the image
+Build the image from the [Dockerfile](./Dockerfile).
+
+`docker build -t wine-assistant . --no-cache`
+
+### 2. Run the container
+Run the container with the local env file and expose the port externally
+
+`docker run --env-file ./.env -p 3050:3050 wine-assistant`
+
+### 3. Stop the container
+
+List the containers
+
+`docker ps`
+
+Stop the container
+
+`docker stop <container id>`
 
 ## Architecture
 
