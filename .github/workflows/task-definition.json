@@ -1,0 +1,50 @@
+{
+  "taskDefinitionArn": "arn:aws:ecs:us-west-2:031591350011:task-definition/wine-assistant:1",
+  "containerDefinitions": [
+      {
+          "name": "wine-assistant",
+          "image": "031591350011.dkr.ecr.us-west-2.amazonaws.com/wine-assistant",
+          "cpu": 10,
+          "portMappings": [
+              {
+                  "containerPort": 3051,
+                  "hostPort": 3051,
+                  "protocol": "tcp"
+              }
+          ],
+          "essential": true,
+          "environment": [],
+          "mountPoints": [],
+          "volumesFrom": [],
+          "dockerLabels": {}
+      }
+  ],
+  "family": "wine-assistant",
+  "networkMode": "awsvpc",
+  "revision": 1,
+  "volumes": [],
+  "status": "ACTIVE",
+  "requiresAttributes": [
+      {
+          "name": "com.amazonaws.ecs.capability.ecr-auth"
+      },
+      {
+          "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+      },
+      {
+          "name": "ecs.capability.task-eni"
+      }
+  ],
+  "placementConstraints": [],
+  "compatibilities": [
+      "EC2"
+  ],
+  "requiresCompatibilities": [
+      "EC2"
+  ],
+  "cpu": "256",
+  "memory": "512",
+  "registeredAt": "2023-11-17T14:01:37.210Z",
+  "registeredBy": "arn:aws:iam::031591350011:user/Administrator",
+  "tags": []
+}
