@@ -134,9 +134,9 @@ const Center = (props: { footerHeight: number; setInput: (input: string) => void
                                 }}>
                                 {width < 1000 && <SunIcon fontSize='small' sx={{ color: 'white', mr: '5px' }} />} Examples
                             </Typography>
-                            <Button handleClick={handlePresentationButtonClick} clickable content='"Explain photosynthesis in simple terms"' />
-                            <Button handleClick={handlePresentationButtonClick} clickable content='"Can you recommend some good science books to read?"' />
-                            <Button handleClick={handlePresentationButtonClick} clickable content='"Why is typescript better than javascript?"' />
+                            <Button handleClick={handlePresentationButtonClick} clickable content='Tell me about my red wine sales' />
+                            <Button handleClick={handlePresentationButtonClick} clickable content='Give me a list of my customers within 25 miles.' />
+                            <Button handleClick={handlePresentationButtonClick} clickable content='Can you help me know what my highest selling wine is?' />
                         </div>
                         <div id='capabilities' style={{ width: width > 1000 ? 'calc(100% / 3)' : 'auto' }}>
                             {width > 1000 && <BoltIcon sx={{ color: 'white' }} />}
