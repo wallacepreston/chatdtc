@@ -12,13 +12,13 @@ const LoginPage = () => {
     const signIn = useSignIn();
     const navigate = useNavigate();
 
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [incorrectPwdError, setIncorrectPwdError] = useState(false);
-    const [emailNotRegisteredError, setEmailNotRegisteredError] = useState(false);
+    const [emailNotRegisteredError, setUsernameNotRegisteredError] = useState(false);
     const [serverError, setServerError] = useState(false);
-    const [emailNotVerifiedError, setEmailNotVerifiedError] = useState(false);
+    const [emailNotVerifiedError, setUsernameNotVerifiedError] = useState(false);
     const [unknownError, setUnknownError] = useState(false);
 
     useEffect(() => {
@@ -27,7 +27,7 @@ const LoginPage = () => {
 
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
-        setEmail(value);
+        setUsername(value);
     };
 
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,7 +37,7 @@ const LoginPage = () => {
 
     const handleConfirm = async (e: React.FormEvent) => {
         e.preventDefault();
-        const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/login`, { email, password });
+        const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/login`, { username, password });
         if (res.data.message === 'Login successful') {
             if (
                 signIn({
@@ -56,12 +56,10 @@ const LoginPage = () => {
                 console.log('Login failed');
                 setUnknownError(true);
             }
-        } else if (res.data.message === 'Email not registered') {
-            setEmailNotRegisteredError(true);
+        } else if (res.data.message === 'User not registered') {
+            setUsernameNotRegisteredError(true);
         } else if (res.data.message === 'Incorrect password') {
             setIncorrectPwdError(true);
-        } else if (res.data.message === 'Email not verified') {
-            setEmailNotVerifiedError(true);
         } else if (res.data.message === 'Server error') {
             setServerError(true);
         } else {
@@ -70,10 +68,10 @@ const LoginPage = () => {
     };
 
     const handleAlertClose = () => {
-        setEmailNotRegisteredError(false);
+        setUsernameNotRegisteredError(false);
         setIncorrectPwdError(false);
         setServerError(false);
-        setEmailNotVerifiedError(false);
+        setUsernameNotVerifiedError(false);
         setUnknownError(false);
     };
 
@@ -89,11 +87,11 @@ const LoginPage = () => {
                     </Typography>
                     <ThemeProvider theme={wpTheme}>
                         <TextField
-                            id='email'
-                            value={email}
+                            id='username'
+                            value={username}
                             onChange={handleEmailChange}
-                            type='email'
-                            label='Email address'
+                            type='text'
+                            label='Username'
                             variant='outlined'
                             color='secondary'
                             sx={{ width: 'calc(100% - 20px)' }}
