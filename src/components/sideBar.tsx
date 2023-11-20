@@ -140,7 +140,7 @@ const SideBar = (props: { activeChat?: string }) => {
                                     width: '240px',
                                     justifySelf: 'center'
                                 }}>
-                                {!deleteConfirmation ? (
+                                {/* {!deleteConfirmation ? (
                                     <Button
                                         variant='text'
                                         color='info'
@@ -174,7 +174,7 @@ const SideBar = (props: { activeChat?: string }) => {
                                         onClick={handleClearConversations}>
                                         <Typography sx={{ fontSize: '0.83rem', fontFamily: 'Noto Sans, sans-serif' }}>Confirm clear conversations</Typography>
                                     </Button>
-                                )}
+                                )} */}
 
                                 <Button
                                     variant='text'
