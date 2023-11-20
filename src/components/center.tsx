@@ -134,9 +134,9 @@ const Center = (props: { footerHeight: number; setInput: (input: string) => void
                                 }}>
                                 {width < 1000 && <SunIcon fontSize='small' sx={{ color: 'white', mr: '5px' }} />} Examples
                             </Typography>
-                            <Button handleClick={handlePresentationButtonClick} clickable content='Tell me about my red wine sales' />
+                            <Button handleClick={handlePresentationButtonClick} clickable content='Which states have the most customers?' />
                             <Button handleClick={handlePresentationButtonClick} clickable content='Give me a list of my customers within 25 miles.' />
-                            <Button handleClick={handlePresentationButtonClick} clickable content='Can you help me know what my highest selling wine is?' />
+                            <Button handleClick={handlePresentationButtonClick} clickable content='How many unique customers do I have, (unique by first and last name)?' />
                         </div>
                         <div id='capabilities' style={{ width: width > 1000 ? 'calc(100% / 3)' : 'auto' }}>
                             {width > 1000 && <BoltIcon sx={{ color: 'white' }} />}
