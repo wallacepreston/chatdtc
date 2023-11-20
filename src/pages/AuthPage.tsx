@@ -34,14 +34,14 @@ const AuthPage = () => {
                             Log in
                         </Typography>
                     </Button>
-                    <Button
+                    {/* <Button
                         variant='contained'
                         sx={{ textTransform: 'none', bgcolor: '#00A67E', borderRadius: '0.25rem', height: '35px', ml: '10px', '&:hover': { backgroundColor: '#1A7F64' } }}
                         href='/auth/signup'>
                         <Typography variant='body2' sx={{ fontFamily: 'Noto Sans, sans-serif', color: 'white' }}>
                             Sign up
                         </Typography>
-                    </Button>
+                    </Button> */}
                 </Stack>
             </Stack>
         </div>
