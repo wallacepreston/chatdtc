@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable array-callback-return */
 import React, { useState, useEffect, useRef } from 'react';
-import { Typography, IconButton, Stack, CircularProgress } from '@mui/material';
+import { Typography, IconButton, Stack, CircularProgress, Button } from '@mui/material';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import ArrowDownwardRoundedIcon from '@mui/icons-material/ArrowDownwardRounded';
 import Footer from '../components/footer';
@@ -34,7 +34,7 @@ import go from 'highlight.js/lib/languages/go';
 import c from 'highlight.js/lib/languages/c';
 import 'highlight.js/styles/atom-one-dark.css';
 import {useThinking} from '../contexts/thinking';
-import { StyledLink } from './styled';
+import { OpenInNew } from '@mui/icons-material';
 
 const socket = io(process.env.REACT_APP_API_URL as string);
 
@@ -281,6 +281,46 @@ const ChatPage = () => {
         messagesToDisplay = [...messages, { role: 'assistant', content: THINKING_MESSAGE }];
     }
 
+    // If there was no authentication on the server, this big function would be unnecessary.
+    const handleDownload = async (fileId: string) => {
+        // 1. Send a GET request to the file endpoint with the auth header
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/chat/files/${fileId}`, {
+            headers: { Authorization: authHeader() },
+            responseType: 'blob'  // specify the response type
+        });
+
+        // 2. Check the response status
+        if (response.status !== 200) {
+            throw new Error("HTTP error " + response.status);
+        }
+
+        // 3. Extract the filename from the Content-Disposition header
+        const contentDisposition = response.headers['content-disposition'];
+        let filename = 'file.csv';  // default filename
+        if (contentDisposition) {
+            const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+            const matches = filenameRegex.exec(contentDisposition);
+            if (matches != null && matches[1]) {
+                filename = matches[1].replace(/['"]/g, '');
+            }
+        }
+
+        // 4. Create a Blob URL from the response data
+        const url = window.URL.createObjectURL(response.data);
+
+        // 5. Create a new <a> element and set its href to the Blob URL and its download attribute to the filename
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', filename);
+
+        // 6. Append the <a> element to the body and programmatically click it to start the download
+        document.body.appendChild(link);
+        link.click();
+
+        // 7. Remove the <a> element from the body after the download has started
+        document.body.removeChild(link);
+    }
+
     return (
         <div id='ChatPage' style={{ width: '100%', height: '100vh', display: 'flex', justifyContent: 'center' }}>
             <div id='side' style={{ width: handleWidthSide(), height: '100%' }}>
@@ -400,7 +440,20 @@ const ChatPage = () => {
                                                                 // this part is the link text
                                                                 const linkText = part;
                                                                 const [fileId] = message.fileIds || [];
-                                                                return <StyledLink href={`${process.env.REACT_APP_API_URL}/api/chat/files/${fileId}`}>{linkText}</StyledLink>;
+                                                                return <Button
+                                                                    variant='text'
+                                                                    color='info'
+                                                                    sx={{
+                                                                        textTransform: 'none',
+                                                                        ml: '1rem',
+                                                                        borderRadius: '5px',
+                                                                        justifyContent: 'left',
+                                                                        '&:hover': { textDecoration: 'underline' }
+                                                                    }}
+                                                                    endIcon={<OpenInNew />}
+                                                                    onClick={() => handleDownload(fileId)}>
+                                                                    <Typography sx={{ fontFamily: 'Noto Sans, sans-serif' }}>{linkText}</Typography>
+                                                                </Button>
                                                             }
                                                             // we don't need to return anything for the other parts
                                                         });
