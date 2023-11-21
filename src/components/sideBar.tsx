@@ -9,6 +9,7 @@ import axios from 'axios';
 import { useAuthHeader, useSignOut } from 'react-auth-kit';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
+import { useStatus } from '../contexts/status';
 
 const socket = io(process.env.REACT_APP_API_URL as string);
 
@@ -16,6 +17,7 @@ const SideBar = (props: { activeChat?: string }) => {
     const authHeader = useAuthHeader();
     const navigate = useNavigate();
     const signOut = useSignOut();
+    const { setStatus } = useStatus();
 
     const [chats, setChats] = useState<any[]>([]);
     // const [deleteConfirmation, setDeleteConfirmation] = useState<boolean>(false);
@@ -47,7 +49,15 @@ const SideBar = (props: { activeChat?: string }) => {
     };
 
     const handleLogOut = () => {
-        signOut();
+        try {
+            signOut();
+        } catch (error) {
+            if (error instanceof Error)
+                setStatus({
+                    type: 'error',
+                    message: error?.message || 'Problem logging out. Please refresh the page and try again.'
+                });
+        }
     };
 
     // const handleClearConversations = async () => {

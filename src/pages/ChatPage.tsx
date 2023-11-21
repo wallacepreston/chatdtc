@@ -35,6 +35,7 @@ import c from 'highlight.js/lib/languages/c';
 import 'highlight.js/styles/atom-one-dark.css';
 import {useThinking} from '../contexts/thinking';
 import { OpenInNew } from '@mui/icons-material';
+import { useStatus } from '../contexts/status';
 
 const socket = io(process.env.REACT_APP_API_URL as string);
 
@@ -79,6 +80,8 @@ const ChatPage = () => {
     const [title, setTitle] = useState<string>('');
     const [scrolledToBottom, setScrolledToBottom] = useState<boolean>(true);
     const { thinking, setThinking } = useThinking();
+
+    const { setStatus } = useStatus();
 
     useEffect(() => {
         // This function will be called whenever `thinking` changes.
@@ -283,42 +286,52 @@ const ChatPage = () => {
 
     // If there was no authentication on the server, this big function would be unnecessary.
     const handleDownload = async (fileId: string) => {
-        // 1. Send a GET request to the file endpoint with the auth header
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/chat/files/${fileId}`, {
-            headers: { Authorization: authHeader() },
-            responseType: 'blob'  // specify the response type
-        });
+        try {
+            // 1. Send a GET request to the file endpoint with the auth header
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/chat/files/${fileId}`, {
+                headers: { Authorization: authHeader() },
+                responseType: 'blob'  // specify the response type
+            });
 
-        // 2. Check the response status
-        if (response.status !== 200) {
-            throw new Error("HTTP error " + response.status);
-        }
-
-        // 3. Extract the filename from the Content-Disposition header
-        const contentDisposition = response.headers['content-disposition'];
-        let filename = 'file.csv';  // default filename
-        if (contentDisposition) {
-            const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-            const matches = filenameRegex.exec(contentDisposition);
-            if (matches != null && matches[1]) {
-                filename = matches[1].replace(/['"]/g, '');
+            // 2. Check the response status
+            if (response.status !== 200) {
+                setStatus({
+                    type: 'error',
+                    message: 'HTTP error ' + response.status
+                });
             }
+
+            // 3. Extract the filename from the Content-Disposition header
+            const contentDisposition = response.headers['content-disposition'];
+            let filename = 'file.csv';  // default filename
+            if (contentDisposition) {
+                const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                const matches = filenameRegex.exec(contentDisposition);
+                if (matches != null && matches[1]) {
+                    filename = matches[1].replace(/['"]/g, '');
+                }
+            }
+
+            // 4. Create a Blob URL from the response data
+            const url = window.URL.createObjectURL(response.data);
+
+            // 5. Create a new <a> element and set its href to the Blob URL and its download attribute to the filename
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', filename);
+
+            // 6. Append the <a> element to the body and programmatically click it to start the download
+            document.body.appendChild(link);
+            link.click();
+
+            // 7. Remove the <a> element from the body after the download has started
+            document.body.removeChild(link);
+        } catch (error) {
+            setStatus({
+                type: 'error',
+                message: 'HTTP error ' + error
+            });
         }
-
-        // 4. Create a Blob URL from the response data
-        const url = window.URL.createObjectURL(response.data);
-
-        // 5. Create a new <a> element and set its href to the Blob URL and its download attribute to the filename
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', filename);
-
-        // 6. Append the <a> element to the body and programmatically click it to start the download
-        document.body.appendChild(link);
-        link.click();
-
-        // 7. Remove the <a> element from the body after the download has started
-        document.body.removeChild(link);
     }
 
     return (
