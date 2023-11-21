@@ -34,6 +34,7 @@ import go from 'highlight.js/lib/languages/go';
 import c from 'highlight.js/lib/languages/c';
 import 'highlight.js/styles/atom-one-dark.css';
 import {useThinking} from '../contexts/thinking';
+import { StyledLink } from './styled';
 
 const socket = io(process.env.REACT_APP_API_URL as string);
 
@@ -71,7 +72,7 @@ const ChatPage = () => {
 
     /* IMPORTANT: messages are stored from the oldest to the newest
         [0] is the oldest message, [length - 1] is the newest message */
-    const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([]);
+    const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string; fileIds?: string[] }[]>([]);
     const [footerHeight, setFooterHeight] = useState<number>(0);
     const [height, setHeight] = useState<string>('calc(100vh - 64px)');
     const [width, setWidth] = useState<number>(window.innerWidth);
@@ -375,9 +376,14 @@ const ChatPage = () => {
                                                     if (code) {
                                                         codeBlock.push(line);
                                                     } else {
-                                                        return (
-                                                            // normal line
-                                                            <Typography
+                                                        // split the line into parts based on the regex
+                                                        const parts = line.split(/\[(.*?)\]\((sandbox:\/.*?)\)/g);
+
+                                                        // map over the parts and convert any links into JSX
+                                                        return parts.map((part, i) => {
+                                                            if (i % 3 === 0) {
+                                                                // this part is not a link
+                                                                return <Typography
                                                                 key={index}
                                                                 variant='body1'
                                                                 sx={{
@@ -386,11 +392,18 @@ const ChatPage = () => {
                                                                     fontSize: '0.95rem',
                                                                     lineHeight: '1.8',
                                                                     pl: '1rem',
-                                                                    maxWidth: '100%'
+                                                                    maxWidth: '100%',
                                                                 }}>
-                                                                {line}
-                                                            </Typography>
-                                                        );
+                                                                {part}
+                                                            </Typography>;
+                                                            } else if (i % 3 === 1) {
+                                                                // this part is the link text
+                                                                const linkText = part;
+                                                                const [fileId] = message.fileIds || [];
+                                                                return <StyledLink href={`${process.env.REACT_APP_API_URL}/api/chat/files/${fileId}`}>{linkText}</StyledLink>;
+                                                            }
+                                                            // we don't need to return anything for the other parts
+                                                        });
                                                     }
                                                 }
                                             })}

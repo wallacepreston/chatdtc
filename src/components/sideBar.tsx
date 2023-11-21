@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AppBar, Toolbar, Button, Stack, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import { ThemeProvider } from '@mui/material/styles';
 import wpTheme from '../wpTheme';
 import axios from 'axios';
@@ -20,7 +18,7 @@ const SideBar = (props: { activeChat?: string }) => {
     const signOut = useSignOut();
 
     const [chats, setChats] = useState<any[]>([]);
-    const [deleteConfirmation, setDeleteConfirmation] = useState<boolean>(false);
+    // const [deleteConfirmation, setDeleteConfirmation] = useState<boolean>(false);
 
     const getChats = async () => {
         try {
@@ -52,16 +50,16 @@ const SideBar = (props: { activeChat?: string }) => {
         signOut();
     };
 
-    const handleClearConversations = async () => {
-        if (!deleteConfirmation) {
-            setDeleteConfirmation(true);
-            return;
-        } else {
-            setDeleteConfirmation(false);
-            await axios.delete('http://localhost:3051/api/chat/deleteAllChatsByUserID', { headers: { Authorization: authHeader() } });
-            navigate('/');
-        }
-    };
+    // const handleClearConversations = async () => {
+    //     if (!deleteConfirmation) {
+    //         setDeleteConfirmation(true);
+    //         return;
+    //     } else {
+    //         setDeleteConfirmation(false);
+    //         await axios.delete('http://localhost:3051/api/chat/deleteAllChatsByUserID', { headers: { Authorization: authHeader() } });
+    //         navigate('/');
+    //     }
+    // };
 
     return (
         <div id='SideBar'>
