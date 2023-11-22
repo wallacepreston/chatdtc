@@ -84,11 +84,6 @@ const ChatPage = () => {
     const { setStatus } = useStatus();
 
     useEffect(() => {
-        // This function will be called whenever `thinking` changes.
-        // If you need to do something in response to `thinking` changing, do it here.
-    }, [thinking]);
-
-    useEffect(() => {
         const updateWidth = () => {
             setWidth(window.innerWidth);
         };

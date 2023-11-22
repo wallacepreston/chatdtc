@@ -35,6 +35,11 @@ const SideBar = (props: { activeChat?: string }) => {
         socket.on('updatedChats', () => {
             getChats();
         });
+        
+        // Clean up function
+        return () => {
+            socket.off('updatedChats');
+        };
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socket]);
@@ -51,6 +56,11 @@ const SideBar = (props: { activeChat?: string }) => {
     const handleLogOut = () => {
         try {
             signOut();
+            navigate('/auth');
+            setStatus({
+                type: 'success',
+                message: 'You have been successfully logged out.'
+            });
         } catch (error) {
             if (error instanceof Error)
                 setStatus({
