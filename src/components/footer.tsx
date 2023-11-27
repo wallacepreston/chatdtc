@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { useThinking } from '../contexts/thinking';
 import { REACT_APP_API_URL } from '../constants/api';
+console.log({ REACT_APP_API_URL });
 
 const socket = io(REACT_APP_API_URL as string);
 
@@ -95,8 +96,7 @@ const Footer = (props: { setHeight: (height: number) => void; newInput: string; 
                 });
 
                 const res = await axios.post(
-                    `${REACT_APP_API_URL}/api/chat/createMessage
-                    /api/chat/createMessage`,
+                    `${REACT_APP_API_URL}/api/chat/createMessage`,
                     { message: { role: 'user', content: message }, chat_id: undefined },
                     { headers: { Authorization: authHeader() } }
                 );
