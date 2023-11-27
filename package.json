@@ -10,7 +10,9 @@
         "@types/node": "^16.18.23",
         "@types/react": "^18.0.37",
         "@types/react-dom": "^18.0.11",
-        "@types/socket.io-client": "^3.0.0"
+        "@types/socket.io-client": "^3.0.0",
+        "onchange": "7.1.0",
+        "prettier": "3.1.0"
     },
     "dependencies": {
         "@emotion/react": "^11.10.6",
@@ -33,10 +35,12 @@
         "web-vitals": "^2.1.4"
     },
     "scripts": {
-        "dev": "react-scripts start",
+        "dev": "react-scripts start & npm run prettier:watch",
         "build": "react-scripts build",
         "test": "react-scripts test",
-        "eject": "react-scripts eject"
+        "eject": "react-scripts eject",
+        "prettier:run": "prettier --write ./src",
+        "prettier:watch": "onchange '**/*' -- prettier --write --ignore-unknown {{changed}}"
     },
     "eslintConfig": {
         "extends": [
@@ -55,6 +59,14 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
+    },
+    "prettier": {
+        "printWidth": 120,
+        "arrowParens": "avoid",
+        "singleQuote": true,
+        "jsxSingleQuote": true,
+        "trailingComma": "none",
+        "tabWidth": 4
     },
     "volta": {
         "node": "18.13.0"
