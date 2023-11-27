@@ -33,11 +33,12 @@ import r from 'highlight.js/lib/languages/r';
 import go from 'highlight.js/lib/languages/go';
 import c from 'highlight.js/lib/languages/c';
 import 'highlight.js/styles/atom-one-dark.css';
-import {useThinking} from '../contexts/thinking';
+import { useThinking } from '../contexts/thinking';
 import { OpenInNew } from '@mui/icons-material';
 import { useStatus } from '../contexts/status';
+import { REACT_APP_API_URL } from '../constants/api';
 
-const socket = io(process.env.REACT_APP_API_URL as string);
+const socket = io(REACT_APP_API_URL as string);
 
 hljs.registerLanguage('javascript', javascript);
 hljs.registerLanguage('typescript', typescript);
@@ -106,7 +107,9 @@ const ChatPage = () => {
     }, [footerHeight, width]);
 
     const getMessages = async () => {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/chat/getMessagesByChatID/${id}`, { headers: { Authorization: authHeader() } });
+        const res = await axios.get(`${REACT_APP_API_URL}/api/chat/getMessagesByChatID/${id}`, {
+            headers: { Authorization: authHeader() }
+        });
         const data = res.data;
         setMessages(data.reverse());
     };
@@ -117,7 +120,9 @@ const ChatPage = () => {
     }, []);
 
     const getTitle = async () => {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/chat/getChatTitleByID/${id}`, { headers: { Authorization: authHeader() } });
+        const res = await axios.get(`${REACT_APP_API_URL}/api/chat/getChatTitleByID/${id}`, {
+            headers: { Authorization: authHeader() }
+        });
         const data = res.data;
         if (data === 'Chat not found') {
             navigate('/');
@@ -184,7 +189,7 @@ const ChatPage = () => {
 
         socket.on('chatgptResChunk', (data: { chat_id: string; content: string }) => {
             if (data.chat_id === id) {
-                setMessages((messages) => {
+                setMessages(messages => {
                     if (scrolledToBottom) {
                         scrollToBottom();
                     }
@@ -198,7 +203,7 @@ const ChatPage = () => {
 
         socket.on('resError', (data: { chat_id: string; error: unknown }) => {
             if (data.chat_id === id) {
-                setMessages((messages) => {
+                setMessages(messages => {
                     if (scrolledToBottom) {
                         scrollToBottom();
                     }
@@ -283,9 +288,9 @@ const ChatPage = () => {
     const handleDownload = async (fileId: string) => {
         try {
             // 1. Send a GET request to the file endpoint with the auth header
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/chat/files/${fileId}`, {
+            const response = await axios.get(`${REACT_APP_API_URL}/api/chat/files/${fileId}`, {
                 headers: { Authorization: authHeader() },
-                responseType: 'blob'  // specify the response type
+                responseType: 'blob' // specify the response type
             });
 
             // 2. Check the response status
@@ -298,7 +303,7 @@ const ChatPage = () => {
 
             // 3. Extract the filename from the Content-Disposition header
             const contentDisposition = response.headers['content-disposition'];
-            let filename = 'file.csv';  // default filename
+            let filename = 'file.csv'; // default filename
             if (contentDisposition) {
                 const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
                 const matches = filenameRegex.exec(contentDisposition);
@@ -327,7 +332,7 @@ const ChatPage = () => {
                 message: 'HTTP error ' + error
             });
         }
-    }
+    };
 
     return (
         <div id='ChatPage' style={{ width: '100%', height: '100vh', display: 'flex', justifyContent: 'center' }}>
@@ -335,7 +340,17 @@ const ChatPage = () => {
                 {width > 1000 && <SideBar activeChat={title} />}
             </div>
             {width < 1000 && <Topper chatTitle={title} />}
-            <div id='main' style={{ width: handleWidthMain(), height: height, overflowY: 'auto', marginTop: width > 1000 ? '' : '40px' }} ref={scrollDiv} onScroll={handleDivScroll}>
+            <div
+                id='main'
+                style={{
+                    width: handleWidthMain(),
+                    height: height,
+                    overflowY: 'auto',
+                    marginTop: width > 1000 ? '' : '40px'
+                }}
+                ref={scrollDiv}
+                onScroll={handleDivScroll}
+            >
                 <div id='center' style={{ width: '100%' }}>
                     <Stack direction='column' sx={{ width: '100%', height: '100%' }}>
                         {messagesToDisplay.map((message, index) => {
@@ -353,21 +368,36 @@ const ChatPage = () => {
                                             width: '100%',
                                             display: 'flex',
                                             justifyContent: 'center'
-                                        }}>
+                                        }}
+                                    >
                                         <Icon role={showIcon ? message.role : 'empty'} />
-                                        <div style={{ width: handleMessageWidth(), marginBottom: '15px', marginTop: '15px' }}>
+                                        <div
+                                            style={{
+                                                width: handleMessageWidth(),
+                                                marginBottom: '15px',
+                                                marginTop: '15px'
+                                            }}
+                                        >
                                             {content.map((line, index) => {
                                                 if (line.includes('```')) {
                                                     code = !code;
                                                     if (code) {
                                                         codeBlock = [];
                                                     } else {
-                                                        const codeBlockString = codeBlock.join('\n').replace(/\t/g, '    ');
+                                                        const codeBlockString = codeBlock
+                                                            .join('\n')
+                                                            .replace(/\t/g, '    ');
 
                                                         let languageTitle = getLanguageTitle(codeBlockString);
-                                                        if ((languageTitle === 'js' || languageTitle === 'html') && codeBlockString.match(reactRegex)) {
+                                                        if (
+                                                            (languageTitle === 'js' || languageTitle === 'html') &&
+                                                            codeBlockString.match(reactRegex)
+                                                        ) {
                                                             languageTitle = 'jsx';
-                                                        } else if (languageTitle === 'ts' && codeBlockString.match(reactRegex)) {
+                                                        } else if (
+                                                            languageTitle === 'ts' &&
+                                                            codeBlockString.match(reactRegex)
+                                                        ) {
                                                             languageTitle = 'tsx';
                                                         }
 
@@ -389,7 +419,8 @@ const ChatPage = () => {
                                                                         mr: '1rem',
                                                                         pl: '1rem',
                                                                         pr: '1rem'
-                                                                    }}>
+                                                                    }}
+                                                                >
                                                                     {languageTitle}
                                                                 </Typography>
                                                                 <Typography
@@ -410,10 +441,19 @@ const ChatPage = () => {
                                                                         borderBottomLeftRadius: '7px',
                                                                         borderBottomRightRadius: '7px',
                                                                         letterSpacing: '-0.2px'
-                                                                    }}>
+                                                                    }}
+                                                                >
                                                                     <code
-                                                                        className={`language-${getLanguage(codeBlockString)}`}
-                                                                        style={{ backgroundColor: 'black', maxWidth: '100%', height: '100%', fontFamily: 'FireCode' }}>
+                                                                        className={`language-${getLanguage(
+                                                                            codeBlockString
+                                                                        )}`}
+                                                                        style={{
+                                                                            backgroundColor: 'black',
+                                                                            maxWidth: '100%',
+                                                                            height: '100%',
+                                                                            fontFamily: 'FireCode'
+                                                                        }}
+                                                                    >
                                                                         {codeBlockString}
                                                                     </code>
                                                                 </Typography>
@@ -431,37 +471,47 @@ const ChatPage = () => {
                                                         return parts.map((part, i) => {
                                                             if (i % 3 === 0) {
                                                                 // this part is not a link
-                                                                return <Typography
-                                                                key={index}
-                                                                variant='body1'
-                                                                sx={{
-                                                                    color: '#D1D5D2',
-                                                                    fontFamily: 'Noto Sans, sans-serif',
-                                                                    fontSize: '0.95rem',
-                                                                    lineHeight: '1.8',
-                                                                    pl: '1rem',
-                                                                    maxWidth: '100%',
-                                                                }}>
-                                                                {part}
-                                                            </Typography>;
+                                                                return (
+                                                                    <Typography
+                                                                        key={index}
+                                                                        variant='body1'
+                                                                        sx={{
+                                                                            color: '#D1D5D2',
+                                                                            fontFamily: 'Noto Sans, sans-serif',
+                                                                            fontSize: '0.95rem',
+                                                                            lineHeight: '1.8',
+                                                                            pl: '1rem',
+                                                                            maxWidth: '100%'
+                                                                        }}
+                                                                    >
+                                                                        {part}
+                                                                    </Typography>
+                                                                );
                                                             } else if (i % 3 === 1) {
                                                                 // this part is the link text
                                                                 const linkText = part;
                                                                 const [fileId] = message.fileIds || [];
-                                                                return <Button
-                                                                    variant='text'
-                                                                    color='info'
-                                                                    sx={{
-                                                                        textTransform: 'none',
-                                                                        ml: '1rem',
-                                                                        borderRadius: '5px',
-                                                                        justifyContent: 'left',
-                                                                        '&:hover': { textDecoration: 'underline' }
-                                                                    }}
-                                                                    endIcon={<OpenInNew />}
-                                                                    onClick={() => handleDownload(fileId)}>
-                                                                    <Typography sx={{ fontFamily: 'Noto Sans, sans-serif' }}>{linkText}</Typography>
-                                                                </Button>
+                                                                return (
+                                                                    <Button
+                                                                        variant='text'
+                                                                        color='info'
+                                                                        sx={{
+                                                                            textTransform: 'none',
+                                                                            ml: '1rem',
+                                                                            borderRadius: '5px',
+                                                                            justifyContent: 'left',
+                                                                            '&:hover': { textDecoration: 'underline' }
+                                                                        }}
+                                                                        endIcon={<OpenInNew />}
+                                                                        onClick={() => handleDownload(fileId)}
+                                                                    >
+                                                                        <Typography
+                                                                            sx={{ fontFamily: 'Noto Sans, sans-serif' }}
+                                                                        >
+                                                                            {linkText}
+                                                                        </Typography>
+                                                                    </Button>
+                                                                );
                                                             }
                                                             // we don't need to return anything for the other parts
                                                         });
@@ -474,7 +524,15 @@ const ChatPage = () => {
                                                 onClick={() => {
                                                     navigator.clipboard.writeText(message.content);
                                                 }}
-                                                sx={{ color: '#7F7F90', mt: '26px', width: '25px', height: '25px', borderRadius: '7px', '&:hover': { color: '#D9D9E3' } }}>
+                                                sx={{
+                                                    color: '#7F7F90',
+                                                    mt: '26px',
+                                                    width: '25px',
+                                                    height: '25px',
+                                                    borderRadius: '7px',
+                                                    '&:hover': { color: '#D9D9E3' }
+                                                }}
+                                            >
                                                 <PasteIcon sx={{ fontSize: '15px' }} />
                                             </IconButton>
                                         )}
@@ -484,7 +542,13 @@ const ChatPage = () => {
                                 return (
                                     <div
                                         key={index}
-                                        style={{ backgroundColor: message.role === 'user' ? '#343541' : '#444654', width: '100%', display: 'flex', justifyContent: 'center' }}>
+                                        style={{
+                                            backgroundColor: message.role === 'user' ? '#343541' : '#444654',
+                                            width: '100%',
+                                            display: 'flex',
+                                            justifyContent: 'center'
+                                        }}
+                                    >
                                         <Icon role={showIcon ? message.role : 'empty'} />
                                         <div style={{ width: handleMessageWidth() }}>
                                             <Typography
@@ -498,8 +562,13 @@ const ChatPage = () => {
                                                     mt: '10px',
                                                     mb: '10px',
                                                     maxWidth: '100%'
-                                                }}>
-                                                {message.content === THINKING_MESSAGE ? (<CircularProgress color="inherit" />) : message.content}
+                                                }}
+                                            >
+                                                {message.content === THINKING_MESSAGE ? (
+                                                    <CircularProgress color='inherit' />
+                                                ) : (
+                                                    message.content
+                                                )}
                                             </Typography>
                                         </div>
                                         {width > 1000 && (
@@ -507,7 +576,15 @@ const ChatPage = () => {
                                                 onClick={() => {
                                                     navigator.clipboard.writeText(message.content);
                                                 }}
-                                                sx={{ color: '#7F7F90', mt: '26px', width: '25px', height: '25px', borderRadius: '7px', '&:hover': { color: '#D9D9E3' } }}>
+                                                sx={{
+                                                    color: '#7F7F90',
+                                                    mt: '26px',
+                                                    width: '25px',
+                                                    height: '25px',
+                                                    borderRadius: '7px',
+                                                    '&:hover': { color: '#D9D9E3' }
+                                                }}
+                                            >
                                                 <PasteIcon sx={{ fontSize: '15px' }} />
                                             </IconButton>
                                         )}
@@ -528,17 +605,14 @@ const ChatPage = () => {
                                 bgcolor: '#545661',
                                 border: '1px solid #656770',
                                 '&:hover': { bgcolor: '#545661' }
-                            }}>
+                            }}
+                        >
                             <DownIcon fontSize='small' sx={{ color: '#B7B8C3' }} />
                         </IconButton>
                     )}
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Footer
-                        setHeight={handleHeightChange}
-                        newInput=''
-                        openModal={() =>{}}
-                    />
+                    <Footer setHeight={handleHeightChange} newInput='' openModal={() => {}} />
                 </div>
             </div>
         </div>

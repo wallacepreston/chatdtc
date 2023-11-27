@@ -10,8 +10,9 @@ import { useAuthHeader, useSignOut } from 'react-auth-kit';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { useStatus } from '../contexts/status';
+import { REACT_APP_API_URL } from '../constants/api';
 
-const socket = io(process.env.REACT_APP_API_URL as string);
+const socket = io(REACT_APP_API_URL as string);
 
 const SideBar = (props: { activeChat?: string }) => {
     const authHeader = useAuthHeader();
@@ -24,7 +25,9 @@ const SideBar = (props: { activeChat?: string }) => {
 
     const getChats = async () => {
         try {
-            const res = await axios.get('http://localhost:3051/api/chat/getChats', { headers: { Authorization: authHeader() } });
+            const res = await axios.get(`${REACT_APP_API_URL}/api/chat/getChats`, {
+                headers: { Authorization: authHeader() }
+            });
             setChats(res.data);
         } catch (err) {
             console.log(err);
@@ -35,7 +38,7 @@ const SideBar = (props: { activeChat?: string }) => {
         socket.on('updatedChats', () => {
             getChats();
         });
-        
+
         // Clean up function
         return () => {
             socket.off('updatedChats');
@@ -76,16 +79,25 @@ const SideBar = (props: { activeChat?: string }) => {
     //         return;
     //     } else {
     //         setDeleteConfirmation(false);
-    //         await axios.delete('http://localhost:3051/api/chat/deleteAllChatsByUserID', { headers: { Authorization: authHeader() } });
+    //         await axios.delete(`${REACT_APP_API_URL}/api/chat/deleteAllChatsByUserID`, { headers: { Authorization: authHeader() } });
     //         navigate('/');
     //     }
     // };
 
     return (
         <div id='SideBar'>
-            <AppBar position='static' sx={{ bgcolor: '#202123', height: '100vh', width: '260px', position: 'fixed', zIndex: '100' }}>
+            <AppBar
+                position='static'
+                sx={{ bgcolor: '#202123', height: '100vh', width: '260px', position: 'fixed', zIndex: '100' }}
+            >
                 <Toolbar sx={{ width: '100%', height: '100%', position: 'relative', right: '25px' }}>
-                    <Stack direction='column' display='flex' alignItems='center' spacing={2} sx={{ width: '100%', height: '100%' }}>
+                    <Stack
+                        direction='column'
+                        display='flex'
+                        alignItems='center'
+                        spacing={2}
+                        sx={{ width: '100%', height: '100%' }}
+                    >
                         <ThemeProvider theme={wpTheme}>
                             <Button
                                 variant='outlined'
@@ -100,16 +112,29 @@ const SideBar = (props: { activeChat?: string }) => {
                                     justifySelf: 'center',
                                     '&:hover': { borderColor: '#555559' }
                                 }}
-                                onClick={handleNewChat}>
+                                onClick={handleNewChat}
+                            >
                                 <AddIcon fontSize='small' sx={{ position: 'relative', right: '70px', bottom: '1px' }} />
-                                <Typography sx={{ fontSize: '0.83rem', fontFamily: 'Noto Sans, sans-serif', position: 'relative', right: '60px' }}>New chat</Typography>
+                                <Typography
+                                    sx={{
+                                        fontSize: '0.83rem',
+                                        fontFamily: 'Noto Sans, sans-serif',
+                                        position: 'relative',
+                                        right: '60px'
+                                    }}
+                                >
+                                    New chat
+                                </Typography>
                             </Button>
                             <div style={{ marginTop: '20px', overflowY: 'auto', height: 'calc(100% - 179px)' }}>
                                 <Stack>
-                                    {chats.map((chat) => {
+                                    {chats.map(chat => {
                                         const title = chat.title?.replaceAll('"', '');
                                         return (
-                                            <div id='chatBtn' style={{ width: '244px', height: '40px', marginBottom: '5px' }}>
+                                            <div
+                                                id='chatBtn'
+                                                style={{ width: '244px', height: '40px', marginBottom: '5px' }}
+                                            >
                                                 <Button
                                                     key={chat._id}
                                                     variant='text'
@@ -124,11 +149,23 @@ const SideBar = (props: { activeChat?: string }) => {
                                                         textOverflow: 'ellipsis',
                                                         overflow: 'hidden',
                                                         whiteSpace: 'nowrap',
-                                                        '&:hover': { bgcolor: title === props.activeChat ? '#343541' : '#2A2B32' }
+                                                        '&:hover': {
+                                                            bgcolor: title === props.activeChat ? '#343541' : '#2A2B32'
+                                                        }
                                                     }}
-                                                    startIcon={<ChatBubbleOutlineRoundedIcon fontSize='small' sx={{ ml: '7px' }} />}
-                                                    href={`/c/${chat.id}`}>
-                                                    <Typography sx={{ fontSize: '0.8rem', fontFamily: 'Noto Sans, sans-serif' }}>{title}</Typography>
+                                                    startIcon={
+                                                        <ChatBubbleOutlineRoundedIcon
+                                                            fontSize='small'
+                                                            sx={{ ml: '7px' }}
+                                                        />
+                                                    }
+                                                    href={`/c/${chat.id}`}
+                                                >
+                                                    <Typography
+                                                        sx={{ fontSize: '0.8rem', fontFamily: 'Noto Sans, sans-serif' }}
+                                                    >
+                                                        {title}
+                                                    </Typography>
                                                 </Button>
                                                 <div
                                                     style={{
@@ -140,7 +177,9 @@ const SideBar = (props: { activeChat?: string }) => {
                                                         borderTopRightRadius: '5px',
                                                         borderBottomRightRadius: '5px',
                                                         background: `linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, ${
-                                                            title === props.activeChat ? 'rgba(52, 53, 65, 1)' : 'rgba(32, 33, 35, 1)'
+                                                            title === props.activeChat
+                                                                ? 'rgba(52, 53, 65, 1)'
+                                                                : 'rgba(32, 33, 35, 1)'
                                                         } 100%)`,
                                                         pointerEvents: 'none'
                                                     }}
@@ -157,7 +196,8 @@ const SideBar = (props: { activeChat?: string }) => {
                                     borderTop: '1px solid #4D4D4F',
                                     width: '240px',
                                     justifySelf: 'center'
-                                }}>
+                                }}
+                            >
                                 {/* {!deleteConfirmation ? (
                                     <Button
                                         variant='text'
@@ -208,8 +248,11 @@ const SideBar = (props: { activeChat?: string }) => {
                                         '&:hover': { bgcolor: '#343541' }
                                     }}
                                     startIcon={<LogoutRoundedIcon fontSize='small' sx={{ ml: '11px' }} />}
-                                    onClick={handleLogOut}>
-                                    <Typography sx={{ fontSize: '0.83rem', fontFamily: 'Noto Sans, sans-serif' }}>Log out</Typography>
+                                    onClick={handleLogOut}
+                                >
+                                    <Typography sx={{ fontSize: '0.83rem', fontFamily: 'Noto Sans, sans-serif' }}>
+                                        Log out
+                                    </Typography>
                                 </Button>
                             </div>
                         </ThemeProvider>

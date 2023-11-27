@@ -7,6 +7,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOffOutlined';
 import axios from 'axios';
 import { useSignIn } from 'react-auth-kit';
 import { useNavigate } from 'react-router-dom';
+import { REACT_APP_API_URL } from '../constants/api';
 
 const LoginPage = () => {
     const signIn = useSignIn();
@@ -37,7 +38,7 @@ const LoginPage = () => {
 
     const handleConfirm = async (e: React.FormEvent) => {
         e.preventDefault();
-        const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/login`, { username, password });
+        const res = await axios.post(`${REACT_APP_API_URL}/api/auth/login`, { username, password });
         if (res.data.message === 'Login successful') {
             if (
                 signIn({

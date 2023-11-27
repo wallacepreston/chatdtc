@@ -5,6 +5,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOffOutlined';
 import { ThemeProvider } from '@mui/material/styles';
 import wpTheme from '../wpTheme';
 import axios from 'axios';
+import { REACT_APP_API_URL } from '../constants/api';
 
 const SignupPage = () => {
     const [email, setEmail] = useState('');
@@ -45,7 +46,7 @@ const SignupPage = () => {
             return;
         }
         // if email is valid and password is at least 8 characters, send email
-        const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/sendVerificationEmail`, { email, password });
+        const res = await axios.post(`${REACT_APP_API_URL}/api/auth/sendVerificationEmail`, { email, password });
         // if email is already registered, show error
         if (res.data.message === 'Email already registered') {
             setEmailAlreadyExists(true);
@@ -67,12 +68,27 @@ const SignupPage = () => {
     };
 
     return (
-        <div id='SignupPage' style={{ backgroundColor: 'white', width: '100vw', height: '100vh', display: 'flex', justifyContent: 'center' }}>
+        <div
+            id='SignupPage'
+            style={{
+                backgroundColor: 'white',
+                width: '100vw',
+                height: '100vh',
+                display: 'flex',
+                justifyContent: 'center'
+            }}
+        >
             <Typography variant='h4' sx={{ mt: '30px', position: 'absolute', pointerEvents: 'none' }}>
                 🤖
             </Typography>
             <form autoComplete='off' onSubmit={handleConfirm}>
-                <Stack spacing={2} direction='column' textAlign='center' alignItems='center' sx={{ width: '100%', maxWidth: '350px', mt: '250px' }}>
+                <Stack
+                    spacing={2}
+                    direction='column'
+                    textAlign='center'
+                    alignItems='center'
+                    sx={{ width: '100%', maxWidth: '350px', mt: '250px' }}
+                >
                     <Typography variant='h4' sx={{ fontFamily: 'Noto Sans, sans-serif', letterSpacing: '-1px' }}>
                         <b>Create your account</b>
                     </Typography>
@@ -102,13 +118,22 @@ const SignupPage = () => {
                             InputProps={{
                                 endAdornment: (
                                     <IconButton onClick={() => setShowPassword(!showPassword)}>
-                                        {showPassword ? <VisibilityOff fontSize='small' /> : <Visibility fontSize='small' />}
+                                        {showPassword ? (
+                                            <VisibilityOff fontSize='small' />
+                                        ) : (
+                                            <Visibility fontSize='small' />
+                                        )}
                                     </IconButton>
                                 )
                             }}
                             helperText='Password must contain at least 8 characters.'
                         />
-                        <Button variant='contained' type='submit' color='primary' sx={{ width: 'calc(100% - 20px)', height: '50px' }}>
+                        <Button
+                            variant='contained'
+                            type='submit'
+                            color='primary'
+                            sx={{ width: 'calc(100% - 20px)', height: '50px' }}
+                        >
                             Continue
                         </Button>
                         <Typography variant='body2' sx={{ fontFamily: 'Noto Sans, sans-serif' }}>

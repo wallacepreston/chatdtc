@@ -5,9 +5,10 @@ import axios from 'axios';
 import { useAuthHeader } from 'react-auth-kit';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
-import {useThinking} from '../contexts/thinking';
+import { useThinking } from '../contexts/thinking';
+import { REACT_APP_API_URL } from '../constants/api';
 
-const socket = io(process.env.REACT_APP_API_URL as string);
+const socket = io(REACT_APP_API_URL as string);
 
 const Footer = (props: { setHeight: (height: number) => void; newInput: string; openModal: () => void }) => {
     const authHeader = useAuthHeader();
@@ -94,7 +95,8 @@ const Footer = (props: { setHeight: (height: number) => void; newInput: string; 
                 });
 
                 const res = await axios.post(
-                    'http://localhost:3051/api/chat/createMessage',
+                    `${REACT_APP_API_URL}/api/chat/createMessage
+                    /api/chat/createMessage`,
                     { message: { role: 'user', content: message }, chat_id: undefined },
                     { headers: { Authorization: authHeader() } }
                 );
@@ -105,7 +107,11 @@ const Footer = (props: { setHeight: (height: number) => void; newInput: string; 
                 navigate(`/c/${chat_id}`);
             } else if (window.location.pathname.match(chatPathRegex)) {
                 const chat_id = window.location.pathname.split('/')[2];
-                await axios.post('http://localhost:3051/api/chat/createMessage', { message: { role: 'user', content: message }, chat_id }, { headers: { Authorization: authHeader() } });
+                await axios.post(
+                    `${REACT_APP_API_URL}/api/chat/createMessage`,
+                    { message: { role: 'user', content: message }, chat_id },
+                    { headers: { Authorization: authHeader() } }
+                );
             }
         } catch (err) {
             console.log(err);
@@ -157,10 +163,25 @@ const Footer = (props: { setHeight: (height: number) => void; newInput: string; 
                 bottom: '0px',
                 width: handleChangeWidth(),
                 borderTop: handleBorderTop()
-            }}>
+            }}
+        >
             <form autoComplete='off' style={{ width: '100%', height: '100%', display: 'flex' }} onSubmit={handleSubmit}>
-                <Stack direction='column' display='flex' alignItems='center' justifyContent='center' sx={{ width: '100%', height: '100%', mt: handleMT() }}>
-                    <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                <Stack
+                    direction='column'
+                    display='flex'
+                    alignItems='center'
+                    justifyContent='center'
+                    sx={{ width: '100%', height: '100%', mt: handleMT() }}
+                >
+                    <div
+                        style={{
+                            width: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '10px'
+                        }}
+                    >
                         <TextField
                             id='input'
                             autoFocus
@@ -210,7 +231,8 @@ const Footer = (props: { setHeight: (height: number) => void; newInput: string; 
                                             height: '30px',
                                             borderRadius: '10px',
                                             '&:hover': { backgroundColor: '#202123' }
-                                        }}>
+                                        }}
+                                    >
                                         <SendOutlinedIcon fontSize='small' />
                                     </IconButton>
                                 )
@@ -219,8 +241,18 @@ const Footer = (props: { setHeight: (height: number) => void; newInput: string; 
                             maxRows={8}
                         />
                     </div>
-                    <Typography variant='body2' sx={{ color: '#C5C5D2', fontFamily: 'Noto Sans, sans-serif', fontSize: '12px', mb: '15px', textAlign: 'center' }}>
-                        Powered by GPT-3.5. Wine Assistant may produce inaccurate information about people, places, or facts.
+                    <Typography
+                        variant='body2'
+                        sx={{
+                            color: '#C5C5D2',
+                            fontFamily: 'Noto Sans, sans-serif',
+                            fontSize: '12px',
+                            mb: '15px',
+                            textAlign: 'center'
+                        }}
+                    >
+                        Powered by GPT-3.5. Wine Assistant may produce inaccurate information about people, places, or
+                        facts.
                     </Typography>
                 </Stack>
             </form>
