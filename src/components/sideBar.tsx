@@ -88,7 +88,7 @@ const SideBar = (props: { activeChat?: string }) => {
         <div id='SideBar'>
             <AppBar
                 position='static'
-                sx={{ bgcolor: '#202123', height: '100vh', width: '260px', position: 'fixed', zIndex: '100' }}
+                sx={{ bgcolor: '#cfcfcf', height: '100vh', width: '260px', position: 'fixed', zIndex: '100' }}
             >
                 <Toolbar sx={{ width: '100%', height: '100%', position: 'relative', right: '25px' }}>
                     <Stack
@@ -98,107 +98,104 @@ const SideBar = (props: { activeChat?: string }) => {
                         spacing={2}
                         sx={{ width: '100%', height: '100%' }}
                     >
-                        <ThemeProvider theme={wpTheme}>
-                            <Button
-                                variant='outlined'
-                                color='info'
+                        <Button
+                            variant='outlined'
+                            color='info'
+                            sx={{
+                                textTransform: 'none',
+                                height: '46px',
+                                width: '244px',
+                                mt: '100px',
+                                borderRadius: '5px',
+                                borderColor: '#555559',
+                                justifySelf: 'center',
+                                '&:hover': { borderColor: '#555559' }
+                            }}
+                            id='new-chat-button'
+                            onClick={handleNewChat}
+                        >
+                            <AddIcon fontSize='small' sx={{ position: 'relative', right: '70px', bottom: '1px' }} />
+                            <Typography
                                 sx={{
-                                    textTransform: 'none',
-                                    height: '46px',
-                                    width: '244px',
-                                    mt: '10px',
-                                    borderRadius: '5px',
-                                    borderColor: '#555559',
-                                    justifySelf: 'center',
-                                    '&:hover': { borderColor: '#555559' }
+                                    fontSize: '0.83rem',
+                                    fontFamily: 'Noto Sans, sans-serif',
+                                    position: 'relative',
+                                    right: '60px'
                                 }}
-                                onClick={handleNewChat}
                             >
-                                <AddIcon fontSize='small' sx={{ position: 'relative', right: '70px', bottom: '1px' }} />
-                                <Typography
-                                    sx={{
-                                        fontSize: '0.83rem',
-                                        fontFamily: 'Noto Sans, sans-serif',
-                                        position: 'relative',
-                                        right: '60px'
-                                    }}
-                                >
-                                    New chat
-                                </Typography>
-                            </Button>
-                            <div style={{ marginTop: '20px', overflowY: 'auto', height: 'calc(100% - 179px)' }}>
-                                <Stack>
-                                    {chats.map(chat => {
-                                        const title = chat.title?.replaceAll('"', '');
-                                        return (
-                                            <div
-                                                id='chatBtn'
-                                                style={{ width: '244px', height: '40px', marginBottom: '5px' }}
-                                            >
-                                                <Button
-                                                    key={chat._id}
-                                                    variant='text'
-                                                    color='info'
-                                                    sx={{
-                                                        textTransform: 'none',
-                                                        height: '40px',
-                                                        width: '244px',
-                                                        borderRadius: '5px',
-                                                        justifyContent: 'left',
-                                                        bgcolor: title === props.activeChat ? '#343541' : '#202123',
-                                                        textOverflow: 'ellipsis',
-                                                        overflow: 'hidden',
-                                                        whiteSpace: 'nowrap',
-                                                        '&:hover': {
-                                                            bgcolor: title === props.activeChat ? '#343541' : '#2A2B32'
-                                                        }
-                                                    }}
-                                                    startIcon={
-                                                        <ChatBubbleOutlineRoundedIcon
-                                                            fontSize='small'
-                                                            sx={{ ml: '7px' }}
-                                                        />
+                                New chat
+                            </Typography>
+                        </Button>
+                        <div style={{ marginTop: '20px', overflowY: 'auto', height: 'calc(100% - 179px)' }}>
+                            <Stack>
+                                {chats.map(chat => {
+                                    const title = chat.title?.replaceAll('"', '');
+                                    return (
+                                        <div
+                                            id='chatBtn'
+                                            style={{ width: '244px', height: '40px', marginBottom: '5px' }}
+                                        >
+                                            <Button
+                                                key={chat._id}
+                                                variant='text'
+                                                color='info'
+                                                sx={{
+                                                    textTransform: 'none',
+                                                    height: '40px',
+                                                    width: '244px',
+                                                    borderRadius: '5px',
+                                                    justifyContent: 'left',
+                                                    bgcolor: title === props.activeChat ? '#bcbcbc' : '#cfcfcf',
+                                                    textOverflow: 'ellipsis',
+                                                    overflow: 'hidden',
+                                                    whiteSpace: 'nowrap',
+                                                    '&:hover': {
+                                                        bgcolor: title === props.activeChat ? '#bcbcbc' : '#c6c6c6'
                                                     }
-                                                    href={`/c/${chat.id}`}
+                                                }}
+                                                startIcon={
+                                                    <ChatBubbleOutlineRoundedIcon fontSize='small' sx={{ ml: '7px' }} />
+                                                }
+                                                href={`/c/${chat.id}`}
+                                            >
+                                                <Typography
+                                                    sx={{ fontSize: '0.8rem', fontFamily: 'Noto Sans, sans-serif' }}
                                                 >
-                                                    <Typography
-                                                        sx={{ fontSize: '0.8rem', fontFamily: 'Noto Sans, sans-serif' }}
-                                                    >
-                                                        {title}
-                                                    </Typography>
-                                                </Button>
-                                                <div
-                                                    style={{
-                                                        width: '70px',
-                                                        height: '40px',
-                                                        position: 'relative',
-                                                        bottom: '40px',
-                                                        left: '174px',
-                                                        borderTopRightRadius: '5px',
-                                                        borderBottomRightRadius: '5px',
-                                                        background: `linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, ${
-                                                            title === props.activeChat
-                                                                ? 'rgba(52, 53, 65, 1)'
-                                                                : 'rgba(32, 33, 35, 1)'
-                                                        } 100%)`,
-                                                        pointerEvents: 'none'
-                                                    }}
-                                                />
-                                            </div>
-                                        );
-                                    })}
-                                </Stack>
-                            </div>
-                            <div
-                                style={{
-                                    position: 'absolute',
-                                    bottom: '0px',
-                                    borderTop: '1px solid #4D4D4F',
-                                    width: '240px',
-                                    justifySelf: 'center'
-                                }}
-                            >
-                                {/* {!deleteConfirmation ? (
+                                                    {title}
+                                                </Typography>
+                                            </Button>
+                                            <div
+                                                style={{
+                                                    width: '70px',
+                                                    height: '40px',
+                                                    position: 'relative',
+                                                    bottom: '40px',
+                                                    left: '174px',
+                                                    borderTopRightRadius: '5px',
+                                                    borderBottomRightRadius: '5px',
+                                                    background: `linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, ${
+                                                        title === props.activeChat
+                                                            ? '#bcbcbc'
+                                                            : 'rgba(207, 207, 207, 1)'
+                                                    } 100%)`,
+                                                    pointerEvents: 'none'
+                                                }}
+                                            />
+                                        </div>
+                                    );
+                                })}
+                            </Stack>
+                        </div>
+                        <div
+                            style={{
+                                position: 'absolute',
+                                bottom: '0px',
+                                borderTop: '1px solid #4D4D4F',
+                                width: '240px',
+                                justifySelf: 'center'
+                            }}
+                        >
+                            {/* {!deleteConfirmation ? (
                                     <Button
                                         variant='text'
                                         color='info'
@@ -234,28 +231,27 @@ const SideBar = (props: { activeChat?: string }) => {
                                     </Button>
                                 )} */}
 
-                                <Button
-                                    variant='text'
-                                    color='info'
-                                    sx={{
-                                        textTransform: 'none',
-                                        height: '40px',
-                                        width: '244px',
-                                        mb: '10px',
-                                        mt: '5px',
-                                        borderRadius: '5px',
-                                        justifyContent: 'left',
-                                        '&:hover': { bgcolor: '#343541' }
-                                    }}
-                                    startIcon={<LogoutRoundedIcon fontSize='small' sx={{ ml: '11px' }} />}
-                                    onClick={handleLogOut}
-                                >
-                                    <Typography sx={{ fontSize: '0.83rem', fontFamily: 'Noto Sans, sans-serif' }}>
-                                        Log out
-                                    </Typography>
-                                </Button>
-                            </div>
-                        </ThemeProvider>
+                            <Button
+                                variant='text'
+                                color='info'
+                                sx={{
+                                    textTransform: 'none',
+                                    height: '40px',
+                                    width: '244px',
+                                    mb: '10px',
+                                    mt: '5px',
+                                    borderRadius: '5px',
+                                    justifyContent: 'left',
+                                    '&:hover': { bgcolor: '#bcbcbc' }
+                                }}
+                                startIcon={<LogoutRoundedIcon fontSize='small' sx={{ ml: '11px' }} />}
+                                onClick={handleLogOut}
+                            >
+                                <Typography sx={{ fontSize: '0.83rem', fontFamily: 'Noto Sans, sans-serif' }}>
+                                    Log out
+                                </Typography>
+                            </Button>
+                        </div>
                     </Stack>
                 </Toolbar>
             </AppBar>

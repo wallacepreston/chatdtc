@@ -109,74 +109,144 @@ const Center = (props: { footerHeight: number; setInput: (input: string) => void
             id='Center'
             ref={scrollDiv}
             onScroll={handleDivScroll}
-            style={{ width: '100%', height: height(), display: 'flex', justifyContent: 'center', overflowY: 'auto', position: 'relative', top: handleTop() }}>
-            <Stack id='non-active' direction='column' display='flex' alignItems='center' spacing={-1} sx={{ maxWidth: '768px' }}>
+            style={{
+                width: '100%',
+                height: height(),
+                display: 'flex',
+                justifyContent: 'center',
+                overflowY: 'auto',
+                position: 'relative',
+                top: handleTop()
+            }}
+        >
+            <Stack
+                id='non-active'
+                direction='column'
+                display='flex'
+                alignItems='center'
+                spacing={-1}
+                sx={{ maxWidth: '768px' }}
+            >
                 <Typography
                     variant='h4'
-                    sx={{ textAlign: 'center', color: 'White', fontFamily: 'Noto Sans, sans-serif', fontWeight: '800', fontSize: '2.25rem', mt: handleMT(), mb: handleMB() }}>
+                    id='main-title'
+                    sx={{
+                        textAlign: 'center',
+                        color: 'black',
+                        fontFamily: 'Noto Sans, sans-serif',
+                        fontWeight: '800',
+                        fontSize: '2.25rem',
+                        mt: handleMT(),
+                        mb: handleMB()
+                    }}
+                >
                     Wine Assistant
                 </Typography>
                 <div id='presentation'>
-                    <Stack direction={handleDirection()} display='flex' textAlign='center' spacing={2} width={handleWidth()}>
+                    <Stack
+                        direction={handleDirection()}
+                        display='flex'
+                        textAlign='center'
+                        spacing={2}
+                        width={handleWidth()}
+                    >
                         <div id='examples' style={{ width: width > 1000 ? 'calc(100% / 3)' : 'auto' }}>
-                            {width > 1000 && <SunIcon sx={{ color: 'white' }} />}
+                            {width > 1000 && <SunIcon sx={{ color: 'black' }} />}
                             <Typography
                                 variant='h6'
                                 sx={{
                                     textAlign: 'center',
-                                    color: 'White',
+                                    color: 'black',
                                     fontFamily: 'Noto Sans, sans-serif',
                                     fontSize: '1rem',
                                     mt: '0.5rem',
                                     display: 'flex',
                                     justifyContent: 'center',
                                     alignItems: 'center'
-                                }}>
-                                {width < 1000 && <SunIcon fontSize='small' sx={{ color: 'white', mr: '5px' }} />} Examples
+                                }}
+                            >
+                                {width < 1000 && <SunIcon fontSize='small' sx={{ color: 'black', mr: '5px' }} />}{' '}
+                                Examples
                             </Typography>
-                            <Button handleClick={handlePresentationButtonClick} clickable content='Which states have the most customers?' />
-                            <Button handleClick={handlePresentationButtonClick} clickable content='Give me a list of my customers within 25 miles.' />
-                            <Button handleClick={handlePresentationButtonClick} clickable content='How many unique customers do I have, (unique by first and last name)?' />
+                            <Button
+                                handleClick={handlePresentationButtonClick}
+                                clickable
+                                content='Which states have the most customers?'
+                            />
+                            <Button
+                                handleClick={handlePresentationButtonClick}
+                                clickable
+                                content='Give me a list of my customers within 25 miles.'
+                            />
+                            <Button
+                                handleClick={handlePresentationButtonClick}
+                                clickable
+                                content='How many unique customers do I have, (unique by first and last name)?'
+                            />
                         </div>
                         <div id='capabilities' style={{ width: width > 1000 ? 'calc(100% / 3)' : 'auto' }}>
-                            {width > 1000 && <BoltIcon sx={{ color: 'white' }} />}
+                            {width > 1000 && <BoltIcon sx={{ color: 'black' }} />}
                             <Typography
                                 variant='h6'
                                 sx={{
                                     textAlign: 'center',
-                                    color: 'White',
+                                    color: 'black',
                                     fontFamily: 'Noto Sans, sans-serif',
                                     fontSize: '1rem',
                                     mt: '0.5rem',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center'
-                                }}>
-                                {width < 1000 && <BoltIcon fontSize='small' sx={{ color: 'white', mr: '5px' }} />} Capabilities
+                                }}
+                            >
+                                {width < 1000 && <BoltIcon fontSize='small' sx={{ color: 'black', mr: '5px' }} />}{' '}
+                                Capabilities
                             </Typography>
-                            <Button handleClick={handlePresentationButtonClick} content='Remembers what user said earlier in the conversation' />
-                            <Button handleClick={handlePresentationButtonClick} content='Allows user to provide follow-up corrections' />
-                            <Button handleClick={handlePresentationButtonClick} content='Trained to decline inappropriate requests 😑' />
+                            <Button
+                                handleClick={handlePresentationButtonClick}
+                                content='Remembers what user said earlier in the conversation'
+                            />
+                            <Button
+                                handleClick={handlePresentationButtonClick}
+                                content='Allows user to provide follow-up corrections'
+                            />
+                            <Button
+                                handleClick={handlePresentationButtonClick}
+                                content='Trained to decline inappropriate requests 😑'
+                            />
                         </div>
-                        <div id='limitations' style={{ width: width > 1000 ? 'calc(100% / 3)' : 'auto', marginBottom: '1rem' }}>
-                            {width > 1000 && <WarningIcon sx={{ color: 'white' }} />}
+                        <div
+                            id='limitations'
+                            style={{ width: width > 1000 ? 'calc(100% / 3)' : 'auto', marginBottom: '1rem' }}
+                        >
+                            {width > 1000 && <WarningIcon sx={{ color: 'black' }} />}
                             <Typography
                                 variant='h6'
                                 sx={{
                                     textAlign: 'center',
-                                    color: 'White',
+                                    color: 'black',
                                     fontFamily: 'Noto Sans, sans-serif',
                                     fontSize: '1rem',
                                     mt: '0.5rem',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center'
-                                }}>
-                                {width < 1000 && <WarningIcon sx={{ color: 'white', mr: '5px' }} />} Limitations
+                                }}
+                            >
+                                {width < 1000 && <WarningIcon sx={{ color: 'black', mr: '5px' }} />} Limitations
                             </Typography>
-                            <Button handleClick={handlePresentationButtonClick} content='May occasionally generate incorrect information ⚠️' />
-                            <Button handleClick={handlePresentationButtonClick} content='May occasionally produce harmful 💥 instructions or biased content ' />
-                            <Button handleClick={handlePresentationButtonClick} content='Limited knowledge of world and events after 2021' />
+                            <Button
+                                handleClick={handlePresentationButtonClick}
+                                content='May occasionally generate incorrect information ⚠️'
+                            />
+                            <Button
+                                handleClick={handlePresentationButtonClick}
+                                content='May occasionally produce harmful 💥 instructions or biased content '
+                            />
+                            <Button
+                                handleClick={handlePresentationButtonClick}
+                                content='Limited knowledge of world and events after 2021'
+                            />
                         </div>
                     </Stack>
                 </div>
@@ -193,7 +263,8 @@ const Center = (props: { footerHeight: number; setInput: (input: string) => void
                         bgcolor: '#545661',
                         border: '1px solid #656770',
                         '&:hover': { bgcolor: '#545661' }
-                    }}>
+                    }}
+                >
                     <DownIcon fontSize='small' sx={{ color: '#B7B8C3' }} />
                 </IconButton>
             )}

@@ -77,13 +77,31 @@ const LoginPage = () => {
     };
 
     return (
-        <div id='LoginPage' style={{ width: '100vw', height: '100vh', backgroundColor: 'white', display: 'flex', justifyContent: 'center' }}>
+        <div
+            id='LoginPage'
+            style={{
+                width: '100vw',
+                height: '100vh',
+                backgroundColor: 'white',
+                display: 'flex',
+                justifyContent: 'center'
+            }}
+        >
             <Typography variant='h4' sx={{ mt: '30px', position: 'absolute', pointerEvents: 'none' }}>
                 🤖
             </Typography>
             <form autoComplete='off' onSubmit={handleConfirm}>
-                <Stack spacing={2} direction='column' textAlign='center' alignItems='center' sx={{ width: '100%', maxWidth: '350px', mt: '270px' }}>
-                    <Typography variant='h4' sx={{ fontFamily: 'Noto Sans, sans-serif', letterSpacing: '-1px', width: '350px', mb: '20px' }}>
+                <Stack
+                    spacing={2}
+                    direction='column'
+                    textAlign='center'
+                    alignItems='center'
+                    sx={{ width: '100%', maxWidth: '350px', mt: '270px' }}
+                >
+                    <Typography
+                        variant='h4'
+                        sx={{ fontFamily: 'Noto Sans, sans-serif', letterSpacing: '-1px', width: '350px', mb: '20px' }}
+                    >
                         <b>Welcome back</b>
                     </Typography>
                     <ThemeProvider theme={wpTheme}>
@@ -109,12 +127,21 @@ const LoginPage = () => {
                             InputProps={{
                                 endAdornment: (
                                     <IconButton onClick={() => setShowPassword(!showPassword)}>
-                                        {showPassword ? <VisibilityOff fontSize='small' /> : <Visibility fontSize='small' />}
+                                        {showPassword ? (
+                                            <VisibilityOff fontSize='small' />
+                                        ) : (
+                                            <Visibility fontSize='small' />
+                                        )}
                                     </IconButton>
                                 )
                             }}
                         />
-                        <Button variant='contained' type='submit' color='primary' sx={{ width: 'calc(100% - 20px)', height: '50px', top: '10px' }}>
+                        <Button
+                            variant='contained'
+                            type='submit'
+                            color='primary'
+                            sx={{ width: 'calc(100% - 20px)', height: '50px', top: '10px' }}
+                        >
                             Continue
                         </Button>
                         {/* <Typography variant='body2' sx={{ fontFamily: 'Noto Sans, sans-serif', position: 'relative', top: '10px' }}>

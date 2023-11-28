@@ -15,22 +15,35 @@ const AuthPage = () => {
     });
     return (
         <div id='AuthPage' className='centered'>
-            <Stack display='flex' justifyContent='center' textAlign='center' sx={{ position: 'relative', bottom: '30px' }}>
+            <Stack
+                display='flex'
+                justifyContent='center'
+                textAlign='center'
+                sx={{ position: 'relative', bottom: '30px' }}
+            >
                 <Typography variant='h3' sx={{ mb: '10px', pointerEvents: 'none' }}>
                     🤖
                 </Typography>
-                <Typography variant='body2' sx={{ color: 'white', fontFamily: 'Noto Sans, sans-serif', mb: '10px' }}>
+                <Typography variant='body2' sx={{ color: 'black', fontFamily: 'Noto Sans, sans-serif', mb: '10px' }}>
                     Welcome to WinePulseAI
                 </Typography>
-                <Typography variant='body2' sx={{ color: 'white', fontFamily: 'Noto Sans, sans-serif', mb: '10px' }}>
+                <Typography variant='body2' sx={{ color: 'black', fontFamily: 'Noto Sans, sans-serif', mb: '10px' }}>
                     Log in with your WinePulse account to continue
                 </Typography>
                 <Stack direction='row' display='flex' justifyContent='center' sx={{ mt: '5px' }}>
                     <Button
                         variant='contained'
-                        sx={{ textTransform: 'none', bgcolor: '#00A67E', borderRadius: '0.25rem', height: '35px', ml: '10px', '&:hover': { backgroundColor: '#1A7F64' } }}
-                        href='/auth/login'>
-                        <Typography variant='body2' sx={{ fontFamily: 'Noto Sans, sans-serif', color: 'white' }}>
+                        sx={{
+                            textTransform: 'none',
+                            bgcolor: '#00A67E',
+                            borderRadius: '0.25rem',
+                            height: '35px',
+                            ml: '10px',
+                            '&:hover': { backgroundColor: '#1A7F64' }
+                        }}
+                        href='/auth/login'
+                    >
+                        <Typography variant='body2' sx={{ fontFamily: 'Noto Sans, sans-serif', color: 'black' }}>
                             Log in
                         </Typography>
                     </Button>
@@ -38,7 +51,7 @@ const AuthPage = () => {
                         variant='contained'
                         sx={{ textTransform: 'none', bgcolor: '#00A67E', borderRadius: '0.25rem', height: '35px', ml: '10px', '&:hover': { backgroundColor: '#1A7F64' } }}
                         href='/auth/signup'>
-                        <Typography variant='body2' sx={{ fontFamily: 'Noto Sans, sans-serif', color: 'white' }}>
+                        <Typography variant='body2' sx={{ fontFamily: 'Noto Sans, sans-serif', color: 'black' }}>
                             Sign up
                         </Typography>
                     </Button> */}

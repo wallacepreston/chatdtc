@@ -1,6 +1,6 @@
-import { createTheme, Theme } from "@mui/material/styles";
+import { createTheme, Theme } from '@mui/material/styles';
 
-const wpTheme: Theme = createTheme({
+let wpTheme: Theme = createTheme({
     palette: {
         primary: {
             main: '#00A67E'
@@ -12,8 +12,20 @@ const wpTheme: Theme = createTheme({
             main: '#D00E17'
         },
         info: {
-            main: '#FFFFFF'
+            main: '#000000'
         }
+    }
+});
+
+wpTheme = createTheme(wpTheme, {
+    // Custom colors created with augmentColor go here
+    palette: {
+        salmon: wpTheme.palette.augmentColor({
+            color: {
+                main: '#FF5733'
+            },
+            name: 'salmon'
+        })
     }
 });
 

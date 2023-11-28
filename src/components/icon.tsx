@@ -28,22 +28,6 @@ const Icon = (props: { role: 'user' | 'assistant' | 'empty' }) => {
         }
     };
 
-    const handleMR = () => {
-        if (width > 1000) {
-            return '10px';
-        } else {
-            return '0px';
-        }
-    };
-
-    const handleML = () => {
-        if (width > 1000) {
-            return '0px';
-        } else {
-            return '10px';
-        }
-    };
-
     const handleBackground = () => {
         if (props.role === 'user') {
             return '#3f51b5';
@@ -52,21 +36,19 @@ const Icon = (props: { role: 'user' | 'assistant' | 'empty' }) => {
         } else {
             return 'transparent';
         }
-    }
+    };
 
     return (
         <div id='Icon'>
             <Avatar
                 sx={{
                     background: handleBackground(),
-                    mt: '25px',
                     borderRadius: '5px',
                     width: '30px',
-                    height: '30px',
-                    mr: handleMR(),
-                    ml: handleML()
+                    height: '30px'
                 }}
-                src={handleSrc()}>
+                src={handleSrc()}
+            >
                 {props.role === 'user' ? userEmail : ''}
             </Avatar>
         </div>

@@ -1,8 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable array-callback-return */
 import React, { useState, useEffect, useRef } from 'react';
-import { Typography, IconButton, Stack, CircularProgress, Button } from '@mui/material';
-import ContentPasteIcon from '@mui/icons-material/ContentPaste';
+import { CircularProgress, IconButton, Stack } from '@mui/material';
 import ArrowDownwardRoundedIcon from '@mui/icons-material/ArrowDownwardRounded';
 import Footer from '../components/footer';
 import SideBar from '../components/sideBar';
@@ -10,7 +9,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuthHeader } from 'react-auth-kit';
 import io from 'socket.io-client';
-import Icon from '../components/icon';
 import Topper from '../components/topper';
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
@@ -34,9 +32,10 @@ import go from 'highlight.js/lib/languages/go';
 import c from 'highlight.js/lib/languages/c';
 import 'highlight.js/styles/atom-one-dark.css';
 import { useThinking } from '../contexts/thinking';
-import { OpenInNew } from '@mui/icons-material';
-import { useStatus } from '../contexts/status';
+import ChatMessage from '../components/chatMessage';
 import { REACT_APP_API_URL } from '../constants/api';
+
+import type { Message as ChatMessageProps } from '../components/chatMessage';
 
 const socket = io(REACT_APP_API_URL as string);
 
@@ -60,10 +59,7 @@ hljs.registerLanguage('r', r);
 hljs.registerLanguage('go', go);
 hljs.registerLanguage('c', c);
 
-const PasteIcon = ContentPasteIcon;
 const DownIcon = ArrowDownwardRoundedIcon;
-
-const THINKING_MESSAGE = 'Assistant is thinking...';
 
 const ChatPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -74,15 +70,13 @@ const ChatPage = () => {
 
     /* IMPORTANT: messages are stored from the oldest to the newest
         [0] is the oldest message, [length - 1] is the newest message */
-    const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string; fileIds?: string[] }[]>([]);
+    const [messages, setMessages] = useState<ChatMessageProps[]>([]);
     const [footerHeight, setFooterHeight] = useState<number>(0);
     const [height, setHeight] = useState<string>('calc(100vh - 64px)');
     const [width, setWidth] = useState<number>(window.innerWidth);
     const [title, setTitle] = useState<string>('');
     const [scrolledToBottom, setScrolledToBottom] = useState<boolean>(true);
     const { thinking, setThinking } = useThinking();
-
-    const { setStatus } = useStatus();
 
     useEffect(() => {
         const updateWidth = () => {
@@ -216,29 +210,6 @@ const ChatPage = () => {
         });
     }, [socket]);
 
-    const getLanguage = (codeBlock: string) => {
-        const language = hljs.highlightAuto(codeBlock || '').language;
-        return language;
-    };
-
-    const getLanguageTitle = (codeBlock: string) => {
-        const language = hljs.highlightAuto(codeBlock || '').language;
-        switch (language) {
-            case 'javascript':
-                return 'js';
-            case 'typescript':
-                return 'ts';
-            case 'cpp':
-                return 'c++';
-            case 'csharp':
-                return 'c#';
-            case 'xml':
-                return 'html';
-            default:
-                return language;
-        }
-    };
-
     useEffect(() => {
         hljs.highlightAll();
     }, [messages, socket]);
@@ -263,76 +234,11 @@ const ChatPage = () => {
         if (width < 1000) {
             return 'calc(100% - 40px)';
         } else {
-            return '45%';
+            return '80%';
         }
     };
-
-    /** 
-    This accepts: 
-    ** import React from 'react';
-    ** import { useState } from 'react';
-    ** import React, { useState } from 'react';
-    */
-    const reactRegex = /^import\s+\w+|\{.+?\}\s+from\s+'react'(;)?$/gm;
 
     let prevRole: 'user' | 'assistant' | null = null;
-
-    let messagesToDisplay = messages;
-
-    if (thinking) {
-        // append thinking message
-        messagesToDisplay = [...messages, { role: 'assistant', content: THINKING_MESSAGE }];
-    }
-
-    // If there was no authentication on the server, this big function would be unnecessary.
-    const handleDownload = async (fileId: string) => {
-        try {
-            // 1. Send a GET request to the file endpoint with the auth header
-            const response = await axios.get(`${REACT_APP_API_URL}/api/chat/files/${fileId}`, {
-                headers: { Authorization: authHeader() },
-                responseType: 'blob' // specify the response type
-            });
-
-            // 2. Check the response status
-            if (response.status !== 200) {
-                setStatus({
-                    type: 'error',
-                    message: 'HTTP error ' + response.status
-                });
-            }
-
-            // 3. Extract the filename from the Content-Disposition header
-            const contentDisposition = response.headers['content-disposition'];
-            let filename = 'file.csv'; // default filename
-            if (contentDisposition) {
-                const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-                const matches = filenameRegex.exec(contentDisposition);
-                if (matches != null && matches[1]) {
-                    filename = matches[1].replace(/['"]/g, '');
-                }
-            }
-
-            // 4. Create a Blob URL from the response data
-            const url = window.URL.createObjectURL(response.data);
-
-            // 5. Create a new <a> element and set its href to the Blob URL and its download attribute to the filename
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', filename);
-
-            // 6. Append the <a> element to the body and programmatically click it to start the download
-            document.body.appendChild(link);
-            link.click();
-
-            // 7. Remove the <a> element from the body after the download has started
-            document.body.removeChild(link);
-        } catch (error) {
-            setStatus({
-                type: 'error',
-                message: 'HTTP error ' + error
-            });
-        }
-    };
 
     return (
         <div id='ChatPage' style={{ width: '100%', height: '100vh', display: 'flex', justifyContent: 'center' }}>
@@ -346,252 +252,28 @@ const ChatPage = () => {
                     width: handleWidthMain(),
                     height: height,
                     overflowY: 'auto',
-                    marginTop: width > 1000 ? '' : '40px'
+                    marginTop: width > 1000 ? '' : '40px',
+                    padding: '0px 20px 0px 20px'
                 }}
                 ref={scrollDiv}
                 onScroll={handleDivScroll}
             >
-                <div id='center' style={{ width: '100%' }}>
-                    <Stack direction='column' sx={{ width: '100%', height: '100%' }}>
-                        {messagesToDisplay.map((message, index) => {
+                <div id='center' style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                    <Stack direction='column' sx={{ width: '100%', height: '100%', maxWidth: '728px' }}>
+                        {messages.map((message, index) => {
                             const showIcon = prevRole !== message.role;
                             prevRole = message.role;
-                            if (message.role === 'assistant' && message.content.includes('\n' || '```' || '`')) {
-                                const content: string[] = message.content.split('\n' || '```');
-                                let code: boolean = false;
-                                let codeBlock: string[] = [];
-                                return (
-                                    <div
-                                        key={index}
-                                        style={{
-                                            backgroundColor: '#444654',
-                                            width: '100%',
-                                            display: 'flex',
-                                            justifyContent: 'center'
-                                        }}
-                                    >
-                                        <Icon role={showIcon ? message.role : 'empty'} />
-                                        <div
-                                            style={{
-                                                width: handleMessageWidth(),
-                                                marginBottom: '15px',
-                                                marginTop: '15px'
-                                            }}
-                                        >
-                                            {content.map((line, index) => {
-                                                if (line.includes('```')) {
-                                                    code = !code;
-                                                    if (code) {
-                                                        codeBlock = [];
-                                                    } else {
-                                                        const codeBlockString = codeBlock
-                                                            .join('\n')
-                                                            .replace(/\t/g, '    ');
-
-                                                        let languageTitle = getLanguageTitle(codeBlockString);
-                                                        if (
-                                                            (languageTitle === 'js' || languageTitle === 'html') &&
-                                                            codeBlockString.match(reactRegex)
-                                                        ) {
-                                                            languageTitle = 'jsx';
-                                                        } else if (
-                                                            languageTitle === 'ts' &&
-                                                            codeBlockString.match(reactRegex)
-                                                        ) {
-                                                            languageTitle = 'tsx';
-                                                        }
-
-                                                        return (
-                                                            // code block
-                                                            <div key={index}>
-                                                                <Typography
-                                                                    key={index}
-                                                                    variant='body1'
-                                                                    sx={{
-                                                                        color: '#D1D5D2',
-                                                                        fontFamily: 'Noto Sans, sans-serif',
-                                                                        fontSize: '0.75rem',
-                                                                        lineHeight: '2.5',
-                                                                        mt: '20px',
-                                                                        backgroundColor: '#343541',
-                                                                        borderTopLeftRadius: '7px',
-                                                                        borderTopRightRadius: '7px',
-                                                                        mr: '1rem',
-                                                                        pl: '1rem',
-                                                                        pr: '1rem'
-                                                                    }}
-                                                                >
-                                                                    {languageTitle}
-                                                                </Typography>
-                                                                <Typography
-                                                                    variant='body1'
-                                                                    component={'pre'}
-                                                                    sx={{
-                                                                        color: '#D1D5D2',
-                                                                        fontSize: '0.85rem',
-                                                                        lineHeight: '1.4',
-                                                                        bgcolor: 'black',
-                                                                        paddingTop: '0.25rem',
-                                                                        overflowX: 'auto',
-                                                                        pl: '1rem',
-                                                                        pr: '1rem',
-                                                                        maxWidth: '100%',
-                                                                        mr: '1rem',
-                                                                        mb: '30px',
-                                                                        borderBottomLeftRadius: '7px',
-                                                                        borderBottomRightRadius: '7px',
-                                                                        letterSpacing: '-0.2px'
-                                                                    }}
-                                                                >
-                                                                    <code
-                                                                        className={`language-${getLanguage(
-                                                                            codeBlockString
-                                                                        )}`}
-                                                                        style={{
-                                                                            backgroundColor: 'black',
-                                                                            maxWidth: '100%',
-                                                                            height: '100%',
-                                                                            fontFamily: 'FireCode'
-                                                                        }}
-                                                                    >
-                                                                        {codeBlockString}
-                                                                    </code>
-                                                                </Typography>
-                                                            </div>
-                                                        );
-                                                    }
-                                                } else {
-                                                    if (code) {
-                                                        codeBlock.push(line);
-                                                    } else {
-                                                        // split the line into parts based on the regex
-                                                        const parts = line.split(/\[(.*?)\]\((sandbox:\/.*?)\)/g);
-
-                                                        // map over the parts and convert any links into JSX
-                                                        return parts.map((part, i) => {
-                                                            if (i % 3 === 0) {
-                                                                // this part is not a link
-                                                                return (
-                                                                    <Typography
-                                                                        key={index}
-                                                                        variant='body1'
-                                                                        sx={{
-                                                                            color: '#D1D5D2',
-                                                                            fontFamily: 'Noto Sans, sans-serif',
-                                                                            fontSize: '0.95rem',
-                                                                            lineHeight: '1.8',
-                                                                            pl: '1rem',
-                                                                            maxWidth: '100%'
-                                                                        }}
-                                                                    >
-                                                                        {part}
-                                                                    </Typography>
-                                                                );
-                                                            } else if (i % 3 === 1) {
-                                                                // this part is the link text
-                                                                const linkText = part;
-                                                                const [fileId] = message.fileIds || [];
-                                                                return (
-                                                                    <Button
-                                                                        variant='text'
-                                                                        color='info'
-                                                                        sx={{
-                                                                            textTransform: 'none',
-                                                                            ml: '1rem',
-                                                                            borderRadius: '5px',
-                                                                            justifyContent: 'left',
-                                                                            '&:hover': { textDecoration: 'underline' }
-                                                                        }}
-                                                                        endIcon={<OpenInNew />}
-                                                                        onClick={() => handleDownload(fileId)}
-                                                                    >
-                                                                        <Typography
-                                                                            sx={{ fontFamily: 'Noto Sans, sans-serif' }}
-                                                                        >
-                                                                            {linkText}
-                                                                        </Typography>
-                                                                    </Button>
-                                                                );
-                                                            }
-                                                            // we don't need to return anything for the other parts
-                                                        });
-                                                    }
-                                                }
-                                            })}
-                                        </div>
-                                        {width > 1000 && (
-                                            <IconButton
-                                                onClick={() => {
-                                                    navigator.clipboard.writeText(message.content);
-                                                }}
-                                                sx={{
-                                                    color: '#7F7F90',
-                                                    mt: '26px',
-                                                    width: '25px',
-                                                    height: '25px',
-                                                    borderRadius: '7px',
-                                                    '&:hover': { color: '#D9D9E3' }
-                                                }}
-                                            >
-                                                <PasteIcon sx={{ fontSize: '15px' }} />
-                                            </IconButton>
-                                        )}
-                                    </div>
-                                );
-                            } else {
-                                return (
-                                    <div
-                                        key={index}
-                                        style={{
-                                            backgroundColor: message.role === 'user' ? '#343541' : '#444654',
-                                            width: '100%',
-                                            display: 'flex',
-                                            justifyContent: 'center'
-                                        }}
-                                    >
-                                        <Icon role={showIcon ? message.role : 'empty'} />
-                                        <div style={{ width: handleMessageWidth() }}>
-                                            <Typography
-                                                variant='body1'
-                                                sx={{
-                                                    color: message.role === 'user' ? 'white' : '#D1D5D2',
-                                                    fontFamily: 'Noto Sans, sans-serif',
-                                                    fontSize: '0.95rem',
-                                                    p: '1rem',
-                                                    lineHeight: '2',
-                                                    mt: '10px',
-                                                    mb: '10px',
-                                                    maxWidth: '100%'
-                                                }}
-                                            >
-                                                {message.content === THINKING_MESSAGE ? (
-                                                    <CircularProgress color='inherit' />
-                                                ) : (
-                                                    message.content
-                                                )}
-                                            </Typography>
-                                        </div>
-                                        {width > 1000 && (
-                                            <IconButton
-                                                onClick={() => {
-                                                    navigator.clipboard.writeText(message.content);
-                                                }}
-                                                sx={{
-                                                    color: '#7F7F90',
-                                                    mt: '26px',
-                                                    width: '25px',
-                                                    height: '25px',
-                                                    borderRadius: '7px',
-                                                    '&:hover': { color: '#D9D9E3' }
-                                                }}
-                                            >
-                                                <PasteIcon sx={{ fontSize: '15px' }} />
-                                            </IconButton>
-                                        )}
-                                    </div>
-                                );
-                            }
+                            return (
+                                <ChatMessage
+                                    key={index}
+                                    message={message}
+                                    handleMessageWidth={handleMessageWidth}
+                                    width={width}
+                                    showIcon={showIcon}
+                                />
+                            );
                         })}
+                        {thinking && <CircularProgress color='inherit' />}
                     </Stack>
                     {!scrolledToBottom && (
                         <IconButton
@@ -602,9 +284,9 @@ const ChatPage = () => {
                                 right: '25px',
                                 width: '26px',
                                 height: '26px',
-                                bgcolor: '#545661',
-                                border: '1px solid #656770',
-                                '&:hover': { bgcolor: '#545661' }
+                                bgcolor: '#fff',
+                                border: '1px solid #d9d9e3',
+                                '&:hover': { bgcolor: '#e6e6e6' }
                             }}
                         >
                             <DownIcon fontSize='small' sx={{ color: '#B7B8C3' }} />

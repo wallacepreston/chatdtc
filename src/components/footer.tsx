@@ -195,9 +195,9 @@ const Footer = (props: { setHeight: (height: number) => void; newInput: string; 
                                 maxWidth: '768px',
                                 width: '90%',
                                 position: 'relative',
-                                backgroundColor: '#40414F',
+                                backgroundColor: '#d9d9d9',
                                 borderRadius: '5px',
-                                color: 'white',
+                                color: 'black',
                                 minHeight: '46px',
                                 fontFamily: 'Noto Sans, sans-serif',
                                 mb: '10px',
@@ -217,7 +217,7 @@ const Footer = (props: { setHeight: (height: number) => void; newInput: string; 
                             }}
                             InputProps={{
                                 style: {
-                                    color: 'white'
+                                    color: 'black'
                                 },
                                 endAdornment: (
                                     <IconButton
@@ -230,7 +230,7 @@ const Footer = (props: { setHeight: (height: number) => void; newInput: string; 
                                             width: '30px',
                                             height: '30px',
                                             borderRadius: '10px',
-                                            '&:hover': { backgroundColor: '#202123' }
+                                            '&:hover': { backgroundColor: '#cfcfcf' }
                                         }}
                                     >
                                         <SendOutlinedIcon fontSize='small' />
@@ -251,8 +251,7 @@ const Footer = (props: { setHeight: (height: number) => void; newInput: string; 
                             textAlign: 'center'
                         }}
                     >
-                        Powered by GPT-3.5. Wine Assistant may produce inaccurate information about people, places, or
-                        facts.
+                        Powered by OpenAI. Developed by WinePulse.
                     </Typography>
                 </Stack>
             </form>

@@ -75,7 +75,7 @@ code {
 /* Firefox */
 * {
     scrollbar-width: thin;
-    scrollbar-color: #565869 #ffffff00;
+    scrollbar-color: rgb(230, 230, 230) transparent;
 }
 
 /* Chrome, Edge, and Safari */
@@ -85,11 +85,20 @@ code {
 }
 
 *::-webkit-scrollbar-track {
-    background: #ffffff00;
+    background: transparent;
 }
 
 *::-webkit-scrollbar-thumb {
-    background-color: #565869;
+    background-color: rgb(230, 230, 230);
     border-radius: 20px;
-    border: 3px solid #ffffff00;
+    border: 3px solid rgb(230, 230, 230);
+}
+
+#new-chat-button {
+    margin-top: 10px;
+}
+
+#main-title {
+    margin-top: 10px;
+    margin-bottom: 20px;
 }

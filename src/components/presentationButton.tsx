@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Typography } from '@mui/material';
 
-const PresentationButton = (props: { content: string; clickable?: boolean; handleClick?: (content: string) => void }) => {
+const PresentationButton = (props: {
+    content: string;
+    clickable?: boolean;
+    handleClick?: (content: string) => void;
+}) => {
     const [width, setWidth] = useState<number>(window.innerWidth);
 
     useEffect(() => {
@@ -18,19 +22,23 @@ const PresentationButton = (props: { content: string; clickable?: boolean; handl
         if (width > 1000) {
             if (props.clickable) {
                 return {
-                    bgcolor: '#3E3F4B',
-                    '&:hover': { bgcolor: '#202123' },
-                    boxShadow: '0px 0px 1px 1px #343541',
+                    color: 'black',
+                    bgcolor: '#fff',
+                    '&:hover': { bgcolor: '#e6e6e6' },
+                    boxShadow: '0px 0px 1px 1px #e6e6e6',
+                    border: '1px solid #d9d9e3',
                     maxWidth: '28rem',
                     width: '100%',
                     mt: '15px'
                 };
             } else {
                 return {
-                    bgcolor: '#3E3F4B',
-                    '&:hover': { bgcolor: '#3E3F4B' },
+                    color: 'black',
+                    bgcolor: '#fff',
+                    '&:hover': { bgcolor: '#fff' },
                     pointerEvents: 'none',
-                    boxShadow: '0px 0px 1px 1px #343541',
+                    boxShadow: '0px 0px 1px 1px #e6e6e6',
+                    border: '1px solid #d9d9e3',
                     maxWidth: '28rem',
                     width: '100%',
                     mt: '15px'
@@ -39,19 +47,23 @@ const PresentationButton = (props: { content: string; clickable?: boolean; handl
         } else {
             if (props.clickable) {
                 return {
-                    bgcolor: '#3E3F4B',
-                    '&:hover': { bgcolor: '#202123' },
-                    boxShadow: '0px 0px 1px 1px #343541',
+                    color: 'black',
+                    bgcolor: '#fff',
+                    '&:hover': { bgcolor: '#e6e6e6' },
+                    boxShadow: '0px 0px 1px 1px #e6e6e6',
+                    border: '1px solid #d9d9e3',
                     maxWidth: '28rem',
                     width: '90%',
                     mt: '15px'
                 };
             } else {
                 return {
-                    bgcolor: '#3E3F4B',
-                    '&:hover': { bgcolor: '#3E3F4B' },
+                    color: 'black',
+                    bgcolor: '#fff',
+                    '&:hover': { bgcolor: '#fff' },
                     pointerEvents: 'none',
-                    boxShadow: '0px 0px 1px 1px #343541',
+                    boxShadow: '0px 0px 1px 1px #e6e6e6',
+                    border: '1px solid #d9d9e3',
                     maxWidth: '28rem',
                     width: '90%',
                     mt: '15px'
@@ -78,7 +90,8 @@ const PresentationButton = (props: { content: string; clickable?: boolean; handl
                         fontSize: '0.8rem',
                         lineHeight: '1.25rem',
                         textTransform: 'none'
-                    }}>
+                    }}
+                >
                     {props.content}
                 </Typography>
             </Button>

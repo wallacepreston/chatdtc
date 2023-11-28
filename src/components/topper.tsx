@@ -29,7 +29,7 @@ const Topper = (props: { chatTitle: string }) => {
                     top: '0px',
                     zIndex: '90',
                     height: '40px',
-                    backgroundColor: '#343541',
+                    backgroundColor: '#c9c9c9',
                     width: '100vw',
                     display: 'flex',
                     borderBottomWidth: '1px',
@@ -37,7 +37,8 @@ const Topper = (props: { chatTitle: string }) => {
                     borderBottomColor: 'hsla(0,0%,100%,.2)',
                     justifyContent: 'space-between',
                     alignItems: 'center'
-                }}>
+                }}
+            >
                 <IconButton
                     onClick={showMenu}
                     autoFocus
@@ -49,10 +50,11 @@ const Topper = (props: { chatTitle: string }) => {
                         '&:active': { border: '3px solid white' },
                         width: '40px',
                         height: '40px'
-                    }}>
+                    }}
+                >
                     <MenuRoundedIcon />
                 </IconButton>
-                <Typography variant='h6' sx={{ color: 'rgba(217,217,227)', fontSize: '1rem', mt: '3px' }}>
+                <Typography variant='h6' sx={{ color: 'black', fontSize: '1rem', mt: '3px' }}>
                     {props.chatTitle}
                 </Typography>
                 <IconButton
@@ -61,17 +63,28 @@ const Topper = (props: { chatTitle: string }) => {
                         color: 'rgba(217,217,227)',
                         mt: '3px',
                         borderRadius: '5px',
-                        '&:focus': { border: '3px solid white' },
-                        '&:active': { border: '3px solid white' },
+                        '&:focus': { border: '3px solid grey' },
+                        '&:active': { border: '3px solid grey' },
                         width: '40px',
                         height: '40px'
-                    }}>
+                    }}
+                >
                     <AddRoundedIcon />
                 </IconButton>
             </div>
             <div id='sidebarMobile'>
                 <CSSTransition in={sidebarOpen} timeout={200} classNames={'shadow'} unmountOnExit>
-                    <div className='shadow' style={{ position: 'fixed', width: '100vw', height: '100vh', background: '#acacbe', zIndex: '91' }} onClick={showMenu} />
+                    <div
+                        className='shadow'
+                        style={{
+                            position: 'fixed',
+                            width: '100vw',
+                            height: '100vh',
+                            background: '#acacbe',
+                            zIndex: '91'
+                        }}
+                        onClick={showMenu}
+                    />
                 </CSSTransition>
                 <CSSTransition in={sidebarOpen} timeout={200} classNames={'sidebar'} unmountOnExit>
                     <div>
@@ -85,12 +98,13 @@ const Topper = (props: { chatTitle: string }) => {
                                 ml: '270px',
                                 mt: '10px',
                                 borderRadius: '0px',
-                                '&:focus': { border: '2px solid white' },
-                                '&:active': { border: '2px solid white' },
+                                '&:focus': { border: '2px solid grey' },
+                                '&:active': { border: '2px solid grey' },
                                 width: '40px',
                                 height: '40px',
                                 zIndex: '92'
-                            }}>
+                            }}
+                        >
                             <CloseRoundedIcon />
                         </IconButton>
                     </div>

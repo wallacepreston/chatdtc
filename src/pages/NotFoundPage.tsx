@@ -7,12 +7,34 @@ const NotFoundPage = () => {
     }, []);
 
     return (
-        <div id='NotFoundPage' style={{ width: '100vw', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div
+            id='NotFoundPage'
+            style={{ width: '100vw', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+        >
             <Stack direction='row'>
-                <Typography variant='h5' sx={{ fontFamily: 'Noto Sans, sans-serif', color: 'white', borderRight: '1px solid #71727A', pr: '20px', height: '50px', lineHeight: '50px' }}>
+                <Typography
+                    variant='h5'
+                    sx={{
+                        fontFamily: 'Noto Sans, sans-serif',
+                        color: 'black',
+                        borderRight: '1px solid #71727A',
+                        pr: '20px',
+                        height: '50px',
+                        lineHeight: '50px'
+                    }}
+                >
                     404
                 </Typography>
-                <Typography variant='body2' sx={{ fontFamily: 'Noto Sans, sans-serif', color: 'white', pl: '20px', height: '50px', lineHeight: '50px' }}>
+                <Typography
+                    variant='body2'
+                    sx={{
+                        fontFamily: 'Noto Sans, sans-serif',
+                        color: 'black',
+                        pl: '20px',
+                        height: '50px',
+                        lineHeight: '50px'
+                    }}
+                >
                     This page could not be found.
                 </Typography>
             </Stack>
