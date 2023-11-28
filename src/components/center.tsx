@@ -140,7 +140,7 @@ const Center = (props: { footerHeight: number; setInput: (input: string) => void
                         mb: handleMB()
                     }}
                 >
-                    Wine Assistant
+                    ChatDTC
                 </Typography>
                 <div id='presentation'>
                     <Stack

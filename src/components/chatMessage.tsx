@@ -178,7 +178,7 @@ const ChatMessage = (props: ChatMessageProps) => {
                         <Icon role={showIcon ? role : 'empty'} />
                     </Grid>
                     <Grid item>
-                        <Typography variant='body2'>{role === 'user' ? 'You' : 'Assistant'}</Typography>
+                        <Typography variant='h6'>{role === 'user' ? 'You' : 'ChatDTC'}</Typography>
                     </Grid>
                 </Grid>
             )}

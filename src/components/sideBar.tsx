@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { useStatus } from '../contexts/status';
 import { REACT_APP_API_URL } from '../constants/api';
+import { Image } from '@mui/icons-material';
 
 const socket = io(REACT_APP_API_URL as string);
 
@@ -95,9 +96,18 @@ const SideBar = (props: { activeChat?: string }) => {
                         direction='column'
                         display='flex'
                         alignItems='center'
+                        justifyContent='space-between'
                         spacing={2}
                         sx={{ width: '100%', height: '100%' }}
                     >
+                        <img
+                            src='/assets/logowinepulse.png'
+                            alt='logo'
+                            style={{ width: '70px', height: '70px', marginTop: '20px' }}
+                        />
+                        <Typography variant='h6' sx={{ color: 'black' }}>
+                            Winery Name
+                        </Typography>
                         <Button
                             variant='outlined'
                             color='info'
@@ -188,49 +198,11 @@ const SideBar = (props: { activeChat?: string }) => {
                         </div>
                         <div
                             style={{
-                                position: 'absolute',
-                                bottom: '0px',
                                 borderTop: '1px solid #4D4D4F',
                                 width: '240px',
                                 justifySelf: 'center'
                             }}
                         >
-                            {/* {!deleteConfirmation ? (
-                                    <Button
-                                        variant='text'
-                                        color='info'
-                                        sx={{
-                                            textTransform: 'none',
-                                            height: '40px',
-                                            width: '244px',
-                                            borderRadius: '5px',
-                                            justifyContent: 'left',
-                                            mt: '10px',
-                                            '&:hover': { bgcolor: '#343541' }
-                                        }}
-                                        startIcon={<DeleteOutlinedIcon fontSize='small' sx={{ ml: '7px' }} />}
-                                        onClick={handleClearConversations}>
-                                        <Typography sx={{ fontSize: '0.83rem', fontFamily: 'Noto Sans, sans-serif' }}>Clear conversations</Typography>
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        variant='text'
-                                        color='info'
-                                        sx={{
-                                            textTransform: 'none',
-                                            height: '40px',
-                                            width: '244px',
-                                            borderRadius: '5px',
-                                            justifyContent: 'left',
-                                            mt: '10px',
-                                            '&:hover': { bgcolor: '#343541' }
-                                        }}
-                                        startIcon={<CheckRoundedIcon fontSize='small' sx={{ ml: '7px' }} />}
-                                        onClick={handleClearConversations}>
-                                        <Typography sx={{ fontSize: '0.83rem', fontFamily: 'Noto Sans, sans-serif' }}>Confirm clear conversations</Typography>
-                                    </Button>
-                                )} */}
-
                             <Button
                                 variant='text'
                                 color='info'
