@@ -3,15 +3,12 @@ import { AppBar, Toolbar, Button, Stack, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import { ThemeProvider } from '@mui/material/styles';
-import wpTheme from '../wpTheme';
 import axios from 'axios';
 import { useAuthHeader, useSignOut } from 'react-auth-kit';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { useStatus } from '../contexts/status';
 import { REACT_APP_API_URL } from '../constants/api';
-import { Image } from '@mui/icons-material';
 
 const socket = io(REACT_APP_API_URL as string);
 

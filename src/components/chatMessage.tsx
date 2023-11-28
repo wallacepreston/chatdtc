@@ -1,6 +1,6 @@
 import React from 'react';
 import Icon from './icon';
-import { Button, Grid, IconButton, Typography } from '@mui/material';
+import { Grid, IconButton, Typography } from '@mui/material';
 import { OpenInNew } from '@mui/icons-material';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import { useAuthHeader } from 'react-auth-kit';

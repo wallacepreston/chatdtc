@@ -178,6 +178,9 @@ const ChatPage = () => {
         socket.on('newMessage', (data: { chat_id: string }) => {
             if (data.chat_id === id) {
                 getMessages();
+                if (scrolledToBottom) {
+                    scrollToBottom();
+                }
             }
         });
 

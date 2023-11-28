@@ -78,8 +78,8 @@ const Footer = (props: { setHeight: (height: number) => void; newInput: string; 
 
     const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
         e?.preventDefault();
-        setThinking(true);
         if (canSubmit === false) return;
+        setThinking(true);
         const message = input.trim();
         setTimeout(() => setInput(''), 1);
 
