@@ -12,6 +12,8 @@ import { StatusProvider } from './contexts/status';
 import Status from './components/status';
 import { ThemeProvider } from '@mui/material/styles';
 import wpTheme from './wpTheme';
+import SelectWineryModal from './components/selectWineryModal';
+import { UserProvider } from './contexts/user';
 
 const App = () => {
     return (
@@ -25,30 +27,33 @@ const App = () => {
                             cookieDomain={window.location.hostname}
                             cookieSecure={false}
                         >
-                            <Status />
-                            <Router>
-                                <Routes>
-                                    <Route
-                                        path='/'
-                                        element={
-                                            <RequireAuth loginPath='/auth'>
-                                                <MainPage />
-                                            </RequireAuth>
-                                        }
-                                    />
-                                    <Route
-                                        path='/c/:id'
-                                        element={
-                                            <RequireAuth loginPath='/auth'>
-                                                <ChatPage />
-                                            </RequireAuth>
-                                        }
-                                    />
-                                    <Route path='/auth' element={<AuthPage />} />
-                                    <Route path='/auth/login' element={<LoginPage />} />
-                                    <Route path='*' element={<NotFoundPage />} />
-                                </Routes>
-                            </Router>
+                            <UserProvider>
+                                <Status />
+                                <SelectWineryModal />
+                                <Router>
+                                    <Routes>
+                                        <Route
+                                            path='/'
+                                            element={
+                                                <RequireAuth loginPath='/auth'>
+                                                    <MainPage />
+                                                </RequireAuth>
+                                            }
+                                        />
+                                        <Route
+                                            path='/c/:id'
+                                            element={
+                                                <RequireAuth loginPath='/auth'>
+                                                    <ChatPage />
+                                                </RequireAuth>
+                                            }
+                                        />
+                                        <Route path='/auth' element={<AuthPage />} />
+                                        <Route path='/auth/login' element={<LoginPage />} />
+                                        <Route path='*' element={<NotFoundPage />} />
+                                    </Routes>
+                                </Router>
+                            </UserProvider>
                         </AuthProvider>
                     </ThinkingProvider>
                 </StatusProvider>

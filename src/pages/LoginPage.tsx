@@ -8,10 +8,12 @@ import axios from 'axios';
 import { useSignIn } from 'react-auth-kit';
 import { useNavigate } from 'react-router-dom';
 import { REACT_APP_API_URL } from '../constants/api';
+import { useUser } from '../contexts/user';
 
 const LoginPage = () => {
     const signIn = useSignIn();
     const navigate = useNavigate();
+    const { setUser } = useUser();
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -46,12 +48,15 @@ const LoginPage = () => {
                     expiresIn: 28800,
                     tokenType: 'Bearer',
                     authState: {
-                        id: res.data.id,
                         email: res.data.email,
-                        username: res.data.username
+                        username: res.data.samAccountName
                     }
                 })
             ) {
+                // TODO - update other user data? (not necessary since also in auth state and would be duplicating data)
+                setUser({
+                    selectedWinery: res.data.selectedWinery
+                });
                 navigate('/');
             } else {
                 console.log('Login failed');

@@ -53,7 +53,10 @@ const MainPage = () => {
             <div id='side' style={{ width: handleWidth(), height: '100%' }}>
                 {width > 1000 && <SideBar />}
             </div>
-            <div id='main' style={{ width: handleMainWidth(), height: '100vh', display: 'flex', justifyContent: 'center' }}>
+            <div
+                id='main'
+                style={{ width: handleMainWidth(), height: '100vh', display: 'flex', justifyContent: 'center' }}
+            >
                 {width < 1000 && <Topper chatTitle='New chat' />}
                 <Center setInput={setInput} footerHeight={footerHeight} />
                 <Footer setHeight={handleHeightChange} newInput={newInput} openModal={() => {}} />

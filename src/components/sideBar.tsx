@@ -4,19 +4,27 @@ import AddIcon from '@mui/icons-material/Add';
 import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import axios from 'axios';
-import { useAuthHeader, useSignOut } from 'react-auth-kit';
+import { useAuthHeader, useAuthUser, useSignOut } from 'react-auth-kit';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { useStatus } from '../contexts/status';
 import { REACT_APP_API_URL } from '../constants/api';
+import { useUser } from '../contexts/user';
 
 const socket = io(REACT_APP_API_URL as string);
 
 const SideBar = (props: { activeChat?: string }) => {
+    const auth = useAuthUser();
     const authHeader = useAuthHeader();
     const navigate = useNavigate();
     const signOut = useSignOut();
     const { setStatus } = useStatus();
+    const { user, setUser } = useUser();
+
+    const authData = auth()!;
+    console.log({
+        authData
+    });
 
     const [chats, setChats] = useState<any[]>([]);
     // const [deleteConfirmation, setDeleteConfirmation] = useState<boolean>(false);
@@ -69,6 +77,13 @@ const SideBar = (props: { activeChat?: string }) => {
                     message: error?.message || 'Problem logging out. Please refresh the page and try again.'
                 });
         }
+    };
+
+    const handleChangeWinery = () => {
+        setUser({
+            ...user,
+            selectedWinery: null
+        });
     };
 
     // const handleClearConversations = async () => {
@@ -218,6 +233,27 @@ const SideBar = (props: { activeChat?: string }) => {
                             >
                                 <Typography sx={{ fontSize: '0.83rem', fontFamily: 'Noto Sans, sans-serif' }}>
                                     Log out
+                                </Typography>
+                            </Button>
+                            {/* TODO - change to a drop-up menu that contains these 2 options in a list */}
+                            <Button
+                                variant='text'
+                                color='info'
+                                sx={{
+                                    textTransform: 'none',
+                                    height: '40px',
+                                    width: '244px',
+                                    mb: '10px',
+                                    mt: '5px',
+                                    borderRadius: '5px',
+                                    justifyContent: 'left',
+                                    '&:hover': { bgcolor: '#bcbcbc' }
+                                }}
+                                startIcon={<LogoutRoundedIcon fontSize='small' sx={{ ml: '11px' }} />}
+                                onClick={handleChangeWinery}
+                            >
+                                <Typography sx={{ fontSize: '0.83rem', fontFamily: 'Noto Sans, sans-serif' }}>
+                                    Switch Winery
                                 </Typography>
                             </Button>
                         </div>
