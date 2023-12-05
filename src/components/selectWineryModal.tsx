@@ -109,6 +109,7 @@ const SelectWineryModal = () => {
                             }}
                         >
                             <LoadingButton
+                                disabled={!selectedGroup}
                                 loading={loading}
                                 variant='contained'
                                 color='primary'
