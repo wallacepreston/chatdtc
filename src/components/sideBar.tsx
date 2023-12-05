@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, Button, Stack, Typography } from '@mui/material';
+import { AppBar, Toolbar, Button, Stack, Typography, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
@@ -10,6 +10,7 @@ import io from 'socket.io-client';
 import { useStatus } from '../contexts/status';
 import { REACT_APP_API_URL } from '../constants/api';
 import { useUser } from '../contexts/user';
+import { AccountCircle, Business } from '@mui/icons-material';
 
 const socket = io(REACT_APP_API_URL as string);
 
@@ -22,12 +23,21 @@ const SideBar = (props: { activeChat?: string }) => {
     const { user, setUser } = useUser();
 
     const authData = auth()!;
+
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+    const handleOpenProfileMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
     console.log({
         authData
     });
 
     const [chats, setChats] = useState<any[]>([]);
-    // const [deleteConfirmation, setDeleteConfirmation] = useState<boolean>(false);
 
     const getChats = async () => {
         try {
@@ -64,6 +74,7 @@ const SideBar = (props: { activeChat?: string }) => {
 
     const handleLogOut = () => {
         try {
+            handleClose();
             signOut();
             navigate('/auth');
             setStatus({
@@ -80,22 +91,12 @@ const SideBar = (props: { activeChat?: string }) => {
     };
 
     const handleChangeWinery = () => {
+        handleClose();
         setUser({
             ...user,
             selectedWinery: null
         });
     };
-
-    // const handleClearConversations = async () => {
-    //     if (!deleteConfirmation) {
-    //         setDeleteConfirmation(true);
-    //         return;
-    //     } else {
-    //         setDeleteConfirmation(false);
-    //         await axios.delete(`${REACT_APP_API_URL}/api/chat/deleteAllChatsByUserID`, { headers: { Authorization: authHeader() } });
-    //         navigate('/');
-    //     }
-    // };
 
     return (
         <div id='SideBar'>
@@ -118,7 +119,7 @@ const SideBar = (props: { activeChat?: string }) => {
                             style={{ width: '70px', height: '70px', marginTop: '20px' }}
                         />
                         <Typography variant='h6' sx={{ color: 'black' }}>
-                            Winery Name
+                            {user.selectedWinery || 'No Winery Selected'}
                         </Typography>
                         <Button
                             variant='outlined'
@@ -216,6 +217,11 @@ const SideBar = (props: { activeChat?: string }) => {
                             }}
                         >
                             <Button
+                                id='profile-button'
+                                aria-controls={open ? 'profile-menu' : undefined}
+                                aria-haspopup='true'
+                                aria-expanded={open ? 'true' : undefined}
+                                onClick={handleOpenProfileMenu}
                                 variant='text'
                                 color='info'
                                 sx={{
@@ -228,34 +234,32 @@ const SideBar = (props: { activeChat?: string }) => {
                                     justifyContent: 'left',
                                     '&:hover': { bgcolor: '#bcbcbc' }
                                 }}
-                                startIcon={<LogoutRoundedIcon fontSize='small' sx={{ ml: '11px' }} />}
-                                onClick={handleLogOut}
+                                startIcon={<AccountCircle fontSize='small' sx={{ ml: '11px' }} />}
                             >
-                                <Typography sx={{ fontSize: '0.83rem', fontFamily: 'Noto Sans, sans-serif' }}>
-                                    Log out
-                                </Typography>
+                                {authData.username}
                             </Button>
-                            {/* TODO - change to a drop-up menu that contains these 2 options in a list */}
-                            <Button
-                                variant='text'
-                                color='info'
-                                sx={{
-                                    textTransform: 'none',
-                                    height: '40px',
-                                    width: '244px',
-                                    mb: '10px',
-                                    mt: '5px',
-                                    borderRadius: '5px',
-                                    justifyContent: 'left',
-                                    '&:hover': { bgcolor: '#bcbcbc' }
+                            <Menu
+                                id='profile-menu'
+                                anchorEl={anchorEl}
+                                open={open}
+                                onClose={handleClose}
+                                MenuListProps={{
+                                    'aria-labelledby': 'profile-button'
                                 }}
-                                startIcon={<LogoutRoundedIcon fontSize='small' sx={{ ml: '11px' }} />}
-                                onClick={handleChangeWinery}
                             >
-                                <Typography sx={{ fontSize: '0.83rem', fontFamily: 'Noto Sans, sans-serif' }}>
+                                <MenuItem onClick={handleChangeWinery}>
+                                    <ListItemIcon>
+                                        <Business fontSize='small' sx={{ ml: '11px' }} />
+                                    </ListItemIcon>
                                     Switch Winery
-                                </Typography>
-                            </Button>
+                                </MenuItem>
+                                <MenuItem onClick={handleLogOut}>
+                                    <ListItemIcon>
+                                        <LogoutRoundedIcon fontSize='small' sx={{ ml: '11px' }} />
+                                    </ListItemIcon>
+                                    <ListItemText>Log out</ListItemText>
+                                </MenuItem>
+                            </Menu>
                         </div>
                     </Stack>
                 </Toolbar>

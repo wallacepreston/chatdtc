@@ -22,16 +22,18 @@ const UserProvider = ({ children }: Props) => {
 
     useEffect(() => {
         const getUserData = async () => {
+            const Authorization = authHeader();
+            if (!Authorization) {
+                return;
+            }
             const res = await axios.get(`${REACT_APP_API_URL}/api/auth/me`, {
                 headers: {
-                    Authorization: authHeader()
+                    Authorization
                 }
             });
-            console.log({ res });
             const selectedWinery = res?.data?.user?.SelectedWinery;
             if (selectedWinery) {
                 // get the list of groups from the response
-                console.log({ selectedWinery });
                 setUser({
                     ...user,
                     selectedWinery

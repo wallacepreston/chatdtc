@@ -1,9 +1,9 @@
-import { useAuthHeader } from 'react-auth-kit';
+import { useAuthHeader, useAuthUser } from 'react-auth-kit';
 import WpModal from './wpModal';
 import { REACT_APP_API_URL } from '../constants/api';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { Button, FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material';
+import { FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material';
 import { useUser } from '../contexts/user';
 import { LoadingButton } from '@mui/lab';
 
@@ -16,7 +16,8 @@ const SelectWineryModal = () => {
     const authHeader = useAuthHeader();
     const { user, setUser } = useUser();
     const { selectedWinery } = user;
-    console.log({ selectedWinery });
+    const auth = useAuthUser();
+    const isAuthenticated = Boolean(auth());
     const [groups, setGroups] = useState<Group[]>([]);
     const [selectedGroup, setSelectedGroup] = useState('');
     const [loading, setLoading] = useState(false);
@@ -36,7 +37,6 @@ const SelectWineryModal = () => {
                 }
             }
         );
-        console.log({ res });
         setUser({
             ...user,
             selectedWinery: res.data.user.SelectedWinery
@@ -50,10 +50,17 @@ const SelectWineryModal = () => {
         if (selectedWinery) {
             return;
         }
+
+        const Authorization = authHeader();
+
+        if (!Authorization) {
+            return;
+        }
+
         const getUserData = async () => {
             const res = await axios.get(`${REACT_APP_API_URL}/api/auth/me`, {
                 headers: {
-                    Authorization: authHeader()
+                    Authorization
                 }
             });
             console.log({ res });
@@ -71,7 +78,7 @@ const SelectWineryModal = () => {
 
     if (!selectedWinery) {
         return (
-            <WpModal title='Please Select a Winery' open={!selectedWinery} onClose={() => {}}>
+            <WpModal title='Please Select a Winery' open={!selectedWinery && isAuthenticated} onClose={() => {}}>
                 <p>You have not selected a winery yet. Please select a winery from the list below.</p>
                 <FormControl fullWidth>
                     <InputLabel id='demo-simple-select-label'>Winery</InputLabel>
