@@ -4,22 +4,23 @@ import { REACT_APP_API_URL } from '../constants/api';
 import axios from 'axios';
 
 interface UserState {
-    SelectedWinery: string | null;
+    Last_Winery_id: string | null;
     Created?: string;
     Email?: string;
     FirstName?: string;
     FullName?: string;
-    Groups?: Array<{ [key: string]: any }>; // Replace with the actual shape of the group objects if known
+    Wineries?: Array<{ [key: string]: any }>; // Replace with the actual shape of the group objects if known
+    LastWinery?: { [key: string]: any };
     LastModified?: string;
     LastName?: string;
     SamAccountName?: string;
     UserPwd?: string;
     UserRole?: string;
-    WineryName?: string;
+    Default_Winery_id?: string;
 }
 
 const UserContext = createContext({
-    user: { SelectedWinery: null } as UserState,
+    user: { Last_Winery_id: null } as UserState,
     setUser: (user: UserState) => {},
     getUser: () => {}
 });
@@ -30,7 +31,7 @@ interface Props {
 
 const UserProvider = ({ children }: Props) => {
     const authHeader = useAuthHeader();
-    const [user, setUser] = useState<UserState>({ SelectedWinery: null });
+    const [user, setUser] = useState<UserState>({ Last_Winery_id: null });
 
     const getUser = async () => {
         const Authorization = authHeader();
@@ -43,6 +44,7 @@ const UserProvider = ({ children }: Props) => {
             }
         });
         const userData = res?.data?.user;
+        console.log({ userData });
         if (userData) {
             // get the list of groups from the response
             setUser(userData);

@@ -78,7 +78,7 @@ const SideBar = () => {
         handleClose();
         setUser({
             ...user,
-            SelectedWinery: null
+            Last_Winery_id: null
         });
     };
 
@@ -105,7 +105,7 @@ const SideBar = () => {
                             />
                         </Link>
                         <Typography variant='h6' sx={{ color: 'black' }}>
-                            {user.SelectedWinery || 'No Winery Selected'}
+                            {user.LastWinery?.Winery_Name || 'No Winery Selected'}
                         </Typography>
                         <Button
                             variant='outlined'

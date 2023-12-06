@@ -12,25 +12,26 @@ import { useNavigate } from 'react-router-dom';
 const SelectWineryModal = () => {
     const authHeader = useAuthHeader();
     const { user, setUser } = useUser();
-    const { SelectedWinery: selectedWinery } = user;
+    const { Last_Winery_id: lastWineryId } = user;
     const auth = useAuthUser();
     const isAuthenticated = Boolean(auth());
-    const [selectedGroup, setSelectedGroup] = useState('');
+    const [chosenWineryId, setChosenWineryId] = useState('');
     const [loading, setLoading] = useState(false);
     const { getChats } = useChats();
     const navigate = useNavigate();
 
-    const groups = user.Groups;
+    const wineries = user.Wineries;
+    console.log({ wineries });
 
     const handleChange = (event: any) => {
-        setSelectedGroup(event.target.value as string);
+        setChosenWineryId(event.target.value as string);
     };
 
     const handleChooseWinery = async () => {
         setLoading(true);
         const res = await axios.post(
             `${REACT_APP_API_URL}/api/auth/winery`,
-            { selectedWinery: selectedGroup },
+            { lastWineryId: chosenWineryId },
             {
                 headers: {
                     Authorization: authHeader()
@@ -42,7 +43,8 @@ const SelectWineryModal = () => {
 
         setUser({
             ...user,
-            SelectedWinery: res.data.user.SelectedWinery
+            LastWinery: res.data.user.LastWinery,
+            Last_Winery_id: res.data.user.Last_Winery_id
         });
         navigate('/');
         setLoading(false);
@@ -51,7 +53,7 @@ const SelectWineryModal = () => {
 
     // get list of wineries using /api/auth/me
     useEffect(() => {
-        if (selectedWinery) {
+        if (lastWineryId) {
             return;
         }
 
@@ -62,12 +64,12 @@ const SelectWineryModal = () => {
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedWinery]);
-    // once selectedWinery is set, close modal
+    }, [lastWineryId]);
+    // once lastWineryId is set, close modal
 
-    if (!selectedWinery) {
+    if (!lastWineryId) {
         return (
-            <WpModal title='Please Select a Winery' open={!selectedWinery && isAuthenticated} onClose={() => {}}>
+            <WpModal title='Please Select a Winery' open={!lastWineryId && isAuthenticated} onClose={() => {}}>
                 <p>Please select a winery about which to have a conversation.</p>
                 <FormControl fullWidth>
                     <InputLabel id='demo-simple-select-label'>Winery</InputLabel>
@@ -76,15 +78,15 @@ const SelectWineryModal = () => {
                             <Select
                                 labelId='demo-simple-select-label'
                                 id='demo-simple-select'
-                                value={selectedGroup}
+                                value={chosenWineryId}
                                 label='Winery'
                                 onChange={handleChange}
                                 sx={{
                                     width: '100%'
                                 }}
                             >
-                                {groups?.map(group => {
-                                    return <MenuItem value={group.WineryName}>{group.WineryName}</MenuItem>;
+                                {wineries?.map(group => {
+                                    return <MenuItem value={group.Winery_id}>{group.Winery_Name}</MenuItem>;
                                 })}
                             </Select>
                         </Grid>
@@ -98,7 +100,7 @@ const SelectWineryModal = () => {
                             }}
                         >
                             <LoadingButton
-                                disabled={!selectedGroup}
+                                disabled={!chosenWineryId}
                                 loading={loading}
                                 variant='contained'
                                 color='primary'
