@@ -3,6 +3,7 @@ import SideBar from '../components/sideBar';
 import Footer from '../components/footer';
 import Center from '../components/center';
 import Topper from '../components/topper';
+import { CHAT_DTC_TITLE } from '../constants/api';
 
 const MainPage = () => {
     const [footerHeight, setFooterHeight] = useState<number>(0);
@@ -10,7 +11,7 @@ const MainPage = () => {
     const [width, setWidth] = useState<number>(window.innerWidth);
 
     useEffect(() => {
-        document.title = 'New chat';
+        document.title = `New chat | ${CHAT_DTC_TITLE}`;
     }, []);
 
     const handleHeightChange = (height: number) => {

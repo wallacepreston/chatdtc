@@ -7,7 +7,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOffOutlined';
 import axios from 'axios';
 import { useSignIn } from 'react-auth-kit';
 import { useNavigate } from 'react-router-dom';
-import { REACT_APP_API_URL } from '../constants/api';
+import { CHAT_DTC_TITLE, REACT_APP_API_URL } from '../constants/api';
 import { useUser } from '../contexts/user';
 
 const LoginPage = () => {
@@ -25,7 +25,7 @@ const LoginPage = () => {
     const [unknownError, setUnknownError] = useState(false);
 
     useEffect(() => {
-        document.title = 'Log in to WinePulseAI';
+        document.title = `Log in to ${CHAT_DTC_TITLE}`;
     }, []);
 
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
