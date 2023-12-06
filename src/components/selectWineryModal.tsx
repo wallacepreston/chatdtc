@@ -6,10 +6,12 @@ import { useEffect, useState } from 'react';
 import { FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material';
 import { useUser } from '../contexts/user';
 import { LoadingButton } from '@mui/lab';
+import { useChats } from '../contexts/chat';
+import { useNavigate } from 'react-router-dom';
 
 interface Group {
     SamAccountName: string;
-    SamGroupName: string;
+    WineryName: string;
 }
 
 const SelectWineryModal = () => {
@@ -21,6 +23,8 @@ const SelectWineryModal = () => {
     const [groups, setGroups] = useState<Group[]>([]);
     const [selectedGroup, setSelectedGroup] = useState('');
     const [loading, setLoading] = useState(false);
+    const { getChats } = useChats();
+    const navigate = useNavigate();
 
     const handleChange = (event: any) => {
         setSelectedGroup(event.target.value as string);
@@ -37,10 +41,14 @@ const SelectWineryModal = () => {
                 }
             }
         );
+        // assuming all went well, get the chats again
+        await getChats();
+
         setUser({
             ...user,
             selectedWinery: res.data.user.SelectedWinery
         });
+        navigate('/');
         setLoading(false);
         // update winery context to include new winery
     };
@@ -63,11 +71,9 @@ const SelectWineryModal = () => {
                     Authorization
                 }
             });
-            console.log({ res });
             const groups = res?.data?.user?.Groups;
             if (groups) {
                 // get the list of groups from the response
-                console.log({ groups });
                 setGroups(groups);
             }
         };
@@ -95,7 +101,7 @@ const SelectWineryModal = () => {
                                 }}
                             >
                                 {groups.map(group => {
-                                    return <MenuItem value={group.SamGroupName}>{group.SamGroupName}</MenuItem>;
+                                    return <MenuItem value={group.WineryName}>{group.WineryName}</MenuItem>;
                                 })}
                             </Select>
                         </Grid>

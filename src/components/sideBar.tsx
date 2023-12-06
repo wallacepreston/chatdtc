@@ -11,6 +11,7 @@ import { useStatus } from '../contexts/status';
 import { REACT_APP_API_URL } from '../constants/api';
 import { useUser } from '../contexts/user';
 import { AccountCircle, Business } from '@mui/icons-material';
+import { useChats } from '../contexts/chat';
 
 const socket = io(REACT_APP_API_URL as string);
 
@@ -21,6 +22,7 @@ const SideBar = (props: { activeChat?: string }) => {
     const signOut = useSignOut();
     const { setStatus } = useStatus();
     const { user, setUser } = useUser();
+    const { chats, getChats } = useChats();
 
     const authData = auth()!;
 
@@ -36,19 +38,6 @@ const SideBar = (props: { activeChat?: string }) => {
     console.log({
         authData
     });
-
-    const [chats, setChats] = useState<any[]>([]);
-
-    const getChats = async () => {
-        try {
-            const res = await axios.get(`${REACT_APP_API_URL}/api/chat/getChats`, {
-                headers: { Authorization: authHeader() }
-            });
-            setChats(res.data);
-        } catch (err) {
-            console.log(err);
-        }
-    };
 
     useEffect(() => {
         socket.on('updatedChats', () => {
@@ -159,7 +148,7 @@ const SideBar = (props: { activeChat?: string }) => {
                                             style={{ width: '244px', height: '40px', marginBottom: '5px' }}
                                         >
                                             <Button
-                                                key={chat._id}
+                                                key={chat.id}
                                                 variant='text'
                                                 color='info'
                                                 sx={{

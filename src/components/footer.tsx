@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { useThinking } from '../contexts/thinking';
 import { REACT_APP_API_URL } from '../constants/api';
-console.log({ REACT_APP_API_URL });
 
 const socket = io(REACT_APP_API_URL as string);
 
