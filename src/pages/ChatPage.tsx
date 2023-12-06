@@ -63,6 +63,7 @@ const DownIcon = ArrowDownwardRoundedIcon;
 
 const ChatPage = () => {
     const { id } = useParams<{ id: string }>();
+    console.log({ id });
     const authHeader = useAuthHeader();
     const navigate = useNavigate();
 
@@ -111,7 +112,7 @@ const ChatPage = () => {
     // at the beginning, get all messages
     useEffect(() => {
         getMessages();
-    }, []);
+    }, [id]);
 
     const getTitle = async () => {
         const res = await axios.get(`${REACT_APP_API_URL}/api/chat/getChatTitleByID/${id}`, {

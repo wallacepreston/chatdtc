@@ -5,7 +5,7 @@ import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineR
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import axios from 'axios';
 import { useAuthHeader, useAuthUser, useSignOut } from 'react-auth-kit';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import io from 'socket.io-client';
 import { useStatus } from '../contexts/status';
 import { REACT_APP_API_URL } from '../constants/api';
@@ -23,6 +23,7 @@ const SideBar = (props: { activeChat?: string }) => {
     const { setStatus } = useStatus();
     const { user, setUser } = useUser();
     const { chats, getChats } = useChats();
+    const { id: activeChatId } = useParams();
 
     const authData = auth()!;
 
@@ -102,11 +103,13 @@ const SideBar = (props: { activeChat?: string }) => {
                         spacing={2}
                         sx={{ width: '100%', height: '100%' }}
                     >
-                        <img
-                            src='/assets/logowinepulse.png'
-                            alt='logo'
-                            style={{ width: '70px', height: '70px', marginTop: '20px' }}
-                        />
+                        <Link to='/'>
+                            <img
+                                src='/assets/logowinepulse.png'
+                                alt='logo'
+                                style={{ width: '70px', height: '70px', marginTop: '20px' }}
+                            />
+                        </Link>
                         <Typography variant='h6' sx={{ color: 'black' }}>
                             {user.selectedWinery || 'No Winery Selected'}
                         </Typography>
@@ -147,35 +150,40 @@ const SideBar = (props: { activeChat?: string }) => {
                                             id='chatBtn'
                                             style={{ width: '244px', height: '40px', marginBottom: '5px' }}
                                         >
-                                            <Button
-                                                key={chat.id}
-                                                variant='text'
-                                                color='info'
-                                                sx={{
-                                                    textTransform: 'none',
-                                                    height: '40px',
-                                                    width: '244px',
-                                                    borderRadius: '5px',
-                                                    justifyContent: 'left',
-                                                    bgcolor: title === props.activeChat ? '#bcbcbc' : '#cfcfcf',
-                                                    textOverflow: 'ellipsis',
-                                                    overflow: 'hidden',
-                                                    whiteSpace: 'nowrap',
-                                                    '&:hover': {
-                                                        bgcolor: title === props.activeChat ? '#bcbcbc' : '#c6c6c6'
+                                            <Link to={`/c/${chat.id}`}>
+                                                <Button
+                                                    key={chat.id}
+                                                    variant='text'
+                                                    color='info'
+                                                    sx={{
+                                                        textTransform: 'none',
+                                                        height: '40px',
+                                                        width: '244px',
+                                                        borderRadius: '5px',
+                                                        justifyContent: 'left',
+                                                        // TODO - instead, check if the url matches
+                                                        bgcolor: chat.id === activeChatId ? '#bcbcbc' : '#cfcfcf',
+                                                        textOverflow: 'ellipsis',
+                                                        overflow: 'hidden',
+                                                        whiteSpace: 'nowrap',
+                                                        '&:hover': {
+                                                            bgcolor: chat.id === activeChatId ? '#bcbcbc' : '#c6c6c6'
+                                                        }
+                                                    }}
+                                                    startIcon={
+                                                        <ChatBubbleOutlineRoundedIcon
+                                                            fontSize='small'
+                                                            sx={{ ml: '7px' }}
+                                                        />
                                                     }
-                                                }}
-                                                startIcon={
-                                                    <ChatBubbleOutlineRoundedIcon fontSize='small' sx={{ ml: '7px' }} />
-                                                }
-                                                href={`/c/${chat.id}`}
-                                            >
-                                                <Typography
-                                                    sx={{ fontSize: '0.8rem', fontFamily: 'Noto Sans, sans-serif' }}
                                                 >
-                                                    {title}
-                                                </Typography>
-                                            </Button>
+                                                    <Typography
+                                                        sx={{ fontSize: '0.8rem', fontFamily: 'Noto Sans, sans-serif' }}
+                                                    >
+                                                        {title}
+                                                    </Typography>
+                                                </Button>
+                                            </Link>
                                             <div
                                                 style={{
                                                     width: '70px',
@@ -186,9 +194,7 @@ const SideBar = (props: { activeChat?: string }) => {
                                                     borderTopRightRadius: '5px',
                                                     borderBottomRightRadius: '5px',
                                                     background: `linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, ${
-                                                        title === props.activeChat
-                                                            ? '#bcbcbc'
-                                                            : 'rgba(207, 207, 207, 1)'
+                                                        chat.id === activeChatId ? '#bcbcbc' : 'rgba(207, 207, 207, 1)'
                                                     } 100%)`,
                                                     pointerEvents: 'none'
                                                 }}
