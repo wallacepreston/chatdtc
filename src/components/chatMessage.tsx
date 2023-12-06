@@ -8,6 +8,7 @@ import axios from 'axios';
 import { useStatus } from '../contexts/status';
 import { LinkButton } from './styled';
 import wpTheme from '../wpTheme';
+import ReactMarkdown from 'react-markdown';
 
 export interface Message {
     role: 'user' | 'assistant';
@@ -128,7 +129,7 @@ const ChatMessage = (props: ChatMessageProps) => {
                                     maxWidth: '100%'
                                 }}
                             >
-                                {part}
+                                <ReactMarkdown>{part}</ReactMarkdown>
                             </Typography>
                         );
                     } else if (i % 3 === 1) {
