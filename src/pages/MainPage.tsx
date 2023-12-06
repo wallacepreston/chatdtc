@@ -59,7 +59,12 @@ const MainPage = () => {
             >
                 {width < 1000 && <Topper chatTitle='New chat' />}
                 <Center setInput={setInput} footerHeight={footerHeight} />
-                <Footer setHeight={handleHeightChange} newInput={newInput} openModal={() => {}} />
+                <Footer
+                    setHeight={handleHeightChange}
+                    newInput={newInput}
+                    openModal={() => {}}
+                    isOverMaxMessages={false}
+                />
             </div>
         </div>
     );

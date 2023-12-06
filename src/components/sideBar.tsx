@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { AppBar, Toolbar, Button, Stack, Typography, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import axios from 'axios';
-import { useAuthHeader, useAuthUser, useSignOut } from 'react-auth-kit';
+import { useAuthUser, useSignOut } from 'react-auth-kit';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import io from 'socket.io-client';
 import { useStatus } from '../contexts/status';
@@ -15,9 +14,8 @@ import { useChats } from '../contexts/chat';
 
 const socket = io(REACT_APP_API_URL as string);
 
-const SideBar = (props: { activeChat?: string }) => {
+const SideBar = () => {
     const auth = useAuthUser();
-    const authHeader = useAuthHeader();
     const navigate = useNavigate();
     const signOut = useSignOut();
     const { setStatus } = useStatus();

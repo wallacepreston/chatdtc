@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, TextField, IconButton, Stack } from '@mui/material';
+import { Typography, TextField, IconButton, Stack, Tooltip } from '@mui/material';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import axios from 'axios';
 import { useAuthHeader } from 'react-auth-kit';
@@ -10,7 +10,12 @@ import { REACT_APP_API_URL } from '../constants/api';
 
 const socket = io(REACT_APP_API_URL as string);
 
-const Footer = (props: { setHeight: (height: number) => void; newInput: string; openModal: () => void }) => {
+const Footer = (props: {
+    setHeight: (height: number) => void;
+    newInput: string;
+    openModal: () => void;
+    isOverMaxMessages: boolean;
+}) => {
     const authHeader = useAuthHeader();
     const navigate = useNavigate();
 
@@ -154,6 +159,79 @@ const Footer = (props: { setHeight: (height: number) => void; newInput: string; 
         }
     };
 
+    const renderTextField = () => {
+        const textField = (
+            <TextField
+                id='input'
+                autoFocus
+                disabled={props.isOverMaxMessages}
+                placeholder='Send a message...'
+                variant='outlined'
+                value={input}
+                onChange={handleInputChange}
+                onKeyDown={handleEnter}
+                onPaste={handlePaste}
+                sx={{
+                    maxWidth: '768px',
+                    width: '90%',
+                    position: 'relative',
+                    backgroundColor: '#d9d9d9',
+                    borderRadius: '5px',
+                    color: 'black',
+                    minHeight: '46px',
+                    fontFamily: 'Noto Sans, sans-serif',
+                    mb: '10px',
+                    mt: '10px',
+                    boxShadow: '0px 0px 1px 1px #343541',
+                    '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
+                        borderWidth: 'inherit'
+                    },
+                    '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        borderWidth: 'inherit'
+                    },
+                    '& .MuiInputBase-input': {
+                        fontSize: '16px',
+                        lineHeight: '1',
+                        width: 'calc(100% - 40px)'
+                    }
+                }}
+                InputProps={{
+                    style: {
+                        color: 'black'
+                    },
+                    endAdornment: (
+                        <IconButton
+                            type='submit'
+                            disabled={props.isOverMaxMessages}
+                            sx={{
+                                color: '#5A5B6B',
+                                position: 'absolute',
+                                bottom: '9px',
+                                right: '15px',
+                                width: '30px',
+                                height: '30px',
+                                borderRadius: '10px',
+                                '&:hover': { backgroundColor: '#cfcfcf' }
+                            }}
+                        >
+                            <SendOutlinedIcon fontSize='small' />
+                        </IconButton>
+                    )
+                }}
+                multiline
+                maxRows={8}
+            />
+        );
+
+        if (props.isOverMaxMessages) {
+            return (
+                <Tooltip title='You have reached the maximum number of messages for this chat.'>{textField}</Tooltip>
+            );
+        } else {
+            return textField;
+        }
+    };
+
     return (
         <div
             id='Footer'
@@ -181,64 +259,7 @@ const Footer = (props: { setHeight: (height: number) => void; newInput: string; 
                             gap: '10px'
                         }}
                     >
-                        <TextField
-                            id='input'
-                            autoFocus
-                            placeholder='Send a message...'
-                            variant='outlined'
-                            value={input}
-                            onChange={handleInputChange}
-                            onKeyDown={handleEnter}
-                            onPaste={handlePaste}
-                            sx={{
-                                maxWidth: '768px',
-                                width: '90%',
-                                position: 'relative',
-                                backgroundColor: '#d9d9d9',
-                                borderRadius: '5px',
-                                color: 'black',
-                                minHeight: '46px',
-                                fontFamily: 'Noto Sans, sans-serif',
-                                mb: '10px',
-                                mt: '10px',
-                                boxShadow: '0px 0px 1px 1px #343541',
-                                '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-                                    borderWidth: 'inherit'
-                                },
-                                '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                    borderWidth: 'inherit'
-                                },
-                                '& .MuiInputBase-input': {
-                                    fontSize: '16px',
-                                    lineHeight: '1',
-                                    width: 'calc(100% - 40px)'
-                                }
-                            }}
-                            InputProps={{
-                                style: {
-                                    color: 'black'
-                                },
-                                endAdornment: (
-                                    <IconButton
-                                        type='submit'
-                                        sx={{
-                                            color: '#5A5B6B',
-                                            position: 'absolute',
-                                            bottom: '9px',
-                                            right: '15px',
-                                            width: '30px',
-                                            height: '30px',
-                                            borderRadius: '10px',
-                                            '&:hover': { backgroundColor: '#cfcfcf' }
-                                        }}
-                                    >
-                                        <SendOutlinedIcon fontSize='small' />
-                                    </IconButton>
-                                )
-                            }}
-                            multiline
-                            maxRows={8}
-                        />
+                        {renderTextField()}
                     </div>
                     <Typography
                         variant='body2'

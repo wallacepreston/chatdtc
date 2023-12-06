@@ -33,7 +33,7 @@ import c from 'highlight.js/lib/languages/c';
 import 'highlight.js/styles/atom-one-dark.css';
 import { useThinking } from '../contexts/thinking';
 import ChatMessage from '../components/chatMessage';
-import { REACT_APP_API_URL } from '../constants/api';
+import { MAX_USER_MESSAGES, REACT_APP_API_URL } from '../constants/api';
 
 import type { Message as ChatMessageProps } from '../components/chatMessage';
 
@@ -77,6 +77,9 @@ const ChatPage = () => {
     const [title, setTitle] = useState<string>('');
     const [scrolledToBottom, setScrolledToBottom] = useState<boolean>(true);
     const { thinking, setThinking } = useThinking();
+    const userMessages = messages.filter(message => message.role === 'user');
+    const messageCount = userMessages.length;
+    const isOverMaxMessages = messageCount >= MAX_USER_MESSAGES;
 
     useEffect(() => {
         const updateWidth = () => {
@@ -246,7 +249,7 @@ const ChatPage = () => {
     return (
         <div id='ChatPage' style={{ width: '100%', height: '100vh', display: 'flex', justifyContent: 'center' }}>
             <div id='side' style={{ width: handleWidthSide(), height: '100%' }}>
-                {width > 1000 && <SideBar activeChat={title} />}
+                {width > 1000 && <SideBar />}
             </div>
             {width < 1000 && <Topper chatTitle={title} />}
             <div
@@ -297,7 +300,12 @@ const ChatPage = () => {
                     )}
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Footer setHeight={handleHeightChange} newInput='' openModal={() => {}} />
+                    <Footer
+                        setHeight={handleHeightChange}
+                        newInput=''
+                        openModal={() => {}}
+                        isOverMaxMessages={isOverMaxMessages}
+                    />
                 </div>
             </div>
         </div>
