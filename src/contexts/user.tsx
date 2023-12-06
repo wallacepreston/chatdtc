@@ -4,12 +4,24 @@ import { REACT_APP_API_URL } from '../constants/api';
 import axios from 'axios';
 
 interface UserState {
-    selectedWinery: string | null;
+    SelectedWinery: string | null;
+    Created?: string;
+    Email?: string;
+    FirstName?: string;
+    FullName?: string;
+    Groups?: Array<{ [key: string]: any }>; // Replace with the actual shape of the group objects if known
+    LastModified?: string;
+    LastName?: string;
+    SamAccountName?: string;
+    UserPwd?: string;
+    UserRole?: string;
+    WineryName?: string;
 }
 
 const UserContext = createContext({
-    user: { selectedWinery: null } as UserState,
-    setUser: (user: UserState) => {}
+    user: { SelectedWinery: null } as UserState,
+    setUser: (user: UserState) => {},
+    getUser: () => {}
 });
 
 interface Props {
@@ -18,33 +30,31 @@ interface Props {
 
 const UserProvider = ({ children }: Props) => {
     const authHeader = useAuthHeader();
-    const [user, setUser] = useState<UserState>({ selectedWinery: null });
+    const [user, setUser] = useState<UserState>({ SelectedWinery: null });
+
+    const getUser = async () => {
+        const Authorization = authHeader();
+        if (!Authorization) {
+            return;
+        }
+        const res = await axios.get(`${REACT_APP_API_URL}/api/auth/me`, {
+            headers: {
+                Authorization
+            }
+        });
+        const userData = res?.data?.user;
+        if (userData) {
+            // get the list of groups from the response
+            setUser(userData);
+        }
+    };
 
     useEffect(() => {
-        const getUserData = async () => {
-            const Authorization = authHeader();
-            if (!Authorization) {
-                return;
-            }
-            const res = await axios.get(`${REACT_APP_API_URL}/api/auth/me`, {
-                headers: {
-                    Authorization
-                }
-            });
-            const selectedWinery = res?.data?.user?.SelectedWinery;
-            if (selectedWinery) {
-                // get the list of groups from the response
-                setUser({
-                    ...user,
-                    selectedWinery
-                });
-            }
-        };
-        getUserData();
+        getUser();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>;
+    return <UserContext.Provider value={{ user, setUser, getUser }}>{children}</UserContext.Provider>;
 };
 
 const useUser = () => {

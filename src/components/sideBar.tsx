@@ -80,7 +80,7 @@ const SideBar = (props: { activeChat?: string }) => {
         handleClose();
         setUser({
             ...user,
-            selectedWinery: null
+            SelectedWinery: null
         });
     };
 
@@ -107,7 +107,7 @@ const SideBar = (props: { activeChat?: string }) => {
                             />
                         </Link>
                         <Typography variant='h6' sx={{ color: 'black' }}>
-                            {user.selectedWinery || 'No Winery Selected'}
+                            {user.SelectedWinery || 'No Winery Selected'}
                         </Typography>
                         <Button
                             variant='outlined'

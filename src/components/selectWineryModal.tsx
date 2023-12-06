@@ -9,22 +9,18 @@ import { LoadingButton } from '@mui/lab';
 import { useChats } from '../contexts/chat';
 import { useNavigate } from 'react-router-dom';
 
-interface Group {
-    SamAccountName: string;
-    WineryName: string;
-}
-
 const SelectWineryModal = () => {
     const authHeader = useAuthHeader();
     const { user, setUser } = useUser();
-    const { selectedWinery } = user;
+    const { SelectedWinery: selectedWinery } = user;
     const auth = useAuthUser();
     const isAuthenticated = Boolean(auth());
-    const [groups, setGroups] = useState<Group[]>([]);
     const [selectedGroup, setSelectedGroup] = useState('');
     const [loading, setLoading] = useState(false);
     const { getChats } = useChats();
     const navigate = useNavigate();
+
+    const groups = user.Groups;
 
     const handleChange = (event: any) => {
         setSelectedGroup(event.target.value as string);
@@ -46,7 +42,7 @@ const SelectWineryModal = () => {
 
         setUser({
             ...user,
-            selectedWinery: res.data.user.SelectedWinery
+            SelectedWinery: res.data.user.SelectedWinery
         });
         navigate('/');
         setLoading(false);
@@ -65,19 +61,6 @@ const SelectWineryModal = () => {
             return;
         }
 
-        const getUserData = async () => {
-            const res = await axios.get(`${REACT_APP_API_URL}/api/auth/me`, {
-                headers: {
-                    Authorization
-                }
-            });
-            const groups = res?.data?.user?.Groups;
-            if (groups) {
-                // get the list of groups from the response
-                setGroups(groups);
-            }
-        };
-        getUserData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedWinery]);
     // once selectedWinery is set, close modal
@@ -85,7 +68,7 @@ const SelectWineryModal = () => {
     if (!selectedWinery) {
         return (
             <WpModal title='Please Select a Winery' open={!selectedWinery && isAuthenticated} onClose={() => {}}>
-                <p>You have not selected a winery yet. Please select a winery from the list below.</p>
+                <p>Please select a winery about which to have a conversation.</p>
                 <FormControl fullWidth>
                     <InputLabel id='demo-simple-select-label'>Winery</InputLabel>
                     <Grid container direction='column' alignItems='left' spacing={2}>
@@ -100,7 +83,7 @@ const SelectWineryModal = () => {
                                     width: '100%'
                                 }}
                             >
-                                {groups.map(group => {
+                                {groups?.map(group => {
                                     return <MenuItem value={group.WineryName}>{group.WineryName}</MenuItem>;
                                 })}
                             </Select>

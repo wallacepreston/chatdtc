@@ -55,7 +55,7 @@ const LoginPage = () => {
             ) {
                 // TODO - update other user data? (not necessary since also in auth state and would be duplicating data)
                 setUser({
-                    selectedWinery: res.data.selectedWinery
+                    SelectedWinery: res.data.selectedWinery
                 });
                 navigate('/');
             } else {
