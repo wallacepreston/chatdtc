@@ -36,10 +36,6 @@ const SideBar = (props: { activeChat?: string }) => {
         setAnchorEl(null);
     };
 
-    console.log({
-        authData
-    });
-
     useEffect(() => {
         socket.on('updatedChats', () => {
             getChats();

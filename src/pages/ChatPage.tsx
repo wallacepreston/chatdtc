@@ -63,7 +63,6 @@ const DownIcon = ArrowDownwardRoundedIcon;
 
 const ChatPage = () => {
     const { id } = useParams<{ id: string }>();
-    console.log({ id });
     const authHeader = useAuthHeader();
     const navigate = useNavigate();
 

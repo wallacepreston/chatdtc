@@ -25,7 +25,6 @@ const SelectWineryModal = () => {
     const [loading, setLoading] = useState(false);
     const { getChats } = useChats();
     const navigate = useNavigate();
-    console.log({ selectedWinery });
 
     const handleChange = (event: any) => {
         setSelectedGroup(event.target.value as string);
