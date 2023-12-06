@@ -48,15 +48,12 @@ const LoginPage = () => {
                     expiresIn: 28800,
                     tokenType: 'Bearer',
                     authState: {
-                        email: res.data.email,
-                        username: res.data.samAccountName
+                        email: res.data.user.Email,
+                        username: res.data.user.SamAccountName
                     }
                 })
             ) {
-                // TODO - update other user data? (not necessary since also in auth state and would be duplicating data)
-                setUser({
-                    SelectedWinery: res.data.selectedWinery
-                });
+                setUser(res?.data?.user);
                 navigate('/');
             } else {
                 console.log('Login failed');
