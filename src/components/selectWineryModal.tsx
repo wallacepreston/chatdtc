@@ -21,7 +21,6 @@ const SelectWineryModal = () => {
     const navigate = useNavigate();
 
     const wineries = user.Wineries;
-    console.log({ wineries });
 
     const handleChange = (event: any) => {
         setChosenWineryId(event.target.value as string);

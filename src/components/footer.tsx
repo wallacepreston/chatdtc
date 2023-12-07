@@ -37,7 +37,7 @@ const Footer = (props: {
 
     useEffect(() => {
         if (props.newInput !== '') {
-            const value = props.newInput.slice(0, props.newInput.length - 1);
+            const value = props.newInput;
             setInput(value);
         }
     }, [props]);

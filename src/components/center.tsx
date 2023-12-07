@@ -1,18 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Stack, Typography, IconButton } from '@mui/material';
 import ArrowDownwardRoundedIcon from '@mui/icons-material/ArrowDownwardRounded';
-import WbSunnyOutlinedIcon from '@mui/icons-material/WbSunnyOutlined';
-import ElectricBoltOutlinedIcon from '@mui/icons-material/ElectricBoltOutlined';
-import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
 import PresentationButton from './presentationButton';
+import useApi from '../hooks/api';
+import { Suggestion, getCategories } from '../util/helpers';
 
-const SunIcon = WbSunnyOutlinedIcon;
-const BoltIcon = ElectricBoltOutlinedIcon;
-const WarningIcon = WarningAmberRoundedIcon;
 const DownIcon = ArrowDownwardRoundedIcon;
 const Button = PresentationButton;
 
 const Center = (props: { footerHeight: number; setInput: (input: string) => void }) => {
+    const { data: suggestedThreads, callApi } = useApi();
     const scrollDiv = useRef<HTMLDivElement>(null);
 
     const [width, setWidth] = useState<number>(window.innerWidth);
@@ -33,6 +30,13 @@ const Center = (props: { footerHeight: number; setInput: (input: string) => void
             setScrolledToBottom(bottom);
         }
     };
+
+    useEffect(() => {
+        callApi({ url: '/api/chat/suggested', method: 'get' });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const suggestionCategories = getCategories(suggestedThreads || []);
 
     useEffect(() => {
         if (width < 1000) {
@@ -104,6 +108,40 @@ const Center = (props: { footerHeight: number; setInput: (input: string) => void
         }
     };
 
+    const renderColumn = (category: string) => {
+        if (!suggestedThreads) return null;
+        const threads = (suggestedThreads as Suggestion[]).filter((thread: Suggestion) => thread.Category === category);
+
+        return (
+            <div id='examples' style={{ width: width > 1000 ? 'calc(100% / 3)' : 'auto' }}>
+                {/* {width > 1000 && <TipsAndUpdates sx={{ color: 'black' }} />} */}
+                <Typography
+                    variant='h6'
+                    sx={{
+                        textAlign: 'center',
+                        color: 'black',
+                        fontFamily: 'Noto Sans, sans-serif',
+                        fontSize: '1rem',
+                        mt: '0.5rem',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}
+                >
+                    {/* {width < 1000 && <TipsAndUpdates fontSize='small' sx={{ color: 'black', mr: '5px' }} />} */}{' '}
+                    {category}
+                </Typography>
+                {threads.map(thread => (
+                    <Button
+                        handleClick={() => handlePresentationButtonClick(thread.Message_Content)}
+                        clickable
+                        content={thread.Summary}
+                    />
+                ))}
+            </div>
+        );
+    };
+
     return (
         <div
             id='Center'
@@ -142,6 +180,21 @@ const Center = (props: { footerHeight: number; setInput: (input: string) => void
                 >
                     ChatDTC by WinePulse
                 </Typography>
+                <Typography
+                    variant='h5'
+                    sx={{
+                        textAlign: 'center',
+                        color: 'black',
+                        fontFamily: 'Noto Sans, sans-serif',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        paddingBottom: '1rem'
+                    }}
+                >
+                    Sample Questions:
+                </Typography>
+
                 <div id='presentation'>
                     <Stack
                         direction={handleDirection()}
@@ -150,104 +203,7 @@ const Center = (props: { footerHeight: number; setInput: (input: string) => void
                         spacing={2}
                         width={handleWidth()}
                     >
-                        <div id='examples' style={{ width: width > 1000 ? 'calc(100% / 3)' : 'auto' }}>
-                            {width > 1000 && <SunIcon sx={{ color: 'black' }} />}
-                            <Typography
-                                variant='h6'
-                                sx={{
-                                    textAlign: 'center',
-                                    color: 'black',
-                                    fontFamily: 'Noto Sans, sans-serif',
-                                    fontSize: '1rem',
-                                    mt: '0.5rem',
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center'
-                                }}
-                            >
-                                {width < 1000 && <SunIcon fontSize='small' sx={{ color: 'black', mr: '5px' }} />}{' '}
-                                Examples
-                            </Typography>
-                            <Button
-                                handleClick={handlePresentationButtonClick}
-                                clickable
-                                content='Which states have the most customers?'
-                            />
-                            <Button
-                                handleClick={handlePresentationButtonClick}
-                                clickable
-                                content='Give me a list of my customers within 25 miles.'
-                            />
-                            <Button
-                                handleClick={handlePresentationButtonClick}
-                                clickable
-                                content='How many unique customers do I have, (unique by first and last name)?'
-                            />
-                        </div>
-                        <div id='capabilities' style={{ width: width > 1000 ? 'calc(100% / 3)' : 'auto' }}>
-                            {width > 1000 && <BoltIcon sx={{ color: 'black' }} />}
-                            <Typography
-                                variant='h6'
-                                sx={{
-                                    textAlign: 'center',
-                                    color: 'black',
-                                    fontFamily: 'Noto Sans, sans-serif',
-                                    fontSize: '1rem',
-                                    mt: '0.5rem',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
-                                }}
-                            >
-                                {width < 1000 && <BoltIcon fontSize='small' sx={{ color: 'black', mr: '5px' }} />}{' '}
-                                Capabilities
-                            </Typography>
-                            <Button
-                                handleClick={handlePresentationButtonClick}
-                                content='Remembers what user said earlier in the conversation'
-                            />
-                            <Button
-                                handleClick={handlePresentationButtonClick}
-                                content='Allows user to provide follow-up corrections'
-                            />
-                            <Button
-                                handleClick={handlePresentationButtonClick}
-                                content='Trained to decline inappropriate requests 😑'
-                            />
-                        </div>
-                        <div
-                            id='limitations'
-                            style={{ width: width > 1000 ? 'calc(100% / 3)' : 'auto', marginBottom: '1rem' }}
-                        >
-                            {width > 1000 && <WarningIcon sx={{ color: 'black' }} />}
-                            <Typography
-                                variant='h6'
-                                sx={{
-                                    textAlign: 'center',
-                                    color: 'black',
-                                    fontFamily: 'Noto Sans, sans-serif',
-                                    fontSize: '1rem',
-                                    mt: '0.5rem',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
-                                }}
-                            >
-                                {width < 1000 && <WarningIcon sx={{ color: 'black', mr: '5px' }} />} Limitations
-                            </Typography>
-                            <Button
-                                handleClick={handlePresentationButtonClick}
-                                content='May occasionally generate incorrect information ⚠️'
-                            />
-                            <Button
-                                handleClick={handlePresentationButtonClick}
-                                content='May occasionally produce harmful 💥 instructions or biased content '
-                            />
-                            <Button
-                                handleClick={handlePresentationButtonClick}
-                                content='Limited knowledge of world and events after 2021'
-                            />
-                        </div>
+                        {suggestionCategories.map(category => renderColumn(category))}
                     </Stack>
                 </div>
             </Stack>

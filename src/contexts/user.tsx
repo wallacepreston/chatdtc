@@ -44,7 +44,6 @@ const UserProvider = ({ children }: Props) => {
             }
         });
         const userData = res?.data?.user;
-        console.log({ userData });
         if (userData) {
             // get the list of groups from the response
             setUser(userData);
