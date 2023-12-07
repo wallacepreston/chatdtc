@@ -109,10 +109,15 @@ const ChatPage = () => {
     }, [footerHeight, width]);
 
     const getMessages = async () => {
+        // on page reload, we don't have our user data on first render, so don't even try to get messages yet
+        if (!lastWineryId) {
+            return;
+        }
+
         const foundThread = await callApi({ url: `/api/chat/${id}`, method: 'get' });
 
         // if the user doesn't have access to this thread
-        if (!foundThread || foundThread.Winery_id !== lastWineryId) {
+        if (!foundThread || (lastWineryId && foundThread.Winery_id !== lastWineryId)) {
             navigate('/');
         }
 
@@ -126,7 +131,7 @@ const ChatPage = () => {
     // at the beginning, get all messages
     useEffect(() => {
         getMessages();
-    }, [id]);
+    }, [id, lastWineryId]);
 
     const getTitle = async () => {
         const res = await axios.get(`${REACT_APP_API_URL}/api/chat/getChatTitleByID/${id}`, {
