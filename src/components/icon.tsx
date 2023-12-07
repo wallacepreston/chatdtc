@@ -41,9 +41,9 @@ const Icon = (props: { role: 'user' | 'assistant' | 'empty' }) => {
 
     const handleBackground = () => {
         if (props.role === 'user') {
-            return '#3f51b5';
+            return '#cfcfcf';
         } else if (props.role === 'assistant') {
-            return '#10A37F';
+            return '#E4EDF6';
         } else {
             return 'transparent';
         }
@@ -57,7 +57,9 @@ const Icon = (props: { role: 'user' | 'assistant' | 'empty' }) => {
                     borderRadius: '50%',
                     width: '40px',
                     height: '40px',
-                    fontSize: '1rem'
+                    fontSize: '1rem',
+                    color: 'black',
+                    fontWeight: 'bold'
                 }}
                 src={handleSrc()}
             >

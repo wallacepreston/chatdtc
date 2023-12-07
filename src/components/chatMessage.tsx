@@ -179,7 +179,9 @@ const ChatMessage = (props: ChatMessageProps) => {
                         <Icon role={showIcon ? role : 'empty'} />
                     </Grid>
                     <Grid item>
-                        <Typography variant='h6'>{role === 'user' ? 'You' : 'ChatDTC'}</Typography>
+                        <Typography variant='h6' fontWeight={'bold'}>
+                            {role === 'user' ? 'You' : 'ChatDTC'}
+                        </Typography>
                     </Grid>
                 </Grid>
             )}
@@ -194,7 +196,7 @@ const ChatMessage = (props: ChatMessageProps) => {
                 <Grid item xs={11}>
                     <div
                         style={{
-                            backgroundColor: role === 'user' ? '#e4edf6' : '#cfcfcf',
+                            backgroundColor: role === 'assistant' ? '#e4edf6' : '#cfcfcf',
                             borderRadius: '10px',
                             marginBottom: '15px',
                             marginTop: '15px',
