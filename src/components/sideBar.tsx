@@ -107,6 +107,11 @@ const SideBar = () => {
                         <Typography variant='h6' sx={{ color: 'black' }}>
                             {user.LastWinery?.Winery_Name || 'No Winery Selected'}
                         </Typography>
+                        {user.LastWinery?.Last_Sync_Date && (
+                            <div style={{ color: 'black', marginTop: '0px' }}>
+                                Last synced: {user.LastWinery?.Last_Sync_Date}
+                            </div>
+                        )}
                         <Button
                             variant='outlined'
                             color='info'
