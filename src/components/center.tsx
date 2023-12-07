@@ -9,7 +9,7 @@ const DownIcon = ArrowDownwardRoundedIcon;
 const Button = PresentationButton;
 
 const Center = (props: { footerHeight: number; setInput: (input: string) => void }) => {
-    const { data: suggestedThreads, callApi } = useApi();
+    const { data: suggestedThreads, callApiLazy } = useApi();
     const scrollDiv = useRef<HTMLDivElement>(null);
 
     const [width, setWidth] = useState<number>(window.innerWidth);
@@ -32,7 +32,7 @@ const Center = (props: { footerHeight: number; setInput: (input: string) => void
     };
 
     useEffect(() => {
-        callApi({ url: '/api/chat/suggested', method: 'get' });
+        callApiLazy({ url: '/api/chat/suggested', method: 'get' });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

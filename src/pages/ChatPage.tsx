@@ -36,6 +36,8 @@ import ChatMessage from '../components/chatMessage';
 import { CHAT_DTC_TITLE, MAX_USER_MESSAGES, REACT_APP_API_URL } from '../constants/api';
 
 import type { Message as ChatMessageProps } from '../components/chatMessage';
+import useApi from '../hooks/api';
+import { useUser } from '../contexts/user';
 
 const socket = io(REACT_APP_API_URL as string);
 
@@ -80,6 +82,9 @@ const ChatPage = () => {
     const userMessages = messages.filter(message => message.role === 'user');
     const messageCount = userMessages.length;
     const isOverMaxMessages = messageCount >= MAX_USER_MESSAGES;
+    const { callApi } = useApi();
+    const { user } = useUser();
+    const { Last_Winery_id: lastWineryId } = user;
 
     useEffect(() => {
         const updateWidth = () => {
@@ -104,6 +109,13 @@ const ChatPage = () => {
     }, [footerHeight, width]);
 
     const getMessages = async () => {
+        const foundThread = await callApi({ url: `/api/chat/${id}`, method: 'get' });
+
+        // if the user doesn't have access to this thread
+        if (!foundThread || foundThread.Winery_id !== lastWineryId) {
+            navigate('/');
+        }
+
         const res = await axios.get(`${REACT_APP_API_URL}/api/chat/getMessagesByChatID/${id}`, {
             headers: { Authorization: authHeader() }
         });

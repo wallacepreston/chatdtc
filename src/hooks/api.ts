@@ -11,30 +11,48 @@ interface Options {
 
 const useApi = () => {
     const authHeader = useAuthHeader();
-    const [data, setData] = useState(null);
+    const [data, setData] = useState<any>(null);
     const [error, setError] = useState<Error | null>();
     const [loading, setLoading] = useState(false);
 
-    const callApi = useCallback(
+    const apiRequest = useCallback(
+        async ({ url, method, body = null }: Options) => {
+            return axios({
+                method,
+                url: `${REACT_APP_API_URL}${url}`,
+                data: body,
+                headers: { Authorization: authHeader() }
+            });
+        },
+        [authHeader]
+    );
+
+    const callApiLazy = useCallback(
         async ({ url, method, body = null }: Options) => {
             setLoading(true);
             try {
-                const res = await axios({
-                    method,
-                    url: `${REACT_APP_API_URL}${url}`,
-                    data: body,
-                    headers: { Authorization: authHeader() }
-                });
+                const res = await apiRequest({ url, method, body });
                 setData(res.data);
             } catch (err: unknown) {
                 if (err instanceof Error) setError(err);
             }
             setLoading(false);
         },
-        [authHeader]
+        [apiRequest]
     );
 
-    return { data, error, loading, callApi };
+    const callApi = async ({ url, method, body = null }: Options) => {
+        setLoading(true);
+        try {
+            const res = await apiRequest({ url, method, body });
+            return res.data;
+        } catch (err: unknown) {
+            if (err instanceof Error) setError(err);
+        }
+        setLoading(false);
+    };
+
+    return { data, error, loading, callApi, callApiLazy };
 };
 
 export default useApi;
