@@ -1,13 +1,16 @@
 # wine-assistant
-Front End UI for WinePulse AI Assistant
+
+Front End UI for ChatDTC AI Assistant
 
 ## Getting Started
-### 1.  Make sure you're running the correct node version. 
-  - The easiest way to do this is by using [volta](https://volta.sh/). Once installed, anytime you `cd` into a directory that has a `package.json` with a `volta` entry listed, the correct node version will be downloaded and used just within that project/app.
+
+### 1. Make sure you're running the correct node version.
+
+-   The easiest way to do this is by using [volta](https://volta.sh/). Once installed, anytime you `cd` into a directory that has a `package.json` with a `volta` entry listed, the correct node version will be downloaded and used just within that project/app.
 
 `curl https://get.volta.sh | bash`
 
-  - Alternatively, you can use a node version manager.  Check the `volta` entry of the `package.json` file for the version of node that is required. If you're using `nvm` you can run `nvm use` to switch to the correct version.
+-   Alternatively, you can use a node version manager. Check the `volta` entry of the `package.json` file for the version of node that is required. If you're using `nvm` you can run `nvm use` to switch to the correct version.
 
 ### 2. Install dependencies
 
@@ -47,14 +50,17 @@ Your app is ready to be deployed!
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
 ## Docker
+
 To test the Docker deployment, it's useful to run it locally. You'll have to have [Docker](https://www.docker.com/products/docker-desktop/) installed locally.
 
 ### 1. Build the image
+
 Build the image from the [Dockerfile](./Dockerfile).
 
 `docker build -t wine-assistant . --no-cache`
 
 ### 2. Run the container
+
 Run the container with the local env file and expose the port externally
 
 `docker run --env-file ./.env -p 3050:3050 wine-assistant`
