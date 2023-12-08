@@ -271,7 +271,7 @@ const Footer = (props: {
                             textAlign: 'center'
                         }}
                     >
-                        Powered by OpenAI. Developed by WinePulse.
+                        Powered by AI. Developed by WinePulse.
                     </Typography>
                 </Stack>
             </form>

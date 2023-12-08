@@ -9,6 +9,7 @@ import { useSignIn } from 'react-auth-kit';
 import { useNavigate } from 'react-router-dom';
 import { CHAT_DTC_TITLE, REACT_APP_API_URL } from '../constants/api';
 import { useUser } from '../contexts/user';
+import { LockPerson } from '@mui/icons-material';
 
 const LoginPage = () => {
     const signIn = useSignIn();
@@ -89,9 +90,6 @@ const LoginPage = () => {
                 justifyContent: 'center'
             }}
         >
-            <Typography variant='h4' sx={{ mt: '30px', position: 'absolute', pointerEvents: 'none' }}>
-                🤖
-            </Typography>
             <form autoComplete='off' onSubmit={handleConfirm}>
                 <Stack
                     spacing={2}
@@ -100,6 +98,9 @@ const LoginPage = () => {
                     alignItems='center'
                     sx={{ width: '100%', maxWidth: '350px', mt: '270px' }}
                 >
+                    <Typography variant='h3' sx={{ mb: '10px', pointerEvents: 'none', fontSize: '3rem' }}>
+                        <LockPerson />
+                    </Typography>
                     <Typography
                         variant='h4'
                         sx={{ fontFamily: 'Noto Sans, sans-serif', letterSpacing: '-1px', width: '350px', mb: '20px' }}
@@ -141,8 +142,14 @@ const LoginPage = () => {
                         <Button
                             variant='contained'
                             type='submit'
-                            color='primary'
-                            sx={{ width: 'calc(100% - 20px)', height: '50px', top: '10px' }}
+                            sx={{
+                                width: 'calc(100% - 20px)',
+                                height: '50px',
+                                top: '10px',
+                                bgcolor: '#142F44',
+                                color: 'white',
+                                '&:hover': { backgroundColor: '#355672' }
+                            }}
                         >
                             Continue
                         </Button>

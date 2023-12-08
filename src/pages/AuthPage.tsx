@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import '../App.css';
-import { Typography, Button, Stack } from '@mui/material';
+import { Typography, Button, Stack, Avatar } from '@mui/material';
 import { useAuthUser } from 'react-auth-kit';
 import { useNavigate } from 'react-router-dom';
 
@@ -21,13 +21,22 @@ const AuthPage = () => {
                 textAlign='center'
                 sx={{ position: 'relative', bottom: '30px' }}
             >
-                <Typography variant='h3' sx={{ mb: '10px', pointerEvents: 'none' }}>
-                    🤖
+                <Stack direction='row' display='flex' justifyContent='center'>
+                    <Avatar
+                        sx={{
+                            width: '10rem',
+                            height: '10rem'
+                        }}
+                        src='/assets/logowinepulse-icon.png'
+                    />
+                </Stack>
+                <Typography
+                    variant='h4'
+                    sx={{ fontFamily: 'Noto Sans, sans-serif', letterSpacing: '-1px', width: '350px', mb: '20px' }}
+                >
+                    <b>Welcome to ChatDTC</b>
                 </Typography>
-                <Typography variant='body2' sx={{ color: 'black', fontFamily: 'Noto Sans, sans-serif', mb: '10px' }}>
-                    Welcome to WinePulseAI
-                </Typography>
-                <Typography variant='body2' sx={{ color: 'black', fontFamily: 'Noto Sans, sans-serif', mb: '10px' }}>
+                <Typography variant='body1' sx={{ color: 'black', fontFamily: 'Noto Sans, sans-serif', mb: '10px' }}>
                     Log in with your WinePulse account to continue
                 </Typography>
                 <Stack direction='row' display='flex' justifyContent='center' sx={{ mt: '5px' }}>
@@ -35,15 +44,16 @@ const AuthPage = () => {
                         variant='contained'
                         sx={{
                             textTransform: 'none',
-                            bgcolor: '#00A67E',
-                            borderRadius: '0.25rem',
+                            top: '10px',
+                            bgcolor: '#142F44',
+                            color: 'white',
                             height: '35px',
                             ml: '10px',
-                            '&:hover': { backgroundColor: '#1A7F64' }
+                            '&:hover': { backgroundColor: '#355672' }
                         }}
                         href='/auth/login'
                     >
-                        <Typography variant='body2' sx={{ fontFamily: 'Noto Sans, sans-serif', color: 'black' }}>
+                        <Typography variant='body2' sx={{ fontFamily: 'Noto Sans, sans-serif' }}>
                             Log in
                         </Typography>
                     </Button>
