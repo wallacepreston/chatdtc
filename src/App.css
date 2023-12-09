@@ -102,3 +102,18 @@ code {
     margin-top: 10px;
     margin-bottom: 20px;
 }
+
+#chat-list-container::-webkit-scrollbar-track {
+    background: transparent;
+    border-color: transparent;
+}
+
+#chat-list-container::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-color: transparent;
+}
+
+#chat-list-container::-webkit-scrollbar-thumb:hover {
+    background: transparent;
+    border-color: transparent;
+}

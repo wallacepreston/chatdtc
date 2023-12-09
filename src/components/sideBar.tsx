@@ -143,7 +143,10 @@ const SideBar = () => {
                                 New chat
                             </Typography>
                         </Button>
-                        <div style={{ marginTop: '20px', overflowY: 'auto', height: 'calc(100% - 179px)' }}>
+                        <div
+                            id='chat-list-container'
+                            style={{ marginTop: '20px', overflowY: 'auto', height: 'calc(100% - 179px)' }}
+                        >
                             <Stack>
                                 {chats.map(chat => {
                                     const title = chat.title?.replaceAll('"', '');
