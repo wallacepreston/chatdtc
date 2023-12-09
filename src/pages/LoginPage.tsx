@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Stack, Typography, TextField, Button, Snackbar, Alert, IconButton } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import wpTheme from '../wpTheme';
+import theme from '../theme';
 import Visibility from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOff from '@mui/icons-material/VisibilityOffOutlined';
 import axios from 'axios';
@@ -107,7 +107,7 @@ const LoginPage = () => {
                     >
                         <b>Welcome back</b>
                     </Typography>
-                    <ThemeProvider theme={wpTheme}>
+                    <ThemeProvider theme={theme}>
                         <TextField
                             id='username'
                             value={username}
@@ -115,7 +115,7 @@ const LoginPage = () => {
                             type='text'
                             label='Username'
                             variant='outlined'
-                            color='secondary'
+                            color='primary'
                             sx={{ width: 'calc(100% - 20px)' }}
                         />
                         <TextField
@@ -125,7 +125,7 @@ const LoginPage = () => {
                             type={showPassword ? 'text' : 'password'}
                             label='Password'
                             variant='outlined'
-                            color='secondary'
+                            color='primary'
                             sx={{ width: 'calc(100% - 20px)' }}
                             InputProps={{
                                 endAdornment: (
@@ -142,13 +142,11 @@ const LoginPage = () => {
                         <Button
                             variant='contained'
                             type='submit'
+                            color='primary'
                             sx={{
                                 width: 'calc(100% - 20px)',
                                 height: '50px',
-                                top: '10px',
-                                bgcolor: '#142F44',
-                                color: 'white',
-                                '&:hover': { backgroundColor: '#355672' }
+                                top: '10px'
                             }}
                         >
                             Continue

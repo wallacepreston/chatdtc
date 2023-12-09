@@ -11,7 +11,7 @@ import { ThinkingProvider } from './contexts/thinking';
 import { StatusProvider } from './contexts/status';
 import Status from './components/status';
 import { ThemeProvider } from '@mui/material/styles';
-import wpTheme from './wpTheme';
+import theme from './theme';
 import SelectWineryModal from './components/selectWineryModal';
 import { UserProvider } from './contexts/user';
 import { ChatProvider } from './contexts/chat';
@@ -19,7 +19,7 @@ import { ChatProvider } from './contexts/chat';
 const App = () => {
     return (
         <div id='App'>
-            <ThemeProvider theme={wpTheme}>
+            <ThemeProvider theme={theme}>
                 <StatusProvider>
                     <ThinkingProvider>
                         <AuthProvider

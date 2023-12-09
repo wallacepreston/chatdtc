@@ -6,6 +6,7 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { useNavigate } from 'react-router-dom';
 import SideBar from './sideBar';
 import { CSSTransition } from 'react-transition-group';
+import theme from '../theme';
 
 const Topper = (props: { chatTitle: string }) => {
     const navigate = useNavigate();
@@ -29,7 +30,7 @@ const Topper = (props: { chatTitle: string }) => {
                     top: '0px',
                     zIndex: '90',
                     height: '40px',
-                    backgroundColor: '#c9c9c9',
+                    backgroundColor: theme.palette.grey[100],
                     width: '100vw',
                     display: 'flex',
                     borderBottomWidth: '1px',
@@ -89,6 +90,7 @@ const Topper = (props: { chatTitle: string }) => {
                 <CSSTransition in={sidebarOpen} timeout={200} classNames={'sidebar'} unmountOnExit>
                     <div>
                         <SideBar />
+                        {/* Mobile menu close X button */}
                         <IconButton
                             onClick={showMenu}
                             autoFocus
@@ -98,8 +100,8 @@ const Topper = (props: { chatTitle: string }) => {
                                 ml: '270px',
                                 mt: '10px',
                                 borderRadius: '0px',
-                                '&:focus': { border: '2px solid grey' },
-                                '&:active': { border: '2px solid grey' },
+                                '&:focus': { border: `2px solid ${theme.palette.grey[400]}` },
+                                '&:active': { border: `2px solid ${theme.palette.grey[400]}` },
                                 width: '40px',
                                 height: '40px',
                                 zIndex: '92'

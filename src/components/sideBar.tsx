@@ -11,6 +11,7 @@ import { REACT_APP_API_URL } from '../constants/api';
 import { useUser } from '../contexts/user';
 import { AccountCircle, Business } from '@mui/icons-material';
 import { useChats } from '../contexts/chat';
+import theme from '../theme';
 
 const socket = io(REACT_APP_API_URL as string);
 
@@ -82,11 +83,15 @@ const SideBar = () => {
         });
     };
 
+    const sidebarColor = theme.palette.grey[100];
+    const hoverInactive = theme.palette.grey[200];
+    const hoverActive = theme.palette.grey[300];
+
     return (
         <div id='SideBar'>
             <AppBar
                 position='static'
-                sx={{ bgcolor: '#cfcfcf', height: '100vh', width: '260px', position: 'fixed', zIndex: '100' }}
+                sx={{ bgcolor: sidebarColor, height: '100vh', width: '260px', position: 'fixed', zIndex: '100' }}
             >
                 <Toolbar sx={{ width: '100%', height: '100%', position: 'relative', right: '25px' }}>
                     <Stack
@@ -121,9 +126,7 @@ const SideBar = () => {
                                 width: '244px',
                                 mt: '100px',
                                 borderRadius: '5px',
-                                borderColor: '#555559',
-                                justifySelf: 'center',
-                                '&:hover': { borderColor: '#555559' }
+                                justifySelf: 'center'
                             }}
                             id='new-chat-button'
                             onClick={handleNewChat}
@@ -160,13 +163,13 @@ const SideBar = () => {
                                                         width: '244px',
                                                         borderRadius: '5px',
                                                         justifyContent: 'left',
-                                                        // TODO - instead, check if the url matches
-                                                        bgcolor: chat.id === activeChatId ? '#bcbcbc' : '#cfcfcf',
+                                                        bgcolor: chat.id === activeChatId ? hoverActive : sidebarColor,
                                                         textOverflow: 'ellipsis',
                                                         overflow: 'hidden',
                                                         whiteSpace: 'nowrap',
                                                         '&:hover': {
-                                                            bgcolor: chat.id === activeChatId ? '#bcbcbc' : '#c6c6c6'
+                                                            bgcolor:
+                                                                chat.id === activeChatId ? hoverActive : hoverInactive
                                                         }
                                                     }}
                                                     startIcon={
@@ -193,7 +196,7 @@ const SideBar = () => {
                                                     borderTopRightRadius: '5px',
                                                     borderBottomRightRadius: '5px',
                                                     background: `linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, ${
-                                                        chat.id === activeChatId ? '#bcbcbc' : 'rgba(207, 207, 207, 1)'
+                                                        chat.id === activeChatId ? hoverActive : sidebarColor
                                                     } 100%)`,
                                                     pointerEvents: 'none'
                                                 }}
@@ -205,7 +208,7 @@ const SideBar = () => {
                         </div>
                         <div
                             style={{
-                                borderTop: '1px solid #4D4D4F',
+                                borderTop: `1px solid ${theme.palette.info.main}`,
                                 width: '240px',
                                 justifySelf: 'center'
                             }}
@@ -226,7 +229,7 @@ const SideBar = () => {
                                     mt: '5px',
                                     borderRadius: '5px',
                                     justifyContent: 'left',
-                                    '&:hover': { bgcolor: '#bcbcbc' }
+                                    '&:hover': { bgcolor: hoverInactive }
                                 }}
                                 startIcon={<AccountCircle fontSize='small' sx={{ ml: '11px' }} />}
                             >

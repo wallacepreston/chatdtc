@@ -4,6 +4,7 @@ import ArrowDownwardRoundedIcon from '@mui/icons-material/ArrowDownwardRounded';
 import PresentationButton from './presentationButton';
 import useApi from '../hooks/api';
 import { Suggestion, getCategories } from '../util/helpers';
+import theme from '../theme';
 
 const DownIcon = ArrowDownwardRoundedIcon;
 const Button = PresentationButton;
@@ -84,22 +85,6 @@ const Center = (props: { footerHeight: number; setInput: (input: string) => void
         }
     };
 
-    const handleMT = () => {
-        if (width < 1000) {
-            return '30px';
-        } else {
-            return '20vh';
-        }
-    };
-
-    const handleMB = () => {
-        if (width > 1000) {
-            return '4rem';
-        } else {
-            return '2.5rem';
-        }
-    };
-
     const handleTop = () => {
         if (width > 1000) {
             return '0px';
@@ -157,55 +142,90 @@ const Center = (props: { footerHeight: number; setInput: (input: string) => void
                 top: handleTop()
             }}
         >
-            <Stack
-                id='non-active'
-                direction='column'
-                display='flex'
-                alignItems='center'
-                spacing={-1}
-                sx={{ maxWidth: '768px' }}
-            >
-                <Typography
-                    variant='h4'
-                    id='main-title'
-                    sx={{
-                        textAlign: 'center',
-                        color: 'black',
-                        fontFamily: 'Noto Sans, sans-serif',
-                        fontWeight: '800',
-                        fontSize: '2.25rem',
-                        mt: handleMT(),
-                        mb: handleMB()
-                    }}
+            <Stack direction='column' justifyContent='space-between' spacing={10} pb={1}>
+                <Stack
+                    id='non-active'
+                    direction='column'
+                    display='flex'
+                    alignItems='center'
+                    spacing={1}
+                    sx={{ maxWidth: '768px' }}
                 >
-                    ChatDTC by WinePulse
-                </Typography>
-                <Typography
-                    variant='h5'
-                    sx={{
-                        textAlign: 'center',
-                        color: 'black',
-                        fontFamily: 'Noto Sans, sans-serif',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        paddingBottom: '1rem'
-                    }}
-                >
-                    Sample Questions:
-                </Typography>
-
-                <div id='presentation'>
-                    <Stack
-                        direction={handleDirection()}
-                        display='flex'
-                        textAlign='center'
-                        spacing={2}
-                        width={handleWidth()}
+                    <Typography
+                        variant='h6'
+                        id='main-title'
+                        sx={{
+                            textAlign: 'center',
+                            color: 'black',
+                            fontFamily: 'Noto Sans, sans-serif'
+                        }}
                     >
-                        {suggestionCategories.map(category => renderColumn(category))}
-                    </Stack>
-                </div>
+                        ChatDTC by WinePulse
+                    </Typography>
+                </Stack>
+                <Stack
+                    id='non-active'
+                    direction='column'
+                    display='flex'
+                    justifyContent='center'
+                    alignItems='center'
+                    spacing={1}
+                    sx={{ maxWidth: '768px' }}
+                >
+                    <Typography
+                        variant='h5'
+                        sx={{
+                            textAlign: 'center',
+                            color: 'black',
+                            fontFamily: 'Noto Sans, sans-serif',
+                            fontWeight: '400',
+                            fontSize: '2.25rem'
+                        }}
+                    >
+                        How can I help you today?
+                    </Typography>
+                    <Typography
+                        variant='h5'
+                        sx={{
+                            textAlign: 'center',
+                            color: 'black',
+                            fontFamily: 'Noto Sans, sans-serif',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            paddingBottom: '1rem'
+                        }}
+                    >
+                        Ask me questions about your data.
+                    </Typography>
+                    <Typography
+                        variant='h5'
+                        sx={{
+                            textAlign: 'center',
+                            color: 'black',
+                            fontFamily: 'Noto Sans, sans-serif',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            paddingBottom: '1rem'
+                        }}
+                    >
+                        <br />
+                        Sample Questions:
+                    </Typography>
+
+                    <div id='presentation'>
+                        <Stack
+                            direction={handleDirection()}
+                            display='flex'
+                            textAlign='center'
+                            spacing={2}
+                            width={handleWidth()}
+                        >
+                            {suggestionCategories.map(category => renderColumn(category))}
+                        </Stack>
+                    </div>
+                </Stack>
             </Stack>
             {!scrolledToBottom && (
                 <IconButton
@@ -216,9 +236,9 @@ const Center = (props: { footerHeight: number; setInput: (input: string) => void
                         right: '25px',
                         width: '26px',
                         height: '26px',
-                        bgcolor: '#545661',
-                        border: '1px solid #656770',
-                        '&:hover': { bgcolor: '#545661' }
+                        bgcolor: theme.palette.grey[300],
+                        border: `1px solid ${theme.palette.grey[300]}`,
+                        '&:hover': { bgcolor: theme.palette.grey[300] }
                     }}
                 >
                     <DownIcon fontSize='small' sx={{ color: '#B7B8C3' }} />

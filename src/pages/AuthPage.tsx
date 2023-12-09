@@ -42,14 +42,13 @@ const AuthPage = () => {
                 <Stack direction='row' display='flex' justifyContent='center' sx={{ mt: '5px' }}>
                     <Button
                         variant='contained'
+                        color='primary'
                         sx={{
                             textTransform: 'none',
                             top: '10px',
-                            bgcolor: '#142F44',
                             color: 'white',
                             height: '35px',
-                            ml: '10px',
-                            '&:hover': { backgroundColor: '#355672' }
+                            ml: '10px'
                         }}
                         href='/auth/login'
                     >

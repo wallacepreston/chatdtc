@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { useThinking } from '../contexts/thinking';
 import { REACT_APP_API_URL } from '../constants/api';
+import theme from '../theme';
 
 const socket = io(REACT_APP_API_URL as string);
 
@@ -175,7 +176,7 @@ const Footer = (props: {
                     maxWidth: '768px',
                     width: '90%',
                     position: 'relative',
-                    backgroundColor: '#d9d9d9',
+                    backgroundColor: '#f1f1f1',
                     borderRadius: '5px',
                     color: 'black',
                     minHeight: '46px',
@@ -204,14 +205,14 @@ const Footer = (props: {
                             type='submit'
                             disabled={props.isOverMaxMessages}
                             sx={{
-                                color: '#5A5B6B',
+                                color: theme.palette.grey[400],
                                 position: 'absolute',
                                 bottom: '9px',
                                 right: '15px',
                                 width: '30px',
                                 height: '30px',
                                 borderRadius: '10px',
-                                '&:hover': { backgroundColor: '#cfcfcf' }
+                                '&:hover': { backgroundColor: theme.palette.grey[300] }
                             }}
                         >
                             <SendOutlinedIcon fontSize='small' />
@@ -239,7 +240,8 @@ const Footer = (props: {
                 position: 'absolute',
                 bottom: '0px',
                 width: handleChangeWidth(),
-                borderTop: handleBorderTop()
+                borderTop: handleBorderTop(),
+                backgroundColor: 'white'
             }}
         >
             <form autoComplete='off' style={{ width: '100%', height: '100%', display: 'flex' }} onSubmit={handleSubmit}>
@@ -264,7 +266,7 @@ const Footer = (props: {
                     <Typography
                         variant='body2'
                         sx={{
-                            color: '#C5C5D2',
+                            color: theme.palette.grey[400],
                             fontFamily: 'Noto Sans, sans-serif',
                             fontSize: '12px',
                             mb: '15px',

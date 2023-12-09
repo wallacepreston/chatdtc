@@ -7,7 +7,7 @@ import { useAuthHeader } from 'react-auth-kit';
 import axios from 'axios';
 import { useStatus } from '../contexts/status';
 import { LinkButton } from './styled';
-import wpTheme from '../wpTheme';
+import theme from '../theme';
 import ReactMarkdown from 'react-markdown';
 
 export interface Message {
@@ -88,7 +88,7 @@ const ChatMessage = (props: ChatMessageProps) => {
                 navigator.clipboard.writeText(message.content);
             }}
             sx={{
-                color: wpTheme.palette.grey[400],
+                color: theme.palette.grey[400],
                 mt: '26px',
                 width: '25px',
                 height: '25px',
@@ -196,7 +196,8 @@ const ChatMessage = (props: ChatMessageProps) => {
                 <Grid item xs={11}>
                     <div
                         style={{
-                            backgroundColor: role === 'assistant' ? '#e4edf6' : '#cfcfcf',
+                            backgroundColor:
+                                role === 'assistant' ? theme.palette.primary.light : theme.palette.grey[200],
                             borderRadius: '10px',
                             marginBottom: '15px',
                             marginTop: '15px',

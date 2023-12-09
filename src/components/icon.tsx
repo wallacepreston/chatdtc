@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Avatar } from '@mui/material';
 import { useUser } from '../contexts/user';
+import theme from '../theme';
 
 const Icon = (props: { role: 'user' | 'assistant' | 'empty' }) => {
     const { user } = useUser();
@@ -41,9 +42,9 @@ const Icon = (props: { role: 'user' | 'assistant' | 'empty' }) => {
 
     const handleBackground = () => {
         if (props.role === 'user') {
-            return '#cfcfcf';
+            return theme.palette.grey[200];
         } else if (props.role === 'assistant') {
-            return '#E4EDF6';
+            return theme.palette.primary.light;
         } else {
             return 'transparent';
         }
