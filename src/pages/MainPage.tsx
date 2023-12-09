@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import SideBar from '../components/sideBar';
+import SideBar from '../components/sidebar';
 import Footer from '../components/footer';
 import Center from '../components/center';
 import Topper from '../components/topper';

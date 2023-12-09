@@ -4,7 +4,7 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { useNavigate } from 'react-router-dom';
-import SideBar from './sideBar';
+import SideBar from './sidebar';
 import { CSSTransition } from 'react-transition-group';
 import theme from '../theme';
 

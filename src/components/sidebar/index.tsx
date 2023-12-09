@@ -6,12 +6,12 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { useAuthUser, useSignOut } from 'react-auth-kit';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import io from 'socket.io-client';
-import { useStatus } from '../contexts/status';
-import { REACT_APP_API_URL } from '../constants/api';
-import { useUser } from '../contexts/user';
+import { useStatus } from '../../contexts/status';
+import { REACT_APP_API_URL } from '../../constants/api';
+import { useUser } from '../../contexts/user';
 import { AccountCircle, Business } from '@mui/icons-material';
-import { useChats } from '../contexts/chat';
-import theme from '../theme';
+import { useChats } from '../../contexts/chat';
+import theme from '../../theme';
 
 const socket = io(REACT_APP_API_URL as string);
 

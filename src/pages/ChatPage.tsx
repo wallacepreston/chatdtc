@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { CircularProgress, IconButton, Stack } from '@mui/material';
 import ArrowDownwardRoundedIcon from '@mui/icons-material/ArrowDownwardRounded';
 import Footer from '../components/footer';
-import SideBar from '../components/sideBar';
+import SideBar from '../components/sidebar';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuthHeader } from 'react-auth-kit';
