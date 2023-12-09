@@ -95,7 +95,10 @@ const Center = (props: { footerHeight: number; setInput: (input: string) => void
 
     const renderColumn = (category: string) => {
         if (!suggestedThreads) return null;
-        const threads = (suggestedThreads as Suggestion[]).filter((thread: Suggestion) => thread.Category === category);
+        const threads = (suggestedThreads as Suggestion[])
+            .filter((thread: Suggestion) => thread.Category === category)
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 3);
 
         return (
             <div id='examples' style={{ width: width > 1000 ? 'calc(100% / 3)' : 'auto' }}>
