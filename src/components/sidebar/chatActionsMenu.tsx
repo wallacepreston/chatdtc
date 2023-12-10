@@ -5,9 +5,22 @@ import MenuItem from '@mui/material/MenuItem';
 import { DeleteOutline, Edit, MoreHoriz } from '@mui/icons-material';
 import { ListItemIcon, ListItemText } from '@mui/material';
 import theme from '../../theme';
+import useApi from '../../hooks/api';
+import { useStatus } from '../../contexts/status';
+import { useChats } from '../../contexts/chat';
+import { useNavigate } from 'react-router-dom';
 
-const ChatActionsMenu = () => {
+interface ChatActionsProps {
+    chatId: string;
+}
+
+const ChatActionsMenu = ({ chatId }: ChatActionsProps) => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const { callApi } = useApi();
+    const { setStatus } = useStatus();
+    const { getChats } = useChats();
+    const navigate = useNavigate();
+
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -16,15 +29,39 @@ const ChatActionsMenu = () => {
         setAnchorEl(null);
     };
 
+    const handleDelete = async () => {
+        try {
+            const resp = await callApi({ url: `/api/chat/${chatId}`, method: 'delete' });
+
+            if (resp?.status !== 'success') {
+                setStatus({
+                    type: 'error',
+                    message: 'Error deleting chat'
+                });
+                return;
+            }
+
+            getChats();
+            handleClose();
+            navigate('/');
+
+            setStatus({
+                type: 'success',
+                message: 'Chat deleted successfully'
+            });
+        } catch (error) {
+            setStatus({
+                type: 'error',
+                message: 'Error deleting chat'
+            });
+            handleClose();
+        }
+    };
+
     const options = [
         {
-            title: 'Rename',
-            handleClick: () => handleClose(),
-            icon: <Edit fontSize='small' />
-        },
-        {
             title: 'Delete',
-            handleClick: () => handleClose(),
+            handleClick: () => handleDelete(),
             icon: <DeleteOutline fontSize='small' />,
             color: theme.palette.error.main
         }

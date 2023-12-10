@@ -208,7 +208,7 @@ const SideBar = () => {
                                                     justifyContent: 'flex-end'
                                                 }}
                                             >
-                                                {isActiveChat && <ChatActionsMenu />}
+                                                {isActiveChat && <ChatActionsMenu chatId={chat.id} />}
                                             </div>
                                         </div>
                                     );
