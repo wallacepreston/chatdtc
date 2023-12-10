@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { AppBar, Toolbar, Button, Stack, Typography, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { useAuthUser, useSignOut } from 'react-auth-kit';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -178,12 +177,6 @@ const SideBar = () => {
                                                             bgcolor: isActiveChat ? hoverActive : hoverInactive
                                                         }
                                                     }}
-                                                    startIcon={
-                                                        <ChatBubbleOutlineRoundedIcon
-                                                            fontSize='small'
-                                                            sx={{ ml: '7px' }}
-                                                        />
-                                                    }
                                                 >
                                                     <Typography
                                                         sx={{ fontSize: '0.8rem', fontFamily: 'Noto Sans, sans-serif' }}
