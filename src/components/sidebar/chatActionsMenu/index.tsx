@@ -4,12 +4,12 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { DeleteOutline, Edit, MoreHoriz } from '@mui/icons-material';
 import { Button, Grid, ListItemIcon, ListItemText, Stack, Typography } from '@mui/material';
-import theme from '../../theme';
-import useApi from '../../hooks/api';
-import { useStatus } from '../../contexts/status';
-import { useChats } from '../../contexts/chat';
+import theme from '../../../theme';
+import useApi from '../../../hooks/api';
+import { useStatus } from '../../../contexts/status';
+import { useChats } from '../../../contexts/chat';
 import { useNavigate } from 'react-router-dom';
-import WpModal from '../wpModal';
+import WpModal from '../../wpModal';
 
 interface ChatActionsProps {
     chatId: string;
