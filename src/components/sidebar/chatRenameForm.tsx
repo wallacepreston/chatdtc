@@ -42,6 +42,7 @@ const ChatRenameForm = ({ chat, setEditingChat }: ChatRenameFormProps) => {
                 value={title}
                 onChange={e => setTitle(e.target.value)}
                 size='small'
+                onBlur={() => setEditingChat(false)}
             />
         </form>
     );
