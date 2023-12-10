@@ -13,6 +13,7 @@ import { AccountCircle, Business } from '@mui/icons-material';
 import { useChats } from '../../contexts/chat';
 import theme from '../../theme';
 import ChatActionsMenu from './chatActionsMenu';
+import ChatRenameForm from './chatRenameForm';
 
 const socket = io(REACT_APP_API_URL as string);
 
@@ -24,6 +25,7 @@ const SideBar = () => {
     const { user, setUser } = useUser();
     const { chats, getChats } = useChats();
     const { id: activeChatId } = useParams();
+    const [editingChat, setEditingChat] = React.useState<boolean>(false);
 
     const authData = auth()!;
 
@@ -186,7 +188,14 @@ const SideBar = () => {
                                                     <Typography
                                                         sx={{ fontSize: '0.8rem', fontFamily: 'Noto Sans, sans-serif' }}
                                                     >
-                                                        {title}
+                                                        {editingChat && isActiveChat ? (
+                                                            <ChatRenameForm
+                                                                chat={chat}
+                                                                setEditingChat={setEditingChat}
+                                                            />
+                                                        ) : (
+                                                            title
+                                                        )}
                                                     </Typography>
                                                 </Button>
                                             </Link>
@@ -205,10 +214,16 @@ const SideBar = () => {
                                                     display: 'flex',
                                                     flexDirection: 'row',
                                                     alignItems: 'center',
-                                                    justifyContent: 'flex-end'
+                                                    justifyContent: 'flex-end',
+                                                    pointerEvents: !isActiveChat ? 'none' : 'auto'
                                                 }}
                                             >
-                                                {isActiveChat && <ChatActionsMenu chatId={chat.id} />}
+                                                {isActiveChat && (
+                                                    <ChatActionsMenu
+                                                        chatId={chat.id}
+                                                        handleRename={() => setEditingChat(true)}
+                                                    />
+                                                )}
                                             </div>
                                         </div>
                                     );

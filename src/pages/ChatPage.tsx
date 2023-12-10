@@ -151,7 +151,7 @@ const ChatPage = () => {
         if (title !== document.title) {
             document.title = title + ' | ' + CHAT_DTC_TITLE;
         }
-    }, [title]);
+    }, [title, id]);
 
     const scrollToBottom = () => {
         if (scrollDiv.current) {

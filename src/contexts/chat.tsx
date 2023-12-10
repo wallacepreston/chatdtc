@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useAuthHeader } from 'react-auth-kit';
 
-interface Chat {
+export interface Chat {
     title: string;
     wineryName: string;
     id: string;

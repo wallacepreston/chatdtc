@@ -12,9 +12,10 @@ import { useNavigate } from 'react-router-dom';
 
 interface ChatActionsProps {
     chatId: string;
+    handleRename: () => void;
 }
 
-const ChatActionsMenu = ({ chatId }: ChatActionsProps) => {
+const ChatActionsMenu = ({ chatId, handleRename }: ChatActionsProps) => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const { callApi } = useApi();
     const { setStatus } = useStatus();
@@ -58,7 +59,17 @@ const ChatActionsMenu = ({ chatId }: ChatActionsProps) => {
         }
     };
 
+    const handleEdit = () => {
+        handleRename();
+        handleClose();
+    };
+
     const options = [
+        {
+            title: 'Rename',
+            handleClick: () => handleEdit(),
+            icon: <Edit fontSize='small' />
+        },
         {
             title: 'Delete',
             handleClick: () => handleDelete(),
