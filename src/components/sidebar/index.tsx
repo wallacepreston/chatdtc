@@ -12,6 +12,7 @@ import { useUser } from '../../contexts/user';
 import { AccountCircle, Business } from '@mui/icons-material';
 import { useChats } from '../../contexts/chat';
 import theme from '../../theme';
+import ChatActionsMenu from './chatActionsMenu';
 
 const socket = io(REACT_APP_API_URL as string);
 
@@ -150,6 +151,7 @@ const SideBar = () => {
                             <Stack>
                                 {chats.map(chat => {
                                     const title = chat.title?.replaceAll('"', '');
+                                    const isActiveChat = chat.id === activeChatId;
                                     return (
                                         <div
                                             id='chatBtn'
@@ -166,13 +168,12 @@ const SideBar = () => {
                                                         width: '244px',
                                                         borderRadius: '5px',
                                                         justifyContent: 'left',
-                                                        bgcolor: chat.id === activeChatId ? hoverActive : sidebarColor,
+                                                        bgcolor: isActiveChat ? hoverActive : sidebarColor,
                                                         textOverflow: 'ellipsis',
                                                         overflow: 'hidden',
                                                         whiteSpace: 'nowrap',
                                                         '&:hover': {
-                                                            bgcolor:
-                                                                chat.id === activeChatId ? hoverActive : hoverInactive
+                                                            bgcolor: isActiveChat ? hoverActive : hoverInactive
                                                         }
                                                     }}
                                                     startIcon={
@@ -191,19 +192,24 @@ const SideBar = () => {
                                             </Link>
                                             <div
                                                 style={{
-                                                    width: '70px',
+                                                    width: isActiveChat ? '90px' : '70px',
                                                     height: '40px',
                                                     position: 'relative',
                                                     bottom: '40px',
-                                                    left: '174px',
+                                                    left: isActiveChat ? '154px' : '174px',
                                                     borderTopRightRadius: '5px',
                                                     borderBottomRightRadius: '5px',
                                                     background: `linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, ${
-                                                        chat.id === activeChatId ? hoverActive : sidebarColor
-                                                    } 100%)`,
-                                                    pointerEvents: 'none'
+                                                        isActiveChat ? `${hoverActive} 50%` : `${sidebarColor} 100%`
+                                                    })`,
+                                                    display: 'flex',
+                                                    flexDirection: 'row',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'flex-end'
                                                 }}
-                                            />
+                                            >
+                                                {isActiveChat && <ChatActionsMenu />}
+                                            </div>
                                         </div>
                                     );
                                 })}
