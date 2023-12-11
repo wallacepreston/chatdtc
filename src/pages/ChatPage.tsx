@@ -116,9 +116,17 @@ const ChatPage = () => {
 
         const foundThread = await callApi({ url: `/api/chat/${id}`, method: 'get' });
 
-        // if the user doesn't have access to this thread
-        if (!foundThread || (lastWineryId && foundThread.Winery_id !== lastWineryId)) {
+        if (!foundThread) {
             navigate('/');
+            return;
+        }
+
+        const notUserWinery = lastWineryId && foundThread.Winery_id !== lastWineryId;
+
+        // if the user doesn't have access to this thread
+        if (notUserWinery) {
+            navigate('/');
+            return;
         }
 
         const res = await axios.get(`${REACT_APP_API_URL}/api/chat/getMessagesByChatID/${id}`, {

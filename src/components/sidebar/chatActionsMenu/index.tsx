@@ -2,7 +2,7 @@ import * as React from 'react';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { DeleteOutline, Edit, MoreHoriz } from '@mui/icons-material';
+import { DeleteOutline, Edit, IosShare, MoreHoriz } from '@mui/icons-material';
 import { Button, Grid, ListItemIcon, ListItemText, Stack, Typography } from '@mui/material';
 import theme from '../../../theme';
 import useApi from '../../../hooks/api';
@@ -10,6 +10,7 @@ import { useStatus } from '../../../contexts/status';
 import { useChats } from '../../../contexts/chat';
 import { useNavigate } from 'react-router-dom';
 import WpModal from '../../wpModal';
+import ShareModal from './shareModal';
 
 interface ChatActionsProps {
     chatId: string;
@@ -19,6 +20,7 @@ interface ChatActionsProps {
 const ChatActionsMenu = ({ chatId, handleRename }: ChatActionsProps) => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
+    const [shareModalOpen, setShareModalOpen] = React.useState(false);
     const { callApi } = useApi();
     const { setStatus } = useStatus();
     const { getChats } = useChats();
@@ -61,6 +63,11 @@ const ChatActionsMenu = ({ chatId, handleRename }: ChatActionsProps) => {
         }
     };
 
+    const handleOpenShareModal = () => {
+        handleClose();
+        setShareModalOpen(true);
+    };
+
     const handleEdit = () => {
         handleRename();
         handleClose();
@@ -92,6 +99,7 @@ const ChatActionsMenu = ({ chatId, handleRename }: ChatActionsProps) => {
 
     return (
         <div>
+            <ShareModal open={shareModalOpen} handleClose={() => setShareModalOpen(false)} chatId={chatId} />
             <WpModal title='Delete Chat' open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
                 <Grid
                     item
