@@ -17,6 +17,7 @@ interface UserState {
     UserPwd?: string;
     UserRole?: string;
     Default_Winery_id?: string;
+    Admin?: boolean;
 }
 
 const UserContext = createContext({
