@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import WpModal from '../../wpModal';
 import { Button, Grid, Stack, Typography } from '@mui/material';
 import { ContentCopy } from '@mui/icons-material';
@@ -16,6 +16,7 @@ const ShareModal = ({ open, handleClose, chatId }: ShareModalProps) => {
     const { setStatus } = useStatus();
     const { callApi } = useApi();
     const { getChats } = useChats();
+    const [isShared, setIsShared] = useState<boolean>(false);
 
     const url = `${REACT_APP_CLIENT_URL}/share/${chatId}`;
 
@@ -33,14 +34,18 @@ const ShareModal = ({ open, handleClose, chatId }: ShareModalProps) => {
             }
 
             getChats();
-
-            // copy url to clipboard
-            await navigator.clipboard.writeText(url);
-            setStatus({ type: 'success', message: 'Chat link copied to clipboard' });
-            handleClose();
         } catch (error) {
             setStatus({ type: 'error', message: 'Error sharing chat' });
         }
+
+        try {
+            // copy url to clipboard
+            await navigator.clipboard.writeText(url);
+            setStatus({ type: 'success', message: 'Chat link copied to clipboard' });
+        } catch (error) {
+            setStatus({ type: 'error', message: 'Unable to copy chat link to clipboard. Please copy the link.' });
+        }
+        setIsShared(true);
     };
     return (
         <WpModal title='Share link to Chat' open={open} onClose={handleClose}>
@@ -57,14 +62,33 @@ const ShareModal = ({ open, handleClose, chatId }: ShareModalProps) => {
                     <Typography>
                         <b>Anyone</b> with the URL will be able to view the shared chat.
                     </Typography>
+                    {isShared && (
+                        <>
+                            <Typography sx={{ textAlign: 'center' }}>
+                                <b>Share Link:</b>
+                            </Typography>
+                            <Typography sx={{ fontSize: '.8em' }}>{url}</Typography>
+                        </>
+                    )}
                     <br />
                     <Stack direction='row' display='flex' justifyContent='space-evenly'>
                         <Button variant='outlined' color='primary' onClick={handleClose}>
                             Cancel
                         </Button>
-                        <Button variant='contained' color='primary' onClick={handleShare} startIcon={<ContentCopy />}>
-                            Copy Link & Share
-                        </Button>
+                        {isShared ? (
+                            <Button variant='contained' color='primary' onClick={handleClose}>
+                                Close
+                            </Button>
+                        ) : (
+                            <Button
+                                variant='contained'
+                                color='primary'
+                                onClick={handleShare}
+                                startIcon={<ContentCopy />}
+                            >
+                                Copy Link & Share
+                            </Button>
+                        )}
                     </Stack>
                 </Stack>
             </Grid>
