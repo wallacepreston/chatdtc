@@ -27,7 +27,7 @@ const AuthPage = () => {
                             width: '10rem',
                             height: '10rem'
                         }}
-                        src='/assets/logochatdtc-icon.png'
+                        src='/assets/logochatdtc.png'
                     />
                 </Stack>
                 <Typography
