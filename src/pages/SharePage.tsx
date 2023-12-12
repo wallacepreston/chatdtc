@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable array-callback-return */
 import React, { useState, useEffect } from 'react';
-import { Stack } from '@mui/material';
+import { Divider, Stack, Typography } from '@mui/material';
 import Footer from '../components/footer';
 import { useParams, useNavigate } from 'react-router-dom';
 import 'highlight.js/styles/atom-one-dark.css';
@@ -19,12 +19,20 @@ const SharePage = () => {
     const [footerHeight, setFooterHeight] = useState<number>(0);
     const [height, setHeight] = useState<string>('calc(100vh - 64px)');
     const [width, setWidth] = useState<number>(window.innerWidth);
+    const [title, setTitle] = useState<string>('');
+    const [lastUpdated, setLastUpdated] = useState<string>('');
     const userMessages = messages.filter(message => message.Role === 'user');
     const messageCount = userMessages.length;
     const isOverMaxMessages = messageCount >= MAX_USER_MESSAGES;
     const { callApi } = useApi();
     const { user } = useUser();
     const { Last_Winery_id: lastWineryId } = user;
+
+    const updateTitle = (title: string) => {
+        if (!title) return;
+        title = title.replaceAll('"', '');
+        setTitle(title);
+    };
 
     useEffect(() => {
         const updateWidth = () => {
@@ -56,8 +64,6 @@ const SharePage = () => {
             return;
         }
 
-        document.title = foundThread.Title + ' | ' + CHAT_DTC_TITLE;
-
         const notUserWinery = lastWineryId && foundThread.Winery_id !== lastWineryId;
 
         // if the user doesn't have access to this thread
@@ -65,6 +71,10 @@ const SharePage = () => {
             navigate('/');
             return;
         }
+
+        document.title = foundThread.Title + ' | ' + CHAT_DTC_TITLE;
+        updateTitle(foundThread.Title);
+        setLastUpdated(foundThread.Last_Modified_Date);
 
         setMessages(foundThread.Messages?.reverse());
     };
@@ -94,6 +104,17 @@ const SharePage = () => {
             >
                 <div id='center' style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
                     <Stack direction='column' sx={{ width: '100%', height: '100%', maxWidth: '728px' }}>
+                        <Typography variant='h4' fontWeight={'bold'} align='center' mt='20px'>
+                            {title}
+                        </Typography>
+                        <Typography variant='h6' align='center' mb='20px'>
+                            {new Date(lastUpdated).toLocaleDateString(undefined, {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            })}{' '}
+                        </Typography>
+                        <Divider />
                         {messages?.map((message, index) => {
                             const showIcon = prevRole !== message.Role;
                             prevRole = message.Role;
