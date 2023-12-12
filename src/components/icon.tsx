@@ -3,7 +3,7 @@ import { Avatar } from '@mui/material';
 import { useUser } from '../contexts/user';
 import theme from '../theme';
 
-const Icon = (props: { role: 'user' | 'assistant' | 'empty' }) => {
+const Icon = (props: { role: 'user' | 'assistant' | 'anonymous' | 'empty' }) => {
     const { user } = useUser();
 
     const renderInitials = (firstName?: string, lastName?: string) => {
@@ -31,7 +31,7 @@ const Icon = (props: { role: 'user' | 'assistant' | 'empty' }) => {
     }, [width]);
 
     const handleSrc = () => {
-        if (props.role === 'user') {
+        if (props.role === 'user' || props.role === 'anonymous') {
             return '';
         } else if (props.role === 'assistant') {
             return '/assets/logowinepulse-icon.png';
@@ -41,7 +41,7 @@ const Icon = (props: { role: 'user' | 'assistant' | 'empty' }) => {
     };
 
     const handleBackground = () => {
-        if (props.role === 'user') {
+        if (props.role === 'user' || props.role === 'anonymous') {
             return theme.palette.grey[200];
         } else if (props.role === 'assistant') {
             return theme.palette.primary.light;
@@ -64,7 +64,7 @@ const Icon = (props: { role: 'user' | 'assistant' | 'empty' }) => {
                 }}
                 src={handleSrc()}
             >
-                {props.role === 'user' ? initials : ''}
+                {props.role !== 'anonymous' && props.role === 'user' ? initials : ''}
             </Avatar>
         </div>
     );

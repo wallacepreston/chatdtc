@@ -63,6 +63,8 @@ hljs.registerLanguage('c', c);
 
 const DownIcon = ArrowDownwardRoundedIcon;
 
+export type ChatType = 'form' | 'share';
+
 const ChatPage = () => {
     const { id } = useParams<{ id: string }>();
     const authHeader = useAuthHeader();
@@ -70,8 +72,6 @@ const ChatPage = () => {
 
     const scrollDiv = useRef<HTMLDivElement>(null);
 
-    /* IMPORTANT: messages are stored from the oldest to the newest
-        [0] is the oldest message, [length - 1] is the newest message */
     const [messages, setMessages] = useState<ChatMessageProps[]>([]);
     const [footerHeight, setFooterHeight] = useState<number>(0);
     const [height, setHeight] = useState<string>('calc(100vh - 64px)');
@@ -79,7 +79,7 @@ const ChatPage = () => {
     const [title, setTitle] = useState<string>('');
     const [scrolledToBottom, setScrolledToBottom] = useState<boolean>(true);
     const { thinking, setThinking } = useThinking();
-    const userMessages = messages.filter(message => message.role === 'user');
+    const userMessages = messages.filter(message => message.Role === 'user');
     const messageCount = userMessages.length;
     const isOverMaxMessages = messageCount >= MAX_USER_MESSAGES;
     const { callApi } = useApi();
@@ -129,11 +129,7 @@ const ChatPage = () => {
             return;
         }
 
-        const res = await axios.get(`${REACT_APP_API_URL}/api/chat/getMessagesByChatID/${id}`, {
-            headers: { Authorization: authHeader() }
-        });
-        const data = res.data;
-        setMessages(data.reverse());
+        setMessages(foundThread.Messages?.reverse());
     };
 
     // at the beginning, get all messages
@@ -218,10 +214,10 @@ const ChatPage = () => {
                     if (scrolledToBottom) {
                         scrollToBottom();
                     }
-                    if (messages[messages.length - 1]?.role === 'user') {
-                        return [...messages, { role: 'assistant', content: data.content }];
+                    if (messages[messages.length - 1]?.Role === 'user') {
+                        return [...messages, { Role: 'assistant', Content_Value: data.content }];
                     }
-                    return [...messages.slice(0, -1), { role: 'assistant', content: data.content }];
+                    return [...messages.slice(0, -1), { Role: 'assistant', Content_Value: data.content }];
                 });
             }
         });
@@ -232,10 +228,10 @@ const ChatPage = () => {
                     if (scrolledToBottom) {
                         scrollToBottom();
                     }
-                    if (messages[messages.length - 1]?.role === 'user') {
-                        return [...messages, { role: 'assistant', content: 'Error: ' + data.error }];
+                    if (messages[messages.length - 1]?.Role === 'user') {
+                        return [...messages, { Role: 'assistant', Content_Value: 'Error: ' + data.error }];
                     }
-                    return [...messages.slice(0, -1), { role: 'assistant', content: 'Error: ' + data.error }];
+                    return [...messages.slice(0, -1), { Role: 'assistant', Content_Value: 'Error: ' + data.error }];
                 });
             }
         });
@@ -292,8 +288,8 @@ const ChatPage = () => {
                 <div id='center' style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
                     <Stack direction='column' sx={{ width: '100%', height: '100%', maxWidth: '728px' }}>
                         {messages.map((message, index) => {
-                            const showIcon = prevRole !== message.role;
-                            prevRole = message.role;
+                            const showIcon = prevRole !== message.Role;
+                            prevRole = message.Role;
                             return (
                                 <ChatMessage
                                     key={index}
@@ -301,6 +297,7 @@ const ChatPage = () => {
                                     handleMessageWidth={handleMessageWidth}
                                     width={width}
                                     showIcon={showIcon}
+                                    chatType='form'
                                 />
                             );
                         })}
@@ -330,6 +327,7 @@ const ChatPage = () => {
                         newInput=''
                         openModal={() => {}}
                         isOverMaxMessages={isOverMaxMessages}
+                        type='form'
                     />
                 </div>
             </div>

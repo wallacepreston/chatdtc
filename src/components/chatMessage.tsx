@@ -9,11 +9,15 @@ import { useStatus } from '../contexts/status';
 import { LinkButton } from './styled';
 import theme from '../theme';
 import ReactMarkdown from 'react-markdown';
+import { ChatType } from '../pages/ChatPage';
 
 export interface Message {
-    role: 'user' | 'assistant';
-    content: string;
+    Role: 'user' | 'assistant';
+    Content_Value: string;
     fileIds?: string[];
+    Annotations?: {
+        File_OpenAI_id: string;
+    }[];
 }
 
 export interface ChatMessageProps {
@@ -22,11 +26,16 @@ export interface ChatMessageProps {
     handleMessageWidth: () => string;
     width: number;
     showIcon: boolean;
+    chatType: ChatType;
 }
 
 const ChatMessage = (props: ChatMessageProps) => {
     const { message, key, handleMessageWidth, width, showIcon } = props;
-    const { role } = message;
+    const { Role: role } = message;
+
+    const iconRole = props.chatType === 'share' && role === 'user' ? 'anonymous' : role;
+    const userTitle = props.chatType === 'share' ? 'Anonymous' : 'You';
+    const fileIds = message.Annotations?.map(annotation => annotation.File_OpenAI_id);
 
     const authHeader = useAuthHeader();
 
@@ -85,7 +94,7 @@ const ChatMessage = (props: ChatMessageProps) => {
     const copyIcon = width > 1000 && (
         <IconButton
             onClick={() => {
-                navigator.clipboard.writeText(message.content);
+                navigator.clipboard.writeText(message.Content_Value);
             }}
             sx={{
                 color: theme.palette.grey[400],
@@ -101,7 +110,7 @@ const ChatMessage = (props: ChatMessageProps) => {
     );
 
     const renderContent = () => {
-        const content: string[] = message.content.split('\n');
+        const content: string[] = message.Content_Value.split('\n');
         if (role === 'user') {
             return content;
         } else {
@@ -135,7 +144,7 @@ const ChatMessage = (props: ChatMessageProps) => {
                     } else if (i % 3 === 1) {
                         // this part is the link text
                         const linkText = part;
-                        const fileId = message.fileIds ? message.fileIds[linkIndex] : '';
+                        const fileId = fileIds ? fileIds[linkIndex] : '';
                         linkIndex++;
                         return (
                             <LinkButton
@@ -176,11 +185,11 @@ const ChatMessage = (props: ChatMessageProps) => {
                     spacing={2}
                 >
                     <Grid item>
-                        <Icon role={showIcon ? role : 'empty'} />
+                        <Icon role={showIcon ? iconRole : 'empty'} />
                     </Grid>
                     <Grid item>
                         <Typography variant='h6' fontWeight={'bold'}>
-                            {role === 'user' ? 'You' : 'ChatDTC'}
+                            {role === 'user' ? userTitle : 'ChatDTC'}
                         </Typography>
                     </Grid>
                 </Grid>

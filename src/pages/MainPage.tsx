@@ -65,6 +65,7 @@ const MainPage = () => {
                     newInput={newInput}
                     openModal={() => {}}
                     isOverMaxMessages={false}
+                    type='form'
                 />
             </div>
         </div>

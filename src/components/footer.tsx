@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, TextField, IconButton, Stack, Tooltip } from '@mui/material';
+import { Typography, TextField, IconButton, Stack, Tooltip, Button } from '@mui/material';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import axios from 'axios';
 import { useAuthHeader } from 'react-auth-kit';
@@ -8,6 +8,7 @@ import io from 'socket.io-client';
 import { useThinking } from '../contexts/thinking';
 import { REACT_APP_API_URL } from '../constants/api';
 import theme from '../theme';
+import { ChatType } from '../pages/ChatPage';
 
 const socket = io(REACT_APP_API_URL as string);
 
@@ -16,6 +17,7 @@ const Footer = (props: {
     newInput: string;
     openModal: () => void;
     isOverMaxMessages: boolean;
+    type: ChatType;
 }) => {
     const authHeader = useAuthHeader();
     const navigate = useNavigate();
@@ -161,6 +163,30 @@ const Footer = (props: {
     };
 
     const renderTextField = () => {
+        if (props.type === 'share') {
+            return (
+                <Stack
+                    direction='row'
+                    alignItems='center'
+                    justifyContent='center'
+                    sx={{ width: '100%', display: 'flex' }}
+                >
+                    <Button
+                        variant='contained'
+                        color='primary'
+                        onClick={() => navigate('/auth')}
+                        sx={{
+                            textTransform: 'none',
+                            mb: '10px'
+                        }}
+                    >
+                        <Typography variant='body2' sx={{ fontFamily: 'Noto Sans, sans-serif' }}>
+                            Try ChatDTC
+                        </Typography>
+                    </Button>
+                </Stack>
+            );
+        }
         const textField = (
             <TextField
                 id='input'

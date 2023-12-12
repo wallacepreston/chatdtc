@@ -85,6 +85,11 @@ const ChatActionsMenu = ({ chatId, handleRename }: ChatActionsProps) => {
 
     const options = [
         {
+            title: 'Share',
+            handleClick: () => handleOpenShareModal(),
+            icon: <IosShare fontSize='small' />
+        },
+        {
             title: 'Rename',
             handleClick: () => handleEdit(),
             icon: <Edit fontSize='small' />

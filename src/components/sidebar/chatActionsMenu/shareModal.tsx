@@ -17,7 +17,7 @@ const ShareModal = ({ open, handleClose, chatId }: ShareModalProps) => {
     const { callApi } = useApi();
     const { getChats } = useChats();
 
-    const url = `${REACT_APP_CLIENT_URL}/c/${chatId}`;
+    const url = `${REACT_APP_CLIENT_URL}/share/${chatId}`;
 
     const handleShare = async () => {
         try {

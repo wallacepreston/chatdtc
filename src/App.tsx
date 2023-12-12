@@ -6,6 +6,7 @@ import AuthPage from './pages/AuthPage';
 import LoginPage from './pages/LoginPage';
 import MainPage from './pages/MainPage';
 import ChatPage from './pages/ChatPage';
+import SharePage from './pages/SharePage';
 import NotFoundPage from './pages/NotFoundPage';
 import { ThinkingProvider } from './contexts/thinking';
 import { StatusProvider } from './contexts/status';
@@ -50,6 +51,7 @@ const App = () => {
                                                     </RequireAuth>
                                                 }
                                             />
+                                            <Route path='/share/:id' element={<SharePage />} />
                                             <Route path='/auth' element={<AuthPage />} />
                                             <Route path='/auth/login' element={<LoginPage />} />
                                             <Route path='*' element={<NotFoundPage />} />
