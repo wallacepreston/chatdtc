@@ -27,7 +27,7 @@ const AuthPage = () => {
                             width: '10rem',
                             height: '10rem'
                         }}
-                        src='/assets/logowinepulse-icon.png'
+                        src='/assets/logochatdtc-icon.png'
                     />
                 </Stack>
                 <Typography

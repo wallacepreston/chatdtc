@@ -106,7 +106,7 @@ const SideBar = () => {
                     >
                         <Link to='/'>
                             <img
-                                src='/assets/logowinepulse.png'
+                                src='/assets/logochatdtc.png'
                                 alt='logo'
                                 style={{ width: '70px', height: '70px', marginTop: '20px' }}
                             />

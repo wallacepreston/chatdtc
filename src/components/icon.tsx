@@ -34,7 +34,7 @@ const Icon = (props: { role: 'user' | 'assistant' | 'anonymous' | 'empty' }) => 
         if (props.role === 'user' || props.role === 'anonymous') {
             return '';
         } else if (props.role === 'assistant') {
-            return '/assets/logowinepulse-icon.png';
+            return '/assets/logochatdtc-icon.png';
         } else if (props.role === 'empty') {
             return '/assets/empty.png';
         }
