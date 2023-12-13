@@ -155,34 +155,24 @@ const Center = (props: { footerHeight: number; setInput: (input: string) => void
                     sx={{ maxWidth: '768px' }}
                 >
                     <Typography
-                        variant='h6'
-                        id='main-title'
-                        sx={{
-                            textAlign: 'center',
-                            color: 'black',
-                            fontFamily: 'Noto Sans, sans-serif'
-                        }}
-                    >
-                        ChatDTC by WinePulse
-                    </Typography>
-                </Stack>
-                <Stack
-                    id='non-active'
-                    direction='column'
-                    display='flex'
-                    justifyContent='center'
-                    alignItems='center'
-                    spacing={1}
-                    sx={{ maxWidth: '768px' }}
-                >
-                    <Typography
                         variant='h5'
+                        id='main-title'
                         sx={{
                             textAlign: 'center',
                             color: 'black',
                             fontFamily: 'Noto Sans, sans-serif',
                             fontWeight: '400',
                             fontSize: '2.25rem'
+                        }}
+                    >
+                        ChatDTC by WinePulse
+                    </Typography>
+                    <Typography
+                        variant='h5'
+                        sx={{
+                            textAlign: 'center',
+                            color: 'black',
+                            fontFamily: 'Noto Sans, sans-serif'
                         }}
                     >
                         How can I help you today?
@@ -201,6 +191,16 @@ const Center = (props: { footerHeight: number; setInput: (input: string) => void
                     >
                         Ask me questions about your data.
                     </Typography>
+                </Stack>
+                <Stack
+                    id='non-active'
+                    direction='column'
+                    display='flex'
+                    justifyContent='center'
+                    alignItems='center'
+                    spacing={1}
+                    sx={{ maxWidth: '768px' }}
+                >
                     <Typography
                         variant='h5'
                         sx={{
