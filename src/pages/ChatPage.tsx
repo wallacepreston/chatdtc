@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable array-callback-return */
 import React, { useState, useEffect, useRef } from 'react';
-import { CircularProgress, IconButton, Stack } from '@mui/material';
+import { IconButton, Stack } from '@mui/material';
 import ArrowDownwardRoundedIcon from '@mui/icons-material/ArrowDownwardRounded';
 import Footer from '../components/footer';
 import SideBar from '../components/sidebar';
@@ -39,6 +39,7 @@ import type { Message as ChatMessageProps } from '../components/chatMessage';
 import useApi from '../hooks/api';
 import { useUser } from '../contexts/user';
 import { Chat } from '../contexts/chat';
+import LinearBuffer from '../components/linearBuffer';
 
 const socket = io(REACT_APP_API_URL as string);
 
@@ -81,6 +82,7 @@ const ChatPage = () => {
     const [scrolledToBottom, setScrolledToBottom] = useState<boolean>(true);
     const [thread, setThread] = useState<Chat>({ Thread_OpenAI_id: '', Winery_id: '' });
     const { thinking, setThinking } = useThinking();
+    const [loadingMessage, setLoadingMessage] = useState<string>('');
     const userMessages = messages.filter(message => message.Role === 'user');
     const messageCount = userMessages.length;
     const isOverMaxMessages = messageCount >= MAX_USER_MESSAGES;
@@ -111,11 +113,8 @@ const ChatPage = () => {
     }, [footerHeight, width]);
 
     const getMessages = async () => {
-        console.log('getMessages');
-        console.log({ lastWineryId });
-
         const foundThread = await callApi({ url: `/api/chat/${id}`, method: 'get' });
-        console.log({ foundThread });
+        console.log('>>>>>> getMessages foundThread', foundThread);
 
         if (!foundThread) {
             navigate('/');
@@ -126,8 +125,7 @@ const ChatPage = () => {
 
         const isAdmin = user.Admin;
 
-        const notUserWinery = lastWineryId && foundThread.Winery_id !== lastWineryId;
-        console.log({ notUserWinery });
+        const notUserWinery = lastWineryId && foundThread?.Winery_id !== lastWineryId;
 
         // if the user doesn't have access to this thread
         if (!isAdmin && notUserWinery) {
@@ -203,7 +201,9 @@ const ChatPage = () => {
 
     useEffect(() => {
         socket.on('runComplete', (data: { chat_id: string }) => {
-            setThinking(false);
+            if (data.chat_id === id) {
+                setThinking(false);
+            }
         });
         socket.on('newMessage', (data: { chat_id: string }) => {
             if (data.chat_id === id) {
@@ -225,6 +225,16 @@ const ChatPage = () => {
                     }
                     return [...messages.slice(0, -1), { Role: 'assistant', Content_Value: data.content }];
                 });
+            }
+        });
+
+        socket.on('loadingMessage', (data: { chat_id: string; content: string }) => {
+            if (data.chat_id === id) {
+                if (scrolledToBottom) {
+                    scrollToBottom();
+                }
+                setThinking(true);
+                setLoadingMessage(data.content);
             }
         });
 
@@ -308,7 +318,7 @@ const ChatPage = () => {
                                 />
                             );
                         })}
-                        {thinking && <CircularProgress color='inherit' />}
+                        {thinking && <LinearBuffer loadingMessage={loadingMessage} />}
                     </Stack>
                     {!scrolledToBottom && (
                         <IconButton

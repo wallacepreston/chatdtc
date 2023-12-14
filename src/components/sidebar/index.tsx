@@ -25,6 +25,7 @@ const SideBar = () => {
     const { chats, getChats } = useChats();
     const { id: activeChatId } = useParams();
     const [editingChat, setEditingChat] = React.useState<boolean>(false);
+    const { Last_Winery_id: lastWineryId } = user;
 
     const authData = auth()!;
 
@@ -38,9 +39,17 @@ const SideBar = () => {
     };
 
     useEffect(() => {
-        socket.on('updatedChats', () => {
-            getChats();
-        });
+        try {
+            socket.on('updatedChats', (data: { Winery_id: string }) => {
+                // TODO - check if this is my winery before getting chats
+                if (data?.Winery_id === lastWineryId) getChats();
+            });
+        } catch (error) {
+            setStatus({
+                type: 'error',
+                message: "Couldn't fetch updated chats. Please refresh the page and try again."
+            });
+        }
 
         // Clean up function
         return () => {

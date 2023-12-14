@@ -4,13 +4,11 @@ import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import axios from 'axios';
 import { useAuthHeader } from 'react-auth-kit';
 import { useNavigate } from 'react-router-dom';
-import io from 'socket.io-client';
 import { useThinking } from '../contexts/thinking';
 import { REACT_APP_API_URL } from '../constants/api';
 import theme from '../theme';
 import { ChatType } from '../pages/ChatPage';
-
-const socket = io(REACT_APP_API_URL as string);
+import useApi from '../hooks/api';
 
 const Footer = (props: {
     setHeight: (height: number) => void;
@@ -28,6 +26,7 @@ const Footer = (props: {
     const [canSubmit, setCanSubmit] = useState<boolean>(true);
     const [width, setWidth] = useState<number>(window.innerWidth);
     const { setThinking } = useThinking();
+    const { callApi } = useApi();
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
@@ -98,19 +97,27 @@ const Footer = (props: {
             setCanSubmit(false);
 
             if (window.location.pathname === '/') {
-                socket.on('newChat', (data: { chat_id: string }) => {
-                    navigate(`/c/${data.chat_id}`);
+                // instead, call api to create a new chat and then navigate to it
+                const threadRes = await callApi({
+                    url: '/api/chat',
+                    method: 'post',
+                    body: { message: { role: 'user', content: message }, chat_id: undefined }
                 });
 
-                const res = await axios.post(
+                const { thread } = threadRes;
+                console.log('>>>>>> thread', thread);
+
+                navigate(`/c/${thread.Thread_OpenAI_id}`);
+
+                const messageRes = await axios.post(
                     `${REACT_APP_API_URL}/api/chat/createMessage`,
-                    { message: { role: 'user', content: message }, chat_id: undefined },
+                    { message: { role: 'user', content: message }, chat_id: thread.Thread_OpenAI_id },
                     { headers: { Authorization: authHeader() } }
                 );
 
                 if (window.location.pathname.match(chatPathRegex)) return;
 
-                const { chat_id } = res.data;
+                const { chat_id } = messageRes.data;
                 navigate(`/c/${chat_id}`);
             } else if (window.location.pathname.match(chatPathRegex)) {
                 const chat_id = window.location.pathname.split('/')[2];
