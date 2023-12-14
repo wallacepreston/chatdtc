@@ -113,10 +113,6 @@ const ChatPage = () => {
     const getMessages = async () => {
         console.log('getMessages');
         console.log({ lastWineryId });
-        // on page reload, we don't have our user data on first render, so don't even try to get messages yet
-        if (!lastWineryId) {
-            return;
-        }
 
         const foundThread = await callApi({ url: `/api/chat/${id}`, method: 'get' });
         console.log({ foundThread });
