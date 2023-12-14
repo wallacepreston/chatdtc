@@ -11,6 +11,7 @@ import { CHAT_DTC_TITLE, MAX_USER_MESSAGES } from '../constants/api';
 import type { Message as ChatMessageProps } from '../components/chatMessage';
 import useApi from '../hooks/api';
 import { useUser } from '../contexts/user';
+import { Chat } from '../contexts/chat';
 
 const SharePage = () => {
     const { id } = useParams<{ id: string }>();
@@ -20,6 +21,7 @@ const SharePage = () => {
     const [height, setHeight] = useState<string>('calc(100vh - 64px)');
     const [width, setWidth] = useState<number>(window.innerWidth);
     const [title, setTitle] = useState<string>('');
+    const [thread, setThread] = useState<Chat>({ Thread_OpenAI_id: '', Winery_id: '' });
     const [lastUpdated, setLastUpdated] = useState<string>('');
     const userMessages = messages.filter(message => message.Role === 'user');
     const messageCount = userMessages.length;
@@ -63,6 +65,7 @@ const SharePage = () => {
             navigate('/');
             return;
         }
+        setThread(foundThread);
 
         const notUserWinery = lastWineryId && foundThread.Winery_id !== lastWineryId;
 
@@ -126,6 +129,7 @@ const SharePage = () => {
                                     width={width}
                                     showIcon={showIcon}
                                     chatType='share'
+                                    thread={thread}
                                 />
                             );
                         })}

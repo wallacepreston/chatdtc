@@ -10,6 +10,8 @@ import { LinkButton } from './styled';
 import theme from '../theme';
 import ReactMarkdown from 'react-markdown';
 import { ChatType } from '../pages/ChatPage';
+import { useUser } from '../contexts/user';
+import { Chat } from '../contexts/chat';
 
 export interface Message {
     Role: 'user' | 'assistant';
@@ -27,14 +29,17 @@ export interface ChatMessageProps {
     width: number;
     showIcon: boolean;
     chatType: ChatType;
+    thread: Chat;
 }
 
 const ChatMessage = (props: ChatMessageProps) => {
-    const { message, key, handleMessageWidth, width, showIcon } = props;
+    const { message, key, handleMessageWidth, width, showIcon, thread } = props;
     const { Role: role } = message;
+    const { user } = useUser();
+    const { SamAccountName } = user;
+    const isOwnedByUser = SamAccountName === thread?.SamAccountName;
 
-    const iconRole = props.chatType === 'share' && role === 'user' ? 'anonymous' : role;
-    const userTitle = props.chatType === 'share' ? 'Anonymous' : 'You';
+    const userTitle = isOwnedByUser ? 'You' : `${thread?.User?.FirstName} ${thread?.User?.LastName}`;
     const fileIds = message.Annotations?.map(annotation => annotation.File_OpenAI_id);
 
     const authHeader = useAuthHeader();
@@ -185,7 +190,7 @@ const ChatMessage = (props: ChatMessageProps) => {
                     spacing={2}
                 >
                     <Grid item>
-                        <Icon role={showIcon ? iconRole : 'empty'} />
+                        <Icon role={showIcon ? role : 'empty'} thread={thread} />
                     </Grid>
                     <Grid item>
                         <Typography variant='h6' fontWeight={'bold'}>

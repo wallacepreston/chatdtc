@@ -3,7 +3,7 @@ import { useAuthHeader } from 'react-auth-kit';
 import { REACT_APP_API_URL } from '../constants/api';
 import axios from 'axios';
 
-interface UserState {
+export interface UserState {
     Last_Winery_id: string | null;
     Created?: string;
     Email?: string;

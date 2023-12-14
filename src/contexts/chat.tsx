@@ -1,11 +1,21 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useAuthHeader } from 'react-auth-kit';
+import { UserState } from './user';
+import { useStatus } from './status';
 
 export interface Chat {
-    title: string;
-    wineryName: string;
-    id: string;
+    Thread_OpenAI_id: string;
+    Winery_id?: string;
+    SamAccountName?: string;
+    Created_Date?: Date;
+    Last_Modified_Date?: Date;
+    Title?: string;
+    Deleted?: boolean;
+    Deleted_Date?: Date;
+    Public?: boolean;
+    Share_Date?: Date;
+    User?: UserState;
 }
 
 type Chats = Chat[];
@@ -25,6 +35,7 @@ interface Props {
 
 export const ChatProvider = ({ children }: Props) => {
     const authHeader = useAuthHeader();
+    const { setStatus } = useStatus();
 
     const [chats, setChats] = useState([]);
 
@@ -36,6 +47,7 @@ export const ChatProvider = ({ children }: Props) => {
             setChats(res.data);
         } catch (err) {
             console.log(err);
+            setStatus({ type: 'error', message: 'Error getting Chats' });
         }
     };
 

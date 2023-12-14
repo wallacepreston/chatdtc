@@ -10,7 +10,7 @@ interface ChatRenameFormProps {
 }
 
 const ChatRenameForm = ({ chat, setEditingChat }: ChatRenameFormProps) => {
-    const [title, setTitle] = React.useState(chat.title?.replaceAll('"', ''));
+    const [title, setTitle] = React.useState(chat.Title?.replaceAll('"', ''));
     const { getChats } = useChats();
     const { callApi } = useApi();
     const { setStatus } = useStatus();
@@ -25,7 +25,7 @@ const ChatRenameForm = ({ chat, setEditingChat }: ChatRenameFormProps) => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         // actual update
-        await callApi({ url: `/api/chat/${chat.id}`, method: 'patch', body: { title } });
+        await callApi({ url: `/api/chat/${chat.Thread_OpenAI_id}`, method: 'patch', body: { title } });
 
         // reset everything
         setEditingChat(false);

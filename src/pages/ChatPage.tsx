@@ -38,6 +38,7 @@ import { CHAT_DTC_TITLE, MAX_USER_MESSAGES, REACT_APP_API_URL } from '../constan
 import type { Message as ChatMessageProps } from '../components/chatMessage';
 import useApi from '../hooks/api';
 import { useUser } from '../contexts/user';
+import { Chat } from '../contexts/chat';
 
 const socket = io(REACT_APP_API_URL as string);
 
@@ -78,6 +79,7 @@ const ChatPage = () => {
     const [width, setWidth] = useState<number>(window.innerWidth);
     const [title, setTitle] = useState<string>('');
     const [scrolledToBottom, setScrolledToBottom] = useState<boolean>(true);
+    const [thread, setThread] = useState<Chat>({ Thread_OpenAI_id: '', Winery_id: '' });
     const { thinking, setThinking } = useThinking();
     const userMessages = messages.filter(message => message.Role === 'user');
     const messageCount = userMessages.length;
@@ -109,21 +111,27 @@ const ChatPage = () => {
     }, [footerHeight, width]);
 
     const getMessages = async () => {
+        console.log('getMessages');
+        console.log({ lastWineryId });
         // on page reload, we don't have our user data on first render, so don't even try to get messages yet
         if (!lastWineryId) {
             return;
         }
 
         const foundThread = await callApi({ url: `/api/chat/${id}`, method: 'get' });
+        console.log({ foundThread });
 
         if (!foundThread) {
             navigate('/');
             return;
         }
 
+        setThread(foundThread);
+
         const isAdmin = user.Admin;
 
         const notUserWinery = lastWineryId && foundThread.Winery_id !== lastWineryId;
+        console.log({ notUserWinery });
 
         // if the user doesn't have access to this thread
         if (!isAdmin && notUserWinery) {
@@ -300,6 +308,7 @@ const ChatPage = () => {
                                     width={width}
                                     showIcon={showIcon}
                                     chatType='form'
+                                    thread={thread}
                                 />
                             );
                         })}

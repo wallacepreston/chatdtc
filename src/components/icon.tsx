@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Avatar } from '@mui/material';
-import { useUser } from '../contexts/user';
 import theme from '../theme';
+import { Chat } from '../contexts/chat';
 
-const Icon = (props: { role: 'user' | 'assistant' | 'anonymous' | 'empty' }) => {
-    const { user } = useUser();
-
+export interface IconProps {
+    role: 'user' | 'assistant' | 'empty';
+    thread: Chat;
+}
+const Icon = (props: IconProps) => {
     const renderInitials = (firstName?: string, lastName?: string) => {
         if (firstName && lastName) {
             return firstName[0].toUpperCase() + lastName[0].toUpperCase();
@@ -14,8 +16,8 @@ const Icon = (props: { role: 'user' | 'assistant' | 'anonymous' | 'empty' }) => 
         }
     };
 
-    const firstName = user?.FirstName;
-    const lastName = user?.LastName;
+    const firstName = props.thread?.User?.FirstName;
+    const lastName = props.thread?.User?.LastName;
     const initials = renderInitials(firstName, lastName);
 
     const [width, setWidth] = useState<number>(window.innerWidth);
@@ -31,7 +33,7 @@ const Icon = (props: { role: 'user' | 'assistant' | 'anonymous' | 'empty' }) => 
     }, [width]);
 
     const handleSrc = () => {
-        if (props.role === 'user' || props.role === 'anonymous') {
+        if (props.role === 'user') {
             return '';
         } else if (props.role === 'assistant') {
             return '/assets/logochatdtc-icon.png';
@@ -41,7 +43,7 @@ const Icon = (props: { role: 'user' | 'assistant' | 'anonymous' | 'empty' }) => 
     };
 
     const handleBackground = () => {
-        if (props.role === 'user' || props.role === 'anonymous') {
+        if (props.role === 'user') {
             return theme.palette.grey[200];
         } else if (props.role === 'assistant') {
             return theme.palette.primary.light;
@@ -64,7 +66,7 @@ const Icon = (props: { role: 'user' | 'assistant' | 'anonymous' | 'empty' }) => 
                 }}
                 src={handleSrc()}
             >
-                {props.role !== 'anonymous' && props.role === 'user' ? initials : ''}
+                {props.role === 'user' ? initials : ''}
             </Avatar>
         </div>
     );

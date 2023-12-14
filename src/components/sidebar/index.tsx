@@ -151,16 +151,16 @@ const SideBar = () => {
                         >
                             <Stack>
                                 {chats.map(chat => {
-                                    const title = chat.title?.replaceAll('"', '');
-                                    const isActiveChat = chat.id === activeChatId;
+                                    const title = chat.Title?.replaceAll('"', '');
+                                    const isActiveChat = chat.Thread_OpenAI_id === activeChatId;
                                     return (
                                         <div
                                             id='chatBtn'
                                             style={{ width: '244px', height: '40px', marginBottom: '5px' }}
                                         >
-                                            <Link to={`/c/${chat.id}`}>
+                                            <Link to={`/c/${chat.Thread_OpenAI_id}`}>
                                                 <Button
-                                                    key={chat.id}
+                                                    key={chat.Thread_OpenAI_id}
                                                     variant='text'
                                                     color='info'
                                                     sx={{
@@ -213,7 +213,7 @@ const SideBar = () => {
                                             >
                                                 {isActiveChat && (
                                                     <ChatActionsMenu
-                                                        chatId={chat.id}
+                                                        chatId={chat.Thread_OpenAI_id}
                                                         handleRename={() => setEditingChat(true)}
                                                     />
                                                 )}
