@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { useAuthHeader } from 'react-auth-kit';
+import { useAuthHeader, useAuthUser } from 'react-auth-kit';
 import { UserState } from './user';
 import { useStatus } from './status';
 
@@ -34,6 +34,8 @@ interface Props {
 }
 
 export const ChatProvider = ({ children }: Props) => {
+    const auth = useAuthUser();
+    const isAuthenticated = Boolean(auth());
     const authHeader = useAuthHeader();
     const { setStatus } = useStatus();
 
@@ -52,9 +54,10 @@ export const ChatProvider = ({ children }: Props) => {
     };
 
     useEffect(() => {
+        if (!isAuthenticated) return;
         getChats();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [isAuthenticated]);
 
     const value = {
         chats,

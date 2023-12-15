@@ -67,7 +67,9 @@ const SharePage = () => {
         }
         setThread(foundThread);
 
-        const notUserWinery = lastWineryId && foundThread?.Winery_id !== lastWineryId;
+        const isPublic = foundThread?.Public;
+
+        const notUserWinery = !isPublic && lastWineryId && foundThread?.Winery_id !== lastWineryId;
 
         // if the user doesn't have access to this thread
         if (notUserWinery) {
