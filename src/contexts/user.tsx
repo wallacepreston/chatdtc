@@ -14,7 +14,6 @@ export interface UserState {
     LastModified?: string;
     LastName?: string;
     SamAccountName?: string;
-    UserPwd?: string;
     UserRole?: string;
     Default_Winery_id?: string;
     Admin?: boolean;
