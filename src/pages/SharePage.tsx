@@ -89,10 +89,6 @@ const SharePage = () => {
         getMessages();
     }, [id, lastWineryId]);
 
-    const handleMessageWidth = () => {
-        return '100%';
-    };
-
     let prevRole: 'user' | 'assistant' | null = null;
 
     return (
@@ -127,8 +123,6 @@ const SharePage = () => {
                                 <ChatMessage
                                     key={index}
                                     message={message}
-                                    handleMessageWidth={handleMessageWidth}
-                                    width={width}
                                     showIcon={showIcon}
                                     chatType='share'
                                     thread={thread}

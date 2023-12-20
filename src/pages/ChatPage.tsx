@@ -35,7 +35,7 @@ import { useThinking } from '../contexts/thinking';
 import ChatMessage from '../components/ChatMessage';
 import { CHAT_DTC_TITLE, MAX_USER_MESSAGES, REACT_APP_API_URL } from '../constants/api';
 
-import type { Message as ChatMessageProps } from '../components/ChatMessage';
+import type { Message } from '../components/ChatMessage';
 import useApi from '../hooks/api';
 import { useUser } from '../contexts/user';
 import { Chat } from '../contexts/chat';
@@ -74,7 +74,7 @@ const ChatPage = () => {
 
     const scrollDiv = useRef<HTMLDivElement>(null);
 
-    const [messages, setMessages] = useState<ChatMessageProps[]>([]);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [footerHeight, setFooterHeight] = useState<number>(0);
     const [height, setHeight] = useState<string>('calc(100vh - 64px)');
     const [width, setWidth] = useState<number>(window.innerWidth);
@@ -273,14 +273,6 @@ const ChatPage = () => {
         }
     };
 
-    const handleMessageWidth = () => {
-        if (width < 1000) {
-            return 'calc(100% - 40px)';
-        } else {
-            return '80%';
-        }
-    };
-
     let prevRole: 'user' | 'assistant' | null = null;
 
     return (
@@ -310,8 +302,6 @@ const ChatPage = () => {
                                 <ChatMessage
                                     key={index}
                                     message={message}
-                                    handleMessageWidth={handleMessageWidth}
-                                    width={width}
                                     showIcon={showIcon}
                                     chatType='form'
                                     thread={thread}

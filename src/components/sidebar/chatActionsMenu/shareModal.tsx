@@ -6,6 +6,7 @@ import { useStatus } from '../../../contexts/status';
 import { REACT_APP_CLIENT_URL } from '../../../constants/api';
 import useApi from '../../../hooks/api';
 import { useChats } from '../../../contexts/chat';
+import useClipboard from '../../../hooks/useClipboard';
 
 interface ShareModalProps {
     open: boolean;
@@ -14,6 +15,7 @@ interface ShareModalProps {
 }
 const ShareModal = ({ open, handleClose, chatId }: ShareModalProps) => {
     const { setStatus } = useStatus();
+    const { copyToClipboard } = useClipboard();
     const { callApi } = useApi();
     const { getChats } = useChats();
     const [isShared, setIsShared] = useState<boolean>(false);
@@ -38,13 +40,11 @@ const ShareModal = ({ open, handleClose, chatId }: ShareModalProps) => {
             setStatus({ type: 'error', message: 'Error sharing chat' });
         }
 
-        try {
-            // copy url to clipboard
-            await navigator.clipboard.writeText(url);
-            setStatus({ type: 'success', message: 'Chat link copied to clipboard' });
-        } catch (error) {
-            setStatus({ type: 'error', message: 'Unable to copy chat link to clipboard. Please copy the link.' });
-        }
+        copyToClipboard({
+            textContent: url,
+            successMessage: 'Link copied to clipboard.',
+            errorMessage: 'Unable to copy chat link to clipboard. Please copy the link.'
+        });
         setIsShared(true);
     };
     return (

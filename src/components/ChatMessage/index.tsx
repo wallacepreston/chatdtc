@@ -1,8 +1,7 @@
 import React from 'react';
 import Icon from '../icon';
-import { Grid, IconButton, Typography } from '@mui/material';
-import { OpenInNew } from '@mui/icons-material';
-import ContentPasteIcon from '@mui/icons-material/ContentPaste';
+import { Grid, Typography } from '@mui/material';
+import { OpenInNew, ThumbDownOffAlt, ThumbUpOffAlt, ContentPaste } from '@mui/icons-material';
 import { useAuthHeader } from 'react-auth-kit';
 import axios from 'axios';
 import { useStatus } from '../../contexts/status';
@@ -12,6 +11,9 @@ import ReactMarkdown from 'react-markdown';
 import { ChatType } from '../../pages/ChatPage';
 import { useUser } from '../../contexts/user';
 import { Chat } from '../../contexts/chat';
+import MessageActionIcon from './MessageActionIcon';
+import useClipboard from '../../hooks/useClipboard';
+import useApi from '../../hooks/api';
 
 export interface Message {
     Role: 'user' | 'assistant';
@@ -20,20 +22,21 @@ export interface Message {
     Annotations?: {
         File_OpenAI_id: string;
     }[];
+    Message_OpenAI_id?: string;
 }
 
 export interface ChatMessageProps {
     message: Message;
     key: number;
-    handleMessageWidth: () => string;
-    width: number;
     showIcon: boolean;
     chatType: ChatType;
     thread: Chat;
 }
 
 const ChatMessage = (props: ChatMessageProps) => {
-    const { message, key, handleMessageWidth, width, showIcon, thread } = props;
+    const { message, key, showIcon, thread } = props;
+    const { copyToClipboard } = useClipboard();
+    const { callApi } = useApi();
     const { Role: role } = message;
     const { user } = useUser();
     const { SamAccountName } = user;
@@ -96,23 +99,39 @@ const ChatMessage = (props: ChatMessageProps) => {
         }
     };
 
-    const copyIcon = width > 1000 && (
-        <IconButton
-            onClick={() => {
-                navigator.clipboard.writeText(message.Content_Value);
-            }}
-            sx={{
-                color: theme.palette.grey[400],
-                mt: '26px',
-                width: '25px',
-                height: '25px',
-                borderRadius: '7px',
-                '&:hover': { color: '#D9D9E3' }
-            }}
-        >
-            <ContentPasteIcon sx={{ fontSize: '15px' }} />
-        </IconButton>
-    );
+    const handleCopy = () => {
+        copyToClipboard({
+            textContent: message.Content_Value
+        });
+    };
+
+    const handleFeedback = async (feedback: 'like' | 'dislike') => {
+        try {
+            const res = await callApi({
+                url: `/api/message/${message.Message_OpenAI_id}/feedback`,
+                method: 'post',
+                body: {
+                    feedback
+                }
+            });
+            if (res.status !== 'success') {
+                setStatus({
+                    type: 'error',
+                    message: 'Error submitting feedback'
+                });
+                return;
+            }
+            setStatus({
+                type: 'success',
+                message: `Message ${feedback}d. Thank you for your feedback!`
+            });
+        } catch (error) {
+            setStatus({
+                type: 'error',
+                message: 'Error submitting feedback'
+            });
+        }
+    };
 
     const renderContent = () => {
         const content: string[] = message.Content_Value.split('\n');
@@ -202,12 +221,12 @@ const ChatMessage = (props: ChatMessageProps) => {
             <Grid
                 container
                 direction={role === 'assistant' ? 'row' : 'row-reverse'}
-                spacing={1}
+                spacing={2}
                 sx={{
-                    width: handleMessageWidth()
+                    width: '100%'
                 }}
             >
-                <Grid item xs={11}>
+                <Grid item xs={10}>
                     <div
                         style={{
                             backgroundColor:
@@ -221,8 +240,12 @@ const ChatMessage = (props: ChatMessageProps) => {
                         {renderContent()}
                     </div>
                 </Grid>
-                <Grid item xs={1}>
-                    {copyIcon}
+                <Grid item xs={2}>
+                    <Grid container direction='row' spacing={1}>
+                        <MessageActionIcon icon={ContentPaste} onClick={handleCopy} />
+                        <MessageActionIcon icon={ThumbUpOffAlt} onClick={() => handleFeedback('like')} />
+                        <MessageActionIcon icon={ThumbDownOffAlt} onClick={() => handleFeedback('dislike')} />
+                    </Grid>
                 </Grid>
             </Grid>
         </div>
