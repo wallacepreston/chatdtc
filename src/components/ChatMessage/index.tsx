@@ -34,7 +34,7 @@ export interface ChatMessageProps {
 }
 
 const ChatMessage = (props: ChatMessageProps) => {
-    const { message, key, showIcon, thread } = props;
+    const { message, key, showIcon, thread, chatType } = props;
     const { copyToClipboard } = useClipboard();
     const { callApi } = useApi();
     const { Role: role } = message;
@@ -241,10 +241,22 @@ const ChatMessage = (props: ChatMessageProps) => {
                     </div>
                 </Grid>
                 <Grid item xs={2}>
-                    <Grid container direction='row' spacing={1}>
+                    <Grid
+                        container
+                        direction='row'
+                        justifyContent={role === 'assistant' ? 'start' : 'end'}
+                        alignItems='flex-end'
+                        height='100%'
+                        paddingBottom='8px'
+                        spacing={1}
+                    >
                         <MessageActionIcon icon={ContentPaste} onClick={handleCopy} />
-                        <MessageActionIcon icon={ThumbUpOffAlt} onClick={() => handleFeedback('like')} />
-                        <MessageActionIcon icon={ThumbDownOffAlt} onClick={() => handleFeedback('dislike')} />
+                        {chatType === 'form' && role === 'assistant' && (
+                            <>
+                                <MessageActionIcon icon={ThumbUpOffAlt} onClick={() => handleFeedback('like')} />
+                                <MessageActionIcon icon={ThumbDownOffAlt} onClick={() => handleFeedback('dislike')} />
+                            </>
+                        )}
                     </Grid>
                 </Grid>
             </Grid>
