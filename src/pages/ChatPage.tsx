@@ -32,10 +32,10 @@ import go from 'highlight.js/lib/languages/go';
 import c from 'highlight.js/lib/languages/c';
 import 'highlight.js/styles/atom-one-dark.css';
 import { useThinking } from '../contexts/thinking';
-import ChatMessage from '../components/chatMessage';
+import ChatMessage from '../components/ChatMessage';
 import { CHAT_DTC_TITLE, MAX_USER_MESSAGES, REACT_APP_API_URL } from '../constants/api';
 
-import type { Message as ChatMessageProps } from '../components/chatMessage';
+import type { Message as ChatMessageProps } from '../components/ChatMessage';
 import useApi from '../hooks/api';
 import { useUser } from '../contexts/user';
 import { Chat } from '../contexts/chat';

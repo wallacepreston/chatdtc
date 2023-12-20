@@ -5,10 +5,10 @@ import { Divider, Stack, Typography } from '@mui/material';
 import Footer from '../components/footer';
 import { useParams, useNavigate } from 'react-router-dom';
 import 'highlight.js/styles/atom-one-dark.css';
-import ChatMessage from '../components/chatMessage';
+import ChatMessage from '../components/ChatMessage';
 import { CHAT_DTC_TITLE, MAX_USER_MESSAGES } from '../constants/api';
 
-import type { Message as ChatMessageProps } from '../components/chatMessage';
+import type { Message as ChatMessageProps } from '../components/ChatMessage';
 import useApi from '../hooks/api';
 import { useUser } from '../contexts/user';
 import { Chat } from '../contexts/chat';

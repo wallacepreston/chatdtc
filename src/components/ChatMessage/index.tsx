@@ -1,17 +1,17 @@
 import React from 'react';
-import Icon from './icon';
+import Icon from '../icon';
 import { Grid, IconButton, Typography } from '@mui/material';
 import { OpenInNew } from '@mui/icons-material';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import { useAuthHeader } from 'react-auth-kit';
 import axios from 'axios';
-import { useStatus } from '../contexts/status';
-import { LinkButton } from './styled';
-import theme from '../theme';
+import { useStatus } from '../../contexts/status';
+import { LinkButton } from '../styled';
+import theme from '../../theme';
 import ReactMarkdown from 'react-markdown';
-import { ChatType } from '../pages/ChatPage';
-import { useUser } from '../contexts/user';
-import { Chat } from '../contexts/chat';
+import { ChatType } from '../../pages/ChatPage';
+import { useUser } from '../../contexts/user';
+import { Chat } from '../../contexts/chat';
 
 export interface Message {
     Role: 'user' | 'assistant';
