@@ -97,7 +97,6 @@ const Center = (props: { footerHeight: number; setInput: (input: string) => void
         if (!suggestedThreads) return null;
         const threads = (suggestedThreads as Suggestion[])
             .filter((thread: Suggestion) => thread.Category === category)
-            .sort(() => Math.random() - 0.5)
             .slice(0, 3);
 
         return (
