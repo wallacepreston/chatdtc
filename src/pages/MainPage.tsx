@@ -55,25 +55,17 @@ const MainPage = () => {
     };
 
     return (
-        <div id='MainPage' style={{ width: '100vw', height: '100vh', display: 'flex' }}>
-            <div id='side' style={{ width: handleWidth(), height: '100%' }}>
-                {width > 1000 && <SideBar />}
-            </div>
-            <div
-                id='main'
-                style={{ width: handleMainWidth(), height: '100vh', display: 'flex', justifyContent: 'center' }}
-            >
-                {width < 1000 && <Topper chatTitle='New chat' />}
-                <Center setInput={setInput} footerHeight={footerHeight} />
-                <Footer
-                    setHeight={handleHeightChange}
-                    newInput={newInput}
-                    openModal={() => {}}
-                    isOverMaxMessages={false}
-                    insufficientBalance={insufficientBalance}
-                    type='form'
-                />
-            </div>
+        <div id='main' style={{ width: handleMainWidth(), height: '100vh', display: 'flex', justifyContent: 'center' }}>
+            {width < 1000 && <Topper chatTitle='New chat' />}
+            <Center setInput={setInput} footerHeight={footerHeight} />
+            <Footer
+                setHeight={handleHeightChange}
+                newInput={newInput}
+                openModal={() => {}}
+                isOverMaxMessages={false}
+                insufficientBalance={insufficientBalance}
+                type='form'
+            />
         </div>
     );
 };

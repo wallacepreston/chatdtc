@@ -16,6 +16,8 @@ import theme from './theme';
 import SelectWineryModal from './components/selectWineryModal';
 import { UserProvider } from './contexts/user';
 import { ChatProvider } from './contexts/chat';
+import AccountPage from './pages/Account';
+import Layout from './components/Layout';
 
 const App = () => {
     return (
@@ -36,21 +38,17 @@ const App = () => {
                                         <SelectWineryModal />
                                         <Routes>
                                             <Route
-                                                path='/'
+                                                path='/*'
                                                 element={
                                                     <RequireAuth loginPath='/auth'>
-                                                        <MainPage />
+                                                        <Layout />
                                                     </RequireAuth>
                                                 }
-                                            />
-                                            <Route
-                                                path='/c/:id'
-                                                element={
-                                                    <RequireAuth loginPath='/auth'>
-                                                        <ChatPage />
-                                                    </RequireAuth>
-                                                }
-                                            />
+                                            >
+                                                <Route index element={<MainPage />} />
+                                                <Route path='c/:id' element={<ChatPage />} />
+                                                <Route path='account/billing/:tab' element={<AccountPage />} />
+                                            </Route>
                                             <Route path='/share/:id' element={<SharePage />} />
                                             <Route path='/auth' element={<AuthPage />} />
                                             <Route path='/auth/login' element={<LoginPage />} />

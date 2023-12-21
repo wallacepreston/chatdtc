@@ -283,10 +283,7 @@ const ChatPage = () => {
     let prevRole: 'user' | 'assistant' | null = null;
 
     return (
-        <div id='ChatPage' style={{ width: '100%', height: '100vh', display: 'flex', justifyContent: 'center' }}>
-            <div id='side' style={{ width: handleWidthSide(), height: '100%' }}>
-                {width > 1000 && <SideBar />}
-            </div>
+        <>
             {width < 1000 && <Topper chatTitle={title} />}
             <div
                 id='main'
@@ -346,7 +343,7 @@ const ChatPage = () => {
                     />
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

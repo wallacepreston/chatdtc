@@ -5,7 +5,7 @@ import { REACT_APP_API_URL } from '../constants/api';
 
 interface Options {
     url: string;
-    method: string;
+    method?: string;
     body?: any;
 }
 
@@ -16,7 +16,7 @@ const useApi = () => {
     const [loading, setLoading] = useState(false);
 
     const apiRequest = useCallback(
-        async ({ url, method, body = null }: Options) => {
+        async ({ url, method = 'get', body = null }: Options) => {
             return axios({
                 method,
                 url: `${REACT_APP_API_URL}${url}`,

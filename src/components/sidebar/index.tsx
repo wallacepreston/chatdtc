@@ -8,7 +8,7 @@ import io from 'socket.io-client';
 import { useStatus } from '../../contexts/status';
 import { REACT_APP_API_URL } from '../../constants/api';
 import { useUser } from '../../contexts/user';
-import { AccountCircle, Business } from '@mui/icons-material';
+import { AccountCircle, AttachMoney, Business } from '@mui/icons-material';
 import { useChats } from '../../contexts/chat';
 import theme from '../../theme';
 import ChatActionsMenu from './chatActionsMenu';
@@ -270,6 +270,17 @@ const SideBar = () => {
                                     'aria-labelledby': 'profile-button'
                                 }}
                             >
+                                <Link
+                                    to='/account/billing/overview'
+                                    style={{ textDecoration: 'none', color: 'inherit' }}
+                                >
+                                    <MenuItem onClick={handleClose}>
+                                        <ListItemIcon>
+                                            <AttachMoney fontSize='small' sx={{ ml: '11px' }} />
+                                        </ListItemIcon>
+                                        Billing
+                                    </MenuItem>
+                                </Link>
                                 <MenuItem onClick={handleChangeWinery}>
                                     <ListItemIcon>
                                         <Business fontSize='small' sx={{ ml: '11px' }} />
