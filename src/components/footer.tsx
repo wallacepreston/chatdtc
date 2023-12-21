@@ -206,7 +206,7 @@ const Footer = (props: {
             <TextField
                 id='input'
                 autoFocus
-                disabled={props.insufficientBalance || props.isOverMaxMessages}
+                disabled={props.isOverMaxMessages}
                 placeholder='Send a message...'
                 variant='outlined'
                 value={input}
@@ -264,14 +264,6 @@ const Footer = (props: {
                 maxRows={8}
             />
         );
-
-        if (props.insufficientBalance) {
-            return (
-                <Tooltip title='Insufficient funds. Please purchase credits to start new chats.' placement='top'>
-                    {textField}
-                </Tooltip>
-            );
-        }
 
         if (props.isOverMaxMessages) {
             return (
