@@ -4,11 +4,16 @@ import Footer from '../components/footer';
 import Center from '../components/center';
 import Topper from '../components/topper';
 import { CHAT_DTC_TITLE } from '../constants/api';
+import { useUser } from '../contexts/user';
 
 const MainPage = () => {
     const [footerHeight, setFooterHeight] = useState<number>(0);
     const [newInput, setNewInput] = useState<string>('');
     const [width, setWidth] = useState<number>(window.innerWidth);
+    const { user } = useUser();
+
+    const { balance } = user;
+    const insufficientBalance = !balance || balance < 3;
 
     useEffect(() => {
         document.title = `New chat | ${CHAT_DTC_TITLE}`;
@@ -65,6 +70,7 @@ const MainPage = () => {
                     newInput={newInput}
                     openModal={() => {}}
                     isOverMaxMessages={false}
+                    insufficientBalance={insufficientBalance}
                     type='form'
                 />
             </div>

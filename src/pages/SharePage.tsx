@@ -137,6 +137,7 @@ const SharePage = () => {
                         newInput=''
                         openModal={() => {}}
                         isOverMaxMessages={isOverMaxMessages}
+                        insufficientBalance={false}
                         type='share'
                     />
                 </div>

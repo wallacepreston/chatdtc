@@ -9,12 +9,14 @@ import { REACT_APP_API_URL } from '../constants/api';
 import theme from '../theme';
 import { ChatType } from '../pages/ChatPage';
 import useApi from '../hooks/api';
+import { useStatus } from '../contexts/status';
 
 const Footer = (props: {
     setHeight: (height: number) => void;
     newInput: string;
     openModal: () => void;
     isOverMaxMessages: boolean;
+    insufficientBalance: boolean;
     type: ChatType;
 }) => {
     const authHeader = useAuthHeader();
@@ -27,6 +29,7 @@ const Footer = (props: {
     const [width, setWidth] = useState<number>(window.innerWidth);
     const { setThinking } = useThinking();
     const { callApi } = useApi();
+    const { setStatus } = useStatus();
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
@@ -104,8 +107,12 @@ const Footer = (props: {
                     body: { message: { role: 'user', content: message }, chat_id: undefined }
                 });
 
+                if (!threadRes) {
+                    setStatus({ type: 'error', message: 'Error creating chat. Please reload the page and try again.' });
+                    return;
+                }
+
                 const { thread } = threadRes;
-                console.log('>>>>>> thread', thread);
 
                 navigate(`/c/${thread.Thread_OpenAI_id}`);
 
@@ -129,6 +136,7 @@ const Footer = (props: {
             }
         } catch (err) {
             console.log(err);
+            setStatus({ type: 'error', message: 'Error creating message. Please reload the page and try again.' });
         } finally {
             setCanSubmit(true);
             return;
@@ -198,7 +206,7 @@ const Footer = (props: {
             <TextField
                 id='input'
                 autoFocus
-                disabled={props.isOverMaxMessages}
+                disabled={props.insufficientBalance || props.isOverMaxMessages}
                 placeholder='Send a message...'
                 variant='outlined'
                 value={input}
@@ -257,13 +265,22 @@ const Footer = (props: {
             />
         );
 
+        if (props.insufficientBalance) {
+            return (
+                <Tooltip title='Insufficient funds. Please purchase credits to start new chats.' placement='top'>
+                    {textField}
+                </Tooltip>
+            );
+        }
+
         if (props.isOverMaxMessages) {
             return (
-                <Tooltip title='You have reached the maximum number of messages for this chat.'>{textField}</Tooltip>
+                <Tooltip title='You have reached the maximum number of messages for this chat.' placement='top'>
+                    {textField}
+                </Tooltip>
             );
-        } else {
-            return textField;
         }
+        return textField;
     };
 
     return (

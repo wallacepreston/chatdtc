@@ -9,7 +9,7 @@ export interface UserState {
     Email?: string;
     FirstName?: string;
     FullName?: string;
-    Wineries?: Array<{ [key: string]: any }>; // Replace with the actual shape of the group objects if known
+    Wineries?: Array<{ [key: string]: any }>;
     LastWinery?: { [key: string]: any };
     LastModified?: string;
     LastName?: string;
@@ -17,6 +17,7 @@ export interface UserState {
     UserRole?: string;
     Default_Winery_id?: string;
     Admin?: boolean;
+    balance?: number; // their BillingBalance.Balance amount, or zero if they have no BillingBalance record
 }
 
 const UserContext = createContext({

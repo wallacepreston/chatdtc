@@ -40,6 +40,7 @@ import useApi from '../hooks/api';
 import { useUser } from '../contexts/user';
 import { Chat } from '../contexts/chat';
 import LinearBuffer from '../components/linearBuffer';
+import { useStatus } from '../contexts/status';
 
 const socket = io(REACT_APP_API_URL as string);
 
@@ -84,11 +85,15 @@ const ChatPage = () => {
     const { thinking, setThinking } = useThinking();
     const [loadingMessage, setLoadingMessage] = useState<string>('');
     const userMessages = messages.filter(message => message.Role === 'user');
+    const assistantMessages = messages.filter(message => message.Role === 'assistant');
     const messageCount = userMessages.length;
     const isOverMaxMessages = messageCount >= MAX_USER_MESSAGES;
     const { callApi } = useApi();
     const { user } = useUser();
     const { Last_Winery_id: lastWineryId } = user;
+    const { setStatus } = useStatus();
+    const { balance } = user;
+    const insufficientBalance = !assistantMessages.length && (!balance || balance < 3);
 
     useEffect(() => {
         const updateWidth = () => {
@@ -114,7 +119,6 @@ const ChatPage = () => {
 
     const getMessages = async () => {
         const foundThread = await callApi({ url: `/api/chat/${id}`, method: 'get' });
-        console.log('>>>>>> getMessages foundThread', foundThread);
 
         if (!foundThread) {
             navigate('/');
@@ -240,15 +244,8 @@ const ChatPage = () => {
 
         socket.on('resError', (data: { chat_id: string; error: unknown }) => {
             if (data.chat_id === id) {
-                setMessages(messages => {
-                    if (scrolledToBottom) {
-                        scrollToBottom();
-                    }
-                    if (messages[messages.length - 1]?.Role === 'user') {
-                        return [...messages, { Role: 'assistant', Content_Value: 'Error: ' + data.error }];
-                    }
-                    return [...messages.slice(0, -1), { Role: 'assistant', Content_Value: 'Error: ' + data.error }];
-                });
+                setStatus({ type: 'error', message: 'There was an error with the chat. Please reload the page.' });
+                setThinking(false);
             }
         });
     }, [socket]);
@@ -334,6 +331,7 @@ const ChatPage = () => {
                         newInput=''
                         openModal={() => {}}
                         isOverMaxMessages={isOverMaxMessages}
+                        insufficientBalance={insufficientBalance}
                         type='form'
                     />
                 </div>
