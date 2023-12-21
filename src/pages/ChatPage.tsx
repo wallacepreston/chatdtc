@@ -206,6 +206,7 @@ const ChatPage = () => {
     useEffect(() => {
         socket.on('runComplete', (data: { chat_id: string }) => {
             if (data.chat_id === id) {
+                getMessages();
                 setThinking(false);
             }
         });
@@ -248,7 +249,16 @@ const ChatPage = () => {
                 setThinking(false);
             }
         });
-    }, [socket]);
+        return () => {
+            socket.off('runComplete');
+            socket.off('newMessage');
+            socket.off('chatgptResChunk');
+            socket.off('loadingMessage');
+            socket.off('resError');
+            setLoadingMessage('');
+            setThinking(false);
+        };
+    }, [socket, id]);
 
     useEffect(() => {
         hljs.highlightAll();
