@@ -3,18 +3,20 @@ import WpModal from './wpModal';
 import { REACT_APP_API_URL } from '../constants/api';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material';
+import { Button, FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material';
 import { useUser } from '../contexts/user';
 import { LoadingButton } from '@mui/lab';
 import { useChats } from '../contexts/chat';
 import { useNavigate } from 'react-router-dom';
+import { useStatus } from '../contexts/status';
 
 const SelectWineryModal = () => {
     const authHeader = useAuthHeader();
-    const { user, setUser } = useUser();
+    const { user, setUser, getUser } = useUser();
     const { Last_Winery_id: lastWineryId } = user;
     const auth = useAuthUser();
     const isAuthenticated = Boolean(auth());
+    const { setStatus } = useStatus();
     const [chosenWineryId, setChosenWineryId] = useState('');
     const [loading, setLoading] = useState(false);
     const { getChats } = useChats();
@@ -47,6 +49,8 @@ const SelectWineryModal = () => {
         });
         navigate('/');
         setLoading(false);
+        const wineryName = res.data.user.LastWinery.Winery_Name;
+        setStatus({ type: 'success', message: `Switched winery to ${wineryName}` });
         // update winery context to include new winery
     };
 
@@ -66,10 +70,14 @@ const SelectWineryModal = () => {
     }, [lastWineryId]);
     // once lastWineryId is set, close modal
 
+    const handleCancel = () => {
+        getUser();
+        setStatus({ type: 'info', message: 'Selected Winery not changed' });
+    };
+
     if (!lastWineryId) {
         return (
-            <WpModal title='Please Select a Winery' open={!lastWineryId && isAuthenticated} onClose={() => {}}>
-                <p>Please select a winery about which to have a conversation.</p>
+            <WpModal title='Please Select a Winery' open={!lastWineryId && isAuthenticated} onClose={handleCancel}>
                 <FormControl fullWidth>
                     <InputLabel id='demo-simple-select-label'>Winery</InputLabel>
                     <Grid container direction='column' alignItems='left' spacing={2}>
@@ -98,15 +106,20 @@ const SelectWineryModal = () => {
                                 justifyContent: 'flex-end'
                             }}
                         >
-                            <LoadingButton
-                                disabled={!chosenWineryId}
-                                loading={loading}
-                                variant='contained'
-                                color='primary'
-                                onClick={handleChooseWinery}
-                            >
-                                Save
-                            </LoadingButton>
+                            <Grid container gap={2} direction='row' justifyContent='flex-end'>
+                                <Button variant='outlined' color='primary' onClick={handleCancel}>
+                                    Cancel
+                                </Button>
+                                <LoadingButton
+                                    disabled={!chosenWineryId}
+                                    loading={loading}
+                                    variant='contained'
+                                    color='primary'
+                                    onClick={handleChooseWinery}
+                                >
+                                    Save
+                                </LoadingButton>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </FormControl>
