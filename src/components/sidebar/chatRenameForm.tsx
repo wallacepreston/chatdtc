@@ -22,8 +22,8 @@ const ChatRenameForm = ({ chat, setEditingChat }: ChatRenameFormProps) => {
         inputRef.current.focus();
     }, []);
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
+        e?.preventDefault();
         // actual update
         await callApi({ url: `/api/chat/${chat.Thread_OpenAI_id}`, method: 'patch', body: { title } });
 
@@ -42,7 +42,7 @@ const ChatRenameForm = ({ chat, setEditingChat }: ChatRenameFormProps) => {
                 value={title}
                 onChange={e => setTitle(e.target.value)}
                 size='small'
-                onBlur={() => setEditingChat(false)}
+                onBlur={() => handleSubmit()}
             />
         </form>
     );
