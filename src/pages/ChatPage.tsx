@@ -312,6 +312,7 @@ const ChatPage = () => {
                                     showIcon={showIcon}
                                     chatType='form'
                                     thread={thread}
+                                    getMessages={getMessages}
                                 />
                             );
                         })}

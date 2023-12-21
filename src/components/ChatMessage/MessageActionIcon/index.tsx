@@ -5,6 +5,7 @@ import theme from '../../../theme';
 
 interface Props {
     icon: typeof ContentPaste;
+    selected?: boolean;
     onClick: () => void;
 }
 
@@ -13,7 +14,8 @@ const MessageActionIcon = (props: Props) => {
         <IconButton
             onClick={props.onClick}
             sx={{
-                color: theme.palette.grey[400],
+                backgroundColor: props.selected ? theme.palette.grey[300] : 'transparent',
+                color: props.selected ? 'white' : theme.palette.grey[400],
                 mt: '26px',
                 width: '25px',
                 height: '25px',

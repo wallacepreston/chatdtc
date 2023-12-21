@@ -23,6 +23,7 @@ export interface Message {
         File_OpenAI_id: string;
     }[];
     Message_OpenAI_id?: string;
+    Feedback?: string;
 }
 
 export interface ChatMessageProps {
@@ -31,10 +32,11 @@ export interface ChatMessageProps {
     showIcon: boolean;
     chatType: ChatType;
     thread: Chat;
+    getMessages: () => void;
 }
 
 const ChatMessage = (props: ChatMessageProps) => {
-    const { message, key, showIcon, thread, chatType } = props;
+    const { message, key, showIcon, thread, chatType, getMessages } = props;
     const { copyToClipboard } = useClipboard();
     const { callApi } = useApi();
     const { Role: role } = message;
@@ -125,6 +127,7 @@ const ChatMessage = (props: ChatMessageProps) => {
                 type: 'success',
                 message: `Message ${feedback}d. Thank you for your feedback!`
             });
+            getMessages();
         } catch (error) {
             setStatus({
                 type: 'error',
@@ -253,8 +256,17 @@ const ChatMessage = (props: ChatMessageProps) => {
                         <MessageActionIcon icon={ContentPaste} onClick={handleCopy} />
                         {chatType === 'form' && role === 'assistant' && (
                             <>
-                                <MessageActionIcon icon={ThumbUpOffAlt} onClick={() => handleFeedback('like')} />
-                                <MessageActionIcon icon={ThumbDownOffAlt} onClick={() => handleFeedback('dislike')} />
+                                {/* TODO - show as selected whichever one is selected */}
+                                <MessageActionIcon
+                                    icon={ThumbUpOffAlt}
+                                    onClick={() => handleFeedback('like')}
+                                    selected={message.Feedback === 'like'}
+                                />
+                                <MessageActionIcon
+                                    icon={ThumbDownOffAlt}
+                                    onClick={() => handleFeedback('dislike')}
+                                    selected={message.Feedback === 'dislike'}
+                                />
                             </>
                         )}
                     </Grid>
