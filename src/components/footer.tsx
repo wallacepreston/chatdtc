@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, TextField, IconButton, Stack, Tooltip, Button } from '@mui/material';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
-import axios from 'axios';
-import { useAuthHeader } from 'react-auth-kit';
 import { useNavigate } from 'react-router-dom';
 import { useThinking } from '../contexts/thinking';
-import { REACT_APP_API_URL } from '../constants/api';
 import theme from '../theme';
 import { ChatType } from '../pages/ChatPage';
 import useApi from '../hooks/api';
-import { useStatus } from '../contexts/status';
 
 const Footer = (props: {
     setHeight: (height: number) => void;
@@ -19,7 +15,6 @@ const Footer = (props: {
     insufficientBalance: boolean;
     type: ChatType;
 }) => {
-    const authHeader = useAuthHeader();
     const navigate = useNavigate();
 
     const [input, setInput] = useState<string>('');
@@ -29,7 +24,6 @@ const Footer = (props: {
     const [width, setWidth] = useState<number>(window.innerWidth);
     const { setThinking } = useThinking();
     const { callApi } = useApi();
-    const { setStatus } = useStatus();
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
@@ -104,11 +98,11 @@ const Footer = (props: {
                 const threadRes = await callApi({
                     url: '/api/chat',
                     method: 'post',
-                    body: { message: { role: 'user', content: message }, chat_id: undefined }
+                    body: { message: { role: 'user', content: message }, chat_id: undefined },
+                    exposeError: true
                 });
 
                 if (!threadRes) {
-                    setStatus({ type: 'error', message: 'Error creating chat. Please reload the page and try again.' });
                     return;
                 }
 
@@ -116,27 +110,36 @@ const Footer = (props: {
 
                 navigate(`/c/${thread.Thread_OpenAI_id}`);
 
-                const messageRes = await axios.post(
-                    `${REACT_APP_API_URL}/api/chat/createMessage`,
-                    { message: { role: 'user', content: message }, chat_id: thread.Thread_OpenAI_id },
-                    { headers: { Authorization: authHeader() } }
-                );
+                const { chat_id } = await callApi({
+                    url: '/api/chat/createMessage',
+                    method: 'post',
+                    body: { message: { role: 'user', content: message }, chat_id: thread.Thread_OpenAI_id },
+                    exposeError: true
+                });
 
                 if (window.location.pathname.match(chatPathRegex)) return;
 
-                const { chat_id } = messageRes.data;
                 navigate(`/c/${chat_id}`);
             } else if (window.location.pathname.match(chatPathRegex)) {
                 const chat_id = window.location.pathname.split('/')[2];
-                await axios.post(
-                    `${REACT_APP_API_URL}/api/chat/createMessage`,
-                    { message: { role: 'user', content: message }, chat_id },
-                    { headers: { Authorization: authHeader() } }
-                );
+                const messageResponse = await callApi({
+                    url: '/api/chat/createMessage',
+                    method: 'post',
+                    body: { message: { role: 'user', content: message }, chat_id },
+                    exposeError: true
+                });
+                console.log('>>>>> messageResponse', messageResponse);
+                if (!messageResponse) {
+                    // setStatus({ type: 'error', message: 'Error creating message. Please reload the page and try again.' });
+                    setThinking(false);
+                    return;
+                }
             }
         } catch (err) {
             console.log(err);
-            setStatus({ type: 'error', message: 'Error creating message. Please reload the page and try again.' });
+            // if error matches INVALID_PROMPT_MESSAGE, then set status with helpful message
+            // setStatus({ type: 'error', message: 'Error creating message. Please reload the page and try again.' });
+            setThinking(false);
         } finally {
             setCanSubmit(true);
             return;
