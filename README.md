@@ -1,6 +1,6 @@
-# wine-assistant
+# ChatDTC
 
-Front End UI for ChatDTC AI Assistant
+Front End UI code for ChatDTC, an AI Assistant deployed at [chatdtc.winepulse.com](https://chatdtc.winepulse.com/)
 
 ## Getting Started
 
@@ -48,6 +48,32 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+## PM2
+
+We use [pm2](https://pm2.keymetrics.io/docs/usage/process-management/) on the server to keep the node process running. A few commands:
+
+To restart all applications:
+
+`pm2 restart all` (this runs when the Linux server restarts)
+
+To stop a specified application:
+
+`pm2 stop frontend`
+
+To delete a specified application:
+
+`pm2 delete frontend`
+
+To stop them all:
+
+`pm2 stop all`
+
+To add a new pm2 process (or re-add after deleting), use the command in the package.json file in the repos:
+
+`cd winepulse/chatdtc`
+
+`npm run start-forever`
 
 ## Docker
 
