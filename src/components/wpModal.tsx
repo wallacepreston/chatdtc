@@ -23,9 +23,9 @@ const WpModal = ({
                 <Typography id='modal-modal-title' variant='h6' component='h2'>
                     {title}
                 </Typography>
-                <Typography id='modal-modal-description' sx={{ mt: 2 }}>
+                <div id='modal-modal-description' style={{ marginTop: '12px' }}>
                     {children}
-                </Typography>
+                </div>
             </StyledModalBox>
         </Modal>
     );

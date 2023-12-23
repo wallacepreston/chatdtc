@@ -75,7 +75,7 @@ const Topper = (props: { chatTitle: string }) => {
             </div>
             <div id='sidebarMobile'>
                 <CSSTransition in={sidebarOpen} timeout={200} classNames={'shadow'} unmountOnExit>
-                    <div
+                    <button
                         className='shadow'
                         style={{
                             position: 'fixed',
@@ -85,6 +85,7 @@ const Topper = (props: { chatTitle: string }) => {
                             zIndex: '91'
                         }}
                         onClick={showMenu}
+                        tabIndex={0}
                     />
                 </CSSTransition>
                 <CSSTransition in={sidebarOpen} timeout={200} classNames={'sidebar'} unmountOnExit>

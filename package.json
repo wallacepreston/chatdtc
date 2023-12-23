@@ -12,6 +12,7 @@
         "@types/react": "^18.0.37",
         "@types/react-dom": "^18.0.11",
         "@types/socket.io-client": "^3.0.0",
+        "eslint-plugin-jsx-a11y": "6.8.0",
         "onchange": "7.1.0",
         "prettier": "3.1.0"
     },
@@ -53,10 +54,21 @@
         "prettier:watch": "onchange '**/*' -- prettier --write --ignore-unknown {{changed}}"
     },
     "eslintConfig": {
+        "plugins": [
+            "jsx-a11y"
+        ],
         "extends": [
             "react-app",
-            "react-app/jest"
-        ]
+            "react-app/jest",
+            "plugin:jsx-a11y/recommended"
+        ],
+        "rules": {
+            "jsx-a11y/no-autofocus": "off",
+            "jsx-a11y/label-has-associated-control": "warn",
+            "jsx-a11y/no-static-element-interactions": "warn",
+            "jsx-a11y/no-noninteractive-element-interactions": "warn",
+            "jsx-a11y/click-events-have-key-events": "warn"
+        }
     },
     "browserslist": {
         "production": [

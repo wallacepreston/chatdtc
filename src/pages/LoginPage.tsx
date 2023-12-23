@@ -110,6 +110,7 @@ const LoginPage = () => {
                     <ThemeProvider theme={theme}>
                         <TextField
                             id='username'
+                            autoComplete='on'
                             value={username}
                             onChange={handleEmailChange}
                             type='text'
@@ -120,6 +121,7 @@ const LoginPage = () => {
                         />
                         <TextField
                             id='password'
+                            autoComplete='on'
                             value={password}
                             onChange={handlePasswordChange}
                             type={showPassword ? 'text' : 'password'}

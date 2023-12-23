@@ -17,7 +17,6 @@ interface Props {
 
 const StatusProvider = ({ children }: Props) => {
     const [status, setStatus] = useState<StatusState>({ type: null, message: null });
-    console.log('>>> status', status);
 
     return <StatusContext.Provider value={{ status, setStatus }}>{children}</StatusContext.Provider>;
 };

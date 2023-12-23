@@ -95,12 +95,12 @@ const Center = (props: { footerHeight: number; setInput: (input: string) => void
 
     const renderColumn = (category: string) => {
         if (!suggestedThreads) return null;
-        const threads = (suggestedThreads as Suggestion[])
+        const suggestions = (suggestedThreads as Suggestion[])
             .filter((thread: Suggestion) => thread.Category === category)
             .slice(0, 3);
 
         return (
-            <div id='examples' style={{ width: width > 1000 ? 'calc(100% / 3)' : 'auto' }}>
+            <div id='examples' key={category} style={{ width: width > 1000 ? 'calc(100% / 3)' : 'auto' }}>
                 {/* {width > 1000 && <TipsAndUpdates sx={{ color: 'black' }} />} */}
                 <Typography
                     variant='h6'
@@ -118,11 +118,12 @@ const Center = (props: { footerHeight: number; setInput: (input: string) => void
                     {/* {width < 1000 && <TipsAndUpdates fontSize='small' sx={{ color: 'black', mr: '5px' }} />} */}{' '}
                     {category}
                 </Typography>
-                {threads.map(thread => (
+                {suggestions.map(suggestion => (
                     <Button
-                        handleClick={() => handlePresentationButtonClick(thread.Message_Content)}
+                        key={suggestion.Message_Content}
+                        handleClick={() => handlePresentationButtonClick(suggestion.Message_Content)}
                         clickable
-                        content={thread.Summary}
+                        content={suggestion.Summary}
                     />
                 ))}
             </div>

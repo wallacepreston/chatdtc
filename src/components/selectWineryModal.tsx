@@ -93,7 +93,11 @@ const SelectWineryModal = () => {
                                 }}
                             >
                                 {wineries?.map(group => {
-                                    return <MenuItem value={group.Winery_id}>{group.Winery_Name}</MenuItem>;
+                                    return (
+                                        <MenuItem key={group.Winery_id} value={group.Winery_id}>
+                                            {group.Winery_Name}
+                                        </MenuItem>
+                                    );
                                 })}
                             </Select>
                         </Grid>

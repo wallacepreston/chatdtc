@@ -28,7 +28,6 @@ export interface Message {
 
 export interface ChatMessageProps {
     message: Message;
-    key: number;
     showIcon: boolean;
     chatType: ChatType;
     thread: Chat;
@@ -36,7 +35,7 @@ export interface ChatMessageProps {
 }
 
 const ChatMessage = (props: ChatMessageProps) => {
-    const { message, key, showIcon, thread, chatType, getMessages } = props;
+    const { message, showIcon, thread, chatType, getMessages } = props;
     const { copyToClipboard } = useClipboard();
     const { callApi } = useApi();
     const { Role: role } = message;
@@ -152,21 +151,20 @@ const ChatMessage = (props: ChatMessageProps) => {
                     if (i % 3 === 0) {
                         // this part is not a link
                         return (
-                            <Typography
-                                key={index}
-                                variant='body1'
-                                sx={{
+                            <div
+                                key={`${index}-${i}`}
+                                style={{
                                     borderRadius: '10px',
                                     color: 'black',
                                     fontFamily: 'Noto Sans, sans-serif',
                                     fontSize: '0.95rem',
                                     lineHeight: '1.8',
-                                    pl: '1rem',
+                                    paddingLeft: '1rem',
                                     maxWidth: '100%'
                                 }}
                             >
                                 <ReactMarkdown>{part}</ReactMarkdown>
-                            </Typography>
+                            </div>
                         );
                     } else if (i % 3 === 1) {
                         // this part is the link text
@@ -175,6 +173,7 @@ const ChatMessage = (props: ChatMessageProps) => {
                         linkIndex++;
                         return (
                             <LinkButton
+                                key={`${index}-${i}`}
                                 variant='text'
                                 color='info'
                                 endIcon={<OpenInNew />}
@@ -193,7 +192,6 @@ const ChatMessage = (props: ChatMessageProps) => {
     };
     return (
         <div
-            key={key}
             style={{
                 width: '100%',
                 display: 'flex',

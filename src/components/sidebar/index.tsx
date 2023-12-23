@@ -165,6 +165,7 @@ const SideBar = () => {
                                     return (
                                         <div
                                             id='chatBtn'
+                                            key={chat.Thread_OpenAI_id}
                                             style={{ width: '244px', height: '40px', marginBottom: '5px' }}
                                         >
                                             <Link to={`/c/${chat.Thread_OpenAI_id}`}>
@@ -187,8 +188,11 @@ const SideBar = () => {
                                                         }
                                                     }}
                                                 >
-                                                    <Typography
-                                                        sx={{ fontSize: '0.8rem', fontFamily: 'Noto Sans, sans-serif' }}
+                                                    <div
+                                                        style={{
+                                                            fontSize: '0.8rem',
+                                                            fontFamily: 'Noto Sans, sans-serif'
+                                                        }}
                                                     >
                                                         {editingChat && isActiveChat ? (
                                                             <ChatRenameForm
@@ -198,7 +202,7 @@ const SideBar = () => {
                                                         ) : (
                                                             title
                                                         )}
-                                                    </Typography>
+                                                    </div>
                                                 </Button>
                                             </Link>
                                             <div
