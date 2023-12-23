@@ -1,78 +1,78 @@
-# Publishes built image to AWS ECR
+# # Publishes built image to AWS ECR
 
-name: Deploy Image to AWS ECR
+# name: Deploy Image to AWS ECR
 
-# Controls when the workflow will run
-on:
-  # Triggers the workflow on push or pull request events but only for the main branch
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+# # Controls when the workflow will run
+# on:
+#   # Triggers the workflow on push or pull request events but only for the main branch
+#   push:
+#     branches: [ main ]
+#   pull_request:
+#     branches: [ main ]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+#   # Allows you to run this workflow manually from the Actions tab
+#   workflow_dispatch:
 
-env:
-  AWS_REGION: us-west-2                                       # set this to your preferred AWS region, e.g. us-west-1
-  ECR_REPOSITORY: wine-assistant                             # set this to your Amazon ECR repository name
-  ECS_SERVICE: wine-assistant                                # set this to your Amazon ECS service name
-  ECS_CLUSTER: wine-assistant                                # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: .github/workflows/task-definition.json # set this to the path to your Amazon ECS task definition
-                                                              # file, e.g. .aws/task-definition.json
-                                                              # relative to root of repo
-  CONTAINER_NAME: wine-assistant                             # set this to the name of the container in the
-                                                              # containerDefinitions section of your task definition
+# env:
+#   AWS_REGION: us-west-2                                       # set this to your preferred AWS region, e.g. us-west-1
+#   ECR_REPOSITORY: wine-assistant                             # set this to your Amazon ECR repository name
+#   ECS_SERVICE: wine-assistant                                # set this to your Amazon ECS service name
+#   ECS_CLUSTER: wine-assistant                                # set this to your Amazon ECS cluster name
+#   ECS_TASK_DEFINITION: .github/workflows/task-definition.json # set this to the path to your Amazon ECS task definition
+#                                                               # file, e.g. .aws/task-definition.json
+#                                                               # relative to root of repo
+#   CONTAINER_NAME: wine-assistant                             # set this to the name of the container in the
+#                                                               # containerDefinitions section of your task definition
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    environment: production
+# # A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# jobs:
+#   deploy:
+#     name: Deploy
+#     runs-on: ubuntu-latest
+#     environment: production
 
-    steps:
-      - name: Check out code
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-        uses: actions/checkout@v2
+#     steps:
+#       - name: Check out code
+#       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+#         uses: actions/checkout@v2
 
-      # Runs a set of commands using the runners shell
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@fba7546d2edae00076f63a18c270d2339d4a5c86
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+#       # Runs a set of commands using the runners shell
+#       - name: Configure AWS credentials
+#         uses: aws-actions/configure-aws-credentials@fba7546d2edae00076f63a18c270d2339d4a5c86
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@21b0a138dd5769f8dc56d59134e2ead898f31de7
+#       - name: Login to Amazon ECR
+#         id: login-ecr
+#         uses: aws-actions/amazon-ecr-login@21b0a138dd5769f8dc56d59134e2ead898f31de7
 
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          # Build a docker container and
-          # push it to ECR so that it can
-          # be deployed to ECS.
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+#       - name: Build, tag, and push image to Amazon ECR
+#         id: build-image
+#         env:
+#           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#           IMAGE_TAG: ${{ github.sha }}
+#         run: |
+#           # Build a docker container and
+#           # push it to ECR so that it can
+#           # be deployed to ECS.
+#           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+#           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+#           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@4225e0b507142a2e432b018bc3ccb728559b437a
-        with:
-          task-definition: ${{ env.ECS_TASK_DEFINITION }}
-          container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ steps.build-image.outputs.image }}
+#       - name: Fill in the new image ID in the Amazon ECS task definition
+#         id: task-def
+#         uses: aws-actions/amazon-ecs-render-task-definition@4225e0b507142a2e432b018bc3ccb728559b437a
+#         with:
+#           task-definition: ${{ env.ECS_TASK_DEFINITION }}
+#           container-name: ${{ env.CONTAINER_NAME }}
+#           image: ${{ steps.build-image.outputs.image }}
 
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@395eb89f22c1540e0c779b29400ef14f1591488a
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE }}
-          cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
+#       - name: Deploy Amazon ECS task definition
+#         uses: aws-actions/amazon-ecs-deploy-task-definition@395eb89f22c1540e0c779b29400ef14f1591488a
+#         with:
+#           task-definition: ${{ steps.task-def.outputs.task-definition }}
+#           service: ${{ env.ECS_SERVICE }}
+#           cluster: ${{ env.ECS_CLUSTER }}
+#           wait-for-service-stability: true
