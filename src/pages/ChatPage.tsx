@@ -77,7 +77,7 @@ const ChatPage = () => {
 
     const [messages, setMessages] = useState<Message[]>([]);
     const [footerHeight, setFooterHeight] = useState<number>(0);
-    const [height, setHeight] = useState<string>('calc(100vh - 64px)');
+    const [height, setHeight] = useState<string>('calc(100dvh - 64px)');
     const [width, setWidth] = useState<number>(window.innerWidth);
     const [title, setTitle] = useState<string>('');
     const [scrolledToBottom, setScrolledToBottom] = useState<boolean>(true);
