@@ -127,6 +127,7 @@ const SharePage = () => {
                                     chatType='share'
                                     thread={thread}
                                     getMessages={getMessages}
+                                    width={width}
                                 />
                             );
                         })}

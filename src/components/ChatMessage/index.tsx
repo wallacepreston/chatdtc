@@ -32,10 +32,11 @@ export interface ChatMessageProps {
     chatType: ChatType;
     thread: Chat;
     getMessages: () => void;
+    width: number;
 }
 
 const ChatMessage = (props: ChatMessageProps) => {
-    const { message, showIcon, thread, chatType, getMessages } = props;
+    const { message, showIcon, thread, chatType, getMessages, width } = props;
     const { copyToClipboard } = useClipboard();
     const { callApi } = useApi();
     const { Role: role } = message;
@@ -190,6 +191,12 @@ const ChatMessage = (props: ChatMessageProps) => {
             });
         }
     };
+
+    const handleDirectionFeedback = () => {
+        if (width < 1000) return 'column';
+        if (role === 'assistant') return 'row';
+        else return 'row-reverse';
+    };
     return (
         <div
             style={{
@@ -221,7 +228,7 @@ const ChatMessage = (props: ChatMessageProps) => {
             )}
             <Grid
                 container
-                direction={role === 'assistant' ? 'row' : 'row-reverse'}
+                direction={handleDirectionFeedback()}
                 spacing={2}
                 sx={{
                     width: '100%'

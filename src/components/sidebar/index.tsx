@@ -102,7 +102,7 @@ const SideBar = () => {
         <div id='SideBar'>
             <AppBar
                 position='static'
-                sx={{ bgcolor: sidebarColor, height: '100vh', width: '260px', position: 'fixed', zIndex: '100' }}
+                sx={{ bgcolor: sidebarColor, height: '100dvh', width: '260px', position: 'fixed', zIndex: '100' }}
             >
                 <Toolbar sx={{ width: '100%', height: '100%', position: 'relative', right: '25px' }}>
                     <Stack
@@ -263,7 +263,7 @@ const SideBar = () => {
                                 }}
                                 startIcon={<AccountCircle fontSize='small' sx={{ ml: '11px' }} />}
                             >
-                                {authData.username}
+                                {authData?.username}
                             </Button>
                             <Menu
                                 id='profile-menu'

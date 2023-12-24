@@ -16,7 +16,6 @@ const MessageActionIcon = (props: Props) => {
             sx={{
                 backgroundColor: props.selected ? theme.palette.grey[300] : 'transparent',
                 color: props.selected ? 'white' : theme.palette.grey[400],
-                mt: '26px',
                 width: '25px',
                 height: '25px',
                 borderRadius: '7px',

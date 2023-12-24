@@ -313,6 +313,7 @@ const ChatPage = () => {
                                     chatType='form'
                                     thread={thread}
                                     getMessages={getMessages}
+                                    width={width}
                                 />
                             );
                         })}

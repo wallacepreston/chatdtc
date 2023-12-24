@@ -4,17 +4,18 @@ import { ThemeProvider } from '@mui/material/styles';
 import theme from '../theme';
 import Visibility from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOff from '@mui/icons-material/VisibilityOffOutlined';
-import axios from 'axios';
 import { useSignIn } from 'react-auth-kit';
 import { useNavigate } from 'react-router-dom';
-import { CHAT_DTC_TITLE, REACT_APP_API_URL } from '../constants/api';
+import { CHAT_DTC_TITLE } from '../constants/api';
 import { useUser } from '../contexts/user';
 import { LockPerson } from '@mui/icons-material';
+import useApi from '../hooks/api';
 
 const LoginPage = () => {
     const signIn = useSignIn();
     const navigate = useNavigate();
     const { setUser } = useUser();
+    const { callApi } = useApi();
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -41,33 +42,37 @@ const LoginPage = () => {
 
     const handleConfirm = async (e: React.FormEvent) => {
         e.preventDefault();
-        const res = await axios.post(`${REACT_APP_API_URL}/api/auth/login`, { username, password });
-        if (res.data.message === 'Login successful') {
+        const data = await callApi({
+            url: `/api/auth/login`,
+            body: { username, password },
+            method: 'POST'
+        });
+        if (!data || !data.message) {
+            setUnknownError(true);
+        } else if (data.message === 'Login successful') {
             if (
                 signIn({
-                    token: res.data.token,
+                    token: data.token,
                     expiresIn: 28800,
                     tokenType: 'Bearer',
                     authState: {
-                        email: res.data.user.Email,
-                        username: res.data.user.SamAccountName
+                        email: data.user.Email,
+                        username: data.user.SamAccountName
                     }
                 })
             ) {
-                setUser(res?.data?.user);
+                setUser(data?.user);
                 navigate('/');
             } else {
                 console.log('Login failed');
                 setUnknownError(true);
             }
-        } else if (res.data.message === 'User not registered') {
+        } else if (data.message === 'User not registered') {
             setUsernameNotRegisteredError(true);
-        } else if (res.data.message === 'Incorrect password') {
+        } else if (data.message === 'Incorrect password') {
             setIncorrectPwdError(true);
-        } else if (res.data.message === 'Server error') {
+        } else if (data.message === 'Server error') {
             setServerError(true);
-        } else {
-            setUnknownError(true);
         }
     };
 
@@ -87,16 +92,17 @@ const LoginPage = () => {
                 height: '100vh',
                 backgroundColor: 'white',
                 display: 'flex',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                alignItems: 'center'
             }}
         >
-            <form autoComplete='off' onSubmit={handleConfirm}>
+            <form autoComplete='on' onSubmit={handleConfirm}>
                 <Stack
                     spacing={2}
                     direction='column'
                     textAlign='center'
                     alignItems='center'
-                    sx={{ width: '100%', maxWidth: '350px', mt: '270px' }}
+                    sx={{ width: '100%', maxWidth: '350px' }}
                 >
                     <Typography variant='h3' sx={{ mb: '10px', pointerEvents: 'none', fontSize: '3rem' }}>
                         <LockPerson />
@@ -105,7 +111,7 @@ const LoginPage = () => {
                         variant='h4'
                         sx={{ fontFamily: 'Noto Sans, sans-serif', letterSpacing: '-1px', width: '350px', mb: '20px' }}
                     >
-                        <b>Welcome back</b>
+                        <b>Welcome Back</b>
                     </Typography>
                     <ThemeProvider theme={theme}>
                         <TextField

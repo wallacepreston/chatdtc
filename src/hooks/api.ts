@@ -6,7 +6,7 @@ import { useStatus } from '../contexts/status';
 
 interface Options {
     url: string;
-    method: string;
+    method?: string;
     body?: any;
     exposeError?: boolean;
 }
