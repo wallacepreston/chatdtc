@@ -168,7 +168,7 @@ const SideBar = () => {
                                             key={chat.Thread_OpenAI_id}
                                             style={{ width: '244px', height: '40px', marginBottom: '5px' }}
                                         >
-                                            <Link to={`/c/${chat.Thread_OpenAI_id}`}>
+                                            <Link to={`/c/${chat.Thread_OpenAI_id}`} style={{ textDecoration: 'none' }}>
                                                 <Button
                                                     key={chat.Thread_OpenAI_id}
                                                     variant='text'
