@@ -47,7 +47,7 @@
         "dev": "react-scripts start & npm run prettier:watch",
         "build": "react-scripts build",
         "start": "node src/server/index.js",
-        "start-forever": "pm2 start npm --name 'frontend' -- start src/server/index.js",
+        "start-forever": "pm2 start npm --time --name 'frontend' -- start src/server/index.js",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
         "prettier:run": "prettier --write ./src",
