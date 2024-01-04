@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import WpModal from '../../wpModal';
-import { Button, Grid, Stack, Typography } from '@mui/material';
+import { Button, FormControlLabel, FormGroup, Grid, Stack, Switch, Typography } from '@mui/material';
 import { ContentCopy } from '@mui/icons-material';
 import { useStatus } from '../../../contexts/status';
 import { REACT_APP_CLIENT_URL } from '../../../constants/api';
@@ -19,13 +19,31 @@ const ShareModal = ({ open, handleClose, chatId }: ShareModalProps) => {
     const { callApi } = useApi();
     const { getChats } = useChats();
     const [isShared, setIsShared] = useState<boolean>(false);
+    const [downloadsPublic, setDownloadsPublic] = useState<boolean>(true);
 
     const url = `${REACT_APP_CLIENT_URL}/share/${chatId}`;
+
+    const getChat = async () => {
+        const foundThread = await callApi({ url: `/api/chat/${chatId}`, method: 'get' });
+        if (foundThread) {
+            setDownloadsPublic(foundThread.Downloads_Public);
+        }
+    };
+
+    useEffect(() => {
+        getChat();
+        setIsShared(false);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [open]);
 
     const handleShare = async () => {
         try {
             // set visibility to public
-            const resp = await callApi({ url: `/api/chat/${chatId}`, method: 'patch', body: { public: true } });
+            const resp = await callApi({
+                url: `/api/chat/${chatId}`,
+                method: 'patch',
+                body: { public: true, downloadsPublic }
+            });
 
             if (resp?.status !== 'success') {
                 setStatus({
@@ -70,6 +88,22 @@ const ShareModal = ({ open, handleClose, chatId }: ShareModalProps) => {
                             <Typography sx={{ fontSize: '.8em' }}>{url}</Typography>
                         </>
                     )}
+                    <br />
+                    <FormGroup>
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={downloadsPublic}
+                                    onChange={() => {
+                                        setDownloadsPublic(!downloadsPublic);
+                                        setIsShared(false);
+                                    }}
+                                    name='downloadsPublic'
+                                />
+                            }
+                            label='Allow anyone to download files from this chat'
+                        />
+                    </FormGroup>
                     <br />
                     <Stack direction='row' display='flex' justifyContent='space-evenly'>
                         <Button variant='outlined' color='primary' onClick={handleClose}>

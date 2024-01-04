@@ -14,6 +14,7 @@ export interface Chat {
     Deleted?: boolean;
     Deleted_Date?: Date;
     Public?: boolean;
+    Downloads_Public?: boolean;
     Share_Date?: Date;
     User?: UserState;
 }

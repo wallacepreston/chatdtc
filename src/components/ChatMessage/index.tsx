@@ -1,11 +1,10 @@
 import React from 'react';
 import Icon from '../icon';
 import { Grid, Typography } from '@mui/material';
-import { OpenInNew, ThumbDownOffAlt, ThumbUpOffAlt, ContentPaste } from '@mui/icons-material';
+import { ThumbDownOffAlt, ThumbUpOffAlt, ContentPaste } from '@mui/icons-material';
 import { useAuthHeader } from 'react-auth-kit';
 import axios from 'axios';
 import { useStatus } from '../../contexts/status';
-import { LinkButton } from '../styled';
 import theme from '../../theme';
 import ReactMarkdown from 'react-markdown';
 import { ChatType } from '../../pages/ChatPage';
@@ -14,6 +13,7 @@ import { Chat } from '../../contexts/chat';
 import MessageActionIcon from './MessageActionIcon';
 import useClipboard from '../../hooks/useClipboard';
 import useApi from '../../hooks/api';
+import LinkButton from './LinkButton';
 
 export interface Message {
     Role: 'user' | 'assistant';
@@ -42,9 +42,14 @@ const ChatMessage = (props: ChatMessageProps) => {
     const { Role: role } = message;
     const { user } = useUser();
     const { SamAccountName } = user;
-    const isOwnedByUser = SamAccountName === thread?.SamAccountName;
+    const threadIsOwnedByUser = SamAccountName === thread?.SamAccountName;
 
-    const userTitle = isOwnedByUser ? 'You' : `${thread?.User?.FirstName} ${thread?.User?.LastName}`;
+    // three cases: (1) form, (2) share view and I own it, (3) share view and I don't own it
+    const fileIsDownloadableByUser = chatType === 'form' || threadIsOwnedByUser;
+    // if it's share view, we need to check if it's public.
+    const downloadEnabled = fileIsDownloadableByUser || thread.Downloads_Public;
+
+    const userTitle = threadIsOwnedByUser ? 'You' : `${thread?.User?.FirstName} ${thread?.User?.LastName}`;
     const fileIds = message.Annotations?.map(annotation => annotation.File_OpenAI_id);
 
     const authHeader = useAuthHeader();
@@ -175,13 +180,11 @@ const ChatMessage = (props: ChatMessageProps) => {
                         return (
                             <LinkButton
                                 key={`${index}-${i}`}
-                                variant='text'
-                                color='info'
-                                endIcon={<OpenInNew />}
-                                onClick={() => handleDownload(fileId)}
-                            >
-                                <Typography sx={{ fontFamily: 'Noto Sans, sans-serif' }}>{linkText}</Typography>
-                            </LinkButton>
+                                fileId={fileId}
+                                linkText={linkText}
+                                handleDownload={handleDownload}
+                                downloadEnabled={downloadEnabled}
+                            />
                         );
                     } else {
                         return null;

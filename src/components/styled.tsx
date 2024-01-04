@@ -1,15 +1,6 @@
-import { Box, Button } from '@mui/material';
+import { Box } from '@mui/material';
 import styled from 'styled-components';
 
-export const LinkButton = styled(Button)`
-    text-transform: none;
-    margin-left: 1rem;
-    border-radius: 5px;
-    justify-content: left;
-    &:hover {
-        text-decoration: underline;
-    }
-`;
 export const StyledModalBox = styled(Box)`
     position: absolute;
     top: 50%;
