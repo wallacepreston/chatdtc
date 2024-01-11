@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Stack, Typography, TextField, Button, Snackbar, Alert, IconButton } from '@mui/material';
+import { Stack, Typography, TextField, Button, IconButton } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../theme';
 import Visibility from '@mui/icons-material/VisibilityOutlined';
@@ -10,27 +10,24 @@ import { CHAT_DTC_TITLE } from '../constants/api';
 import { useUser } from '../contexts/user';
 import { LockPerson } from '@mui/icons-material';
 import useApi from '../hooks/api';
+import { useStatus } from '../contexts/status';
 
 const LoginPage = () => {
     const signIn = useSignIn();
     const navigate = useNavigate();
     const { setUser } = useUser();
+    const { setStatus } = useStatus();
     const { callApi } = useApi();
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [incorrectPwdError, setIncorrectPwdError] = useState(false);
-    const [emailNotRegisteredError, setUsernameNotRegisteredError] = useState(false);
-    const [serverError, setServerError] = useState(false);
-    const [emailNotVerifiedError, setUsernameNotVerifiedError] = useState(false);
-    const [unknownError, setUnknownError] = useState(false);
 
     useEffect(() => {
         document.title = `Log in to ${CHAT_DTC_TITLE}`;
     }, []);
 
-    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
         setUsername(value);
     };
@@ -48,7 +45,7 @@ const LoginPage = () => {
             method: 'POST'
         });
         if (!data || !data.message) {
-            setUnknownError(true);
+            setStatus({ type: 'error', message: 'Error with Login' });
         } else if (data.message === 'Login successful') {
             if (
                 signIn({
@@ -65,23 +62,15 @@ const LoginPage = () => {
                 navigate('/');
             } else {
                 console.log('Login failed');
-                setUnknownError(true);
+                setStatus({ type: 'error', message: 'Error with Login' });
             }
         } else if (data.message === 'User not registered') {
-            setUsernameNotRegisteredError(true);
+            setStatus({ type: 'error', message: 'User not registered' });
         } else if (data.message === 'Incorrect password') {
-            setIncorrectPwdError(true);
+            setStatus({ type: 'error', message: 'Incorrect username or password' });
         } else if (data.message === 'Server error') {
-            setServerError(true);
+            setStatus({ type: 'error', message: 'Server error' });
         }
-    };
-
-    const handleAlertClose = () => {
-        setUsernameNotRegisteredError(false);
-        setIncorrectPwdError(false);
-        setServerError(false);
-        setUsernameNotVerifiedError(false);
-        setUnknownError(false);
     };
 
     return (
@@ -111,14 +100,14 @@ const LoginPage = () => {
                         variant='h4'
                         sx={{ fontFamily: 'Noto Sans, sans-serif', letterSpacing: '-1px', width: '350px', mb: '20px' }}
                     >
-                        <b>Welcome Back</b>
+                        <b>Update Password</b>
                     </Typography>
                     <ThemeProvider theme={theme}>
                         <TextField
                             id='username'
                             autoComplete='on'
                             value={username}
-                            onChange={handleEmailChange}
+                            onChange={handleUsernameChange}
                             type='text'
                             label='Username'
                             variant='outlined'
@@ -168,31 +157,6 @@ const LoginPage = () => {
                     </ThemeProvider>
                 </Stack>
             </form>
-            <Snackbar open={incorrectPwdError} autoHideDuration={8000} onClose={handleAlertClose}>
-                <Alert onClose={handleAlertClose} severity='error' variant='filled'>
-                    Incorrect password
-                </Alert>
-            </Snackbar>
-            <Snackbar open={emailNotRegisteredError} autoHideDuration={8000} onClose={handleAlertClose}>
-                <Alert onClose={handleAlertClose} severity='error' variant='filled'>
-                    Email not registered
-                </Alert>
-            </Snackbar>
-            <Snackbar open={serverError} autoHideDuration={8000} onClose={handleAlertClose}>
-                <Alert onClose={handleAlertClose} severity='error' variant='filled'>
-                    Server error
-                </Alert>
-            </Snackbar>
-            <Snackbar open={emailNotVerifiedError} autoHideDuration={8000} onClose={handleAlertClose}>
-                <Alert onClose={handleAlertClose} severity='error' variant='filled'>
-                    Email not verified
-                </Alert>
-            </Snackbar>
-            <Snackbar open={unknownError} autoHideDuration={8000} onClose={handleAlertClose}>
-                <Alert onClose={handleAlertClose} severity='error' variant='filled'>
-                    Unknown error
-                </Alert>
-            </Snackbar>
         </div>
     );
 };
