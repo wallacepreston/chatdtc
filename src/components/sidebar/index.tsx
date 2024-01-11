@@ -177,6 +177,7 @@ const SideBar = () => {
                                         <Tooltip
                                             title={title}
                                             placement='right'
+                                            enterDelay={600}
                                             slotProps={{
                                                 popper: {
                                                     modifiers: [
