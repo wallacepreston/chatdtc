@@ -6,6 +6,7 @@ import { useThinking } from '../contexts/thinking';
 import theme from '../theme';
 import { ChatType } from '../pages/ChatPage';
 import useApi from '../hooks/api';
+import { useChats } from '../contexts/chat';
 
 const Footer = (props: {
     setHeight: (height: number) => void;
@@ -24,6 +25,7 @@ const Footer = (props: {
     const [width, setWidth] = useState<number>(window.innerWidth);
     const { setThinking } = useThinking();
     const { callApi } = useApi();
+    const { getChats } = useChats();
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
@@ -128,13 +130,14 @@ const Footer = (props: {
                     body: { message: { role: 'user', content: message }, chat_id },
                     exposeError: true
                 });
-                console.log('>>>>> messageResponse', messageResponse);
+
                 if (!messageResponse) {
-                    // setStatus({ type: 'error', message: 'Error creating message. Please reload the page and try again.' });
                     setThinking(false);
                     return;
                 }
             }
+
+            getChats();
         } catch (err) {
             console.log(err);
             // if error matches INVALID_PROMPT_MESSAGE, then set status with helpful message
