@@ -23,6 +23,7 @@ const ChatCategory = ({ category, hoverInactive, sidebarColor }: ChatCategoryPro
                     borderRadius: '5px',
                     height: '20px',
                     margin: '8px 0 16px 8px',
+                    paddingLeft: '4px',
                     textTransform: 'none'
                 }}
             >
@@ -32,7 +33,7 @@ const ChatCategory = ({ category, hoverInactive, sidebarColor }: ChatCategoryPro
                         <Grid container spacing={1} direction='row' justifyContent='space-between' alignItems='center'>
                             <Grid item sx={verticallyCentered}>
                                 <Typography
-                                    sx={{ fontSize: '.9em', color: theme.palette.grey[600], fontWeight: 'bold' }}
+                                    sx={{ fontSize: '.8em', color: theme.palette.grey[600], fontWeight: 900 }}
                                     color='primary'
                                 >
                                     {category.name}

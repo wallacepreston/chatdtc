@@ -42,7 +42,7 @@ const ChatItem = ({ chat, hoverInactive, sidebarColor }: ChatItemProps) => {
                     width: '244px',
                     height: '40px',
                     marginBottom: '5px',
-                    marginLeft: '12px'
+                    marginLeft: '16px'
                 }}
             >
                 <Link to={`/c/${chat.Thread_OpenAI_id}`} style={{ textDecoration: 'none' }}>
