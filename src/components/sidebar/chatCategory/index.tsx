@@ -15,14 +15,14 @@ const ChatCategory = ({ category, hoverInactive, sidebarColor }: ChatCategoryPro
     const [expanded, setExpanded] = React.useState(true);
     const verticallyCentered = { display: 'flex', justifyContent: 'center' };
     return (
-        <Stack>
+        <Stack sx={{ margin: '8px 0' }}>
             {/* Category name collapse bar */}
             <Button
                 onClick={() => setExpanded(!expanded)}
                 sx={{
                     borderRadius: '5px',
                     height: '20px',
-                    margin: '8px 0 8px 8px',
+                    margin: '8px 0 16px 8px',
                     textTransform: 'none'
                 }}
             >
@@ -31,7 +31,10 @@ const ChatCategory = ({ category, hoverInactive, sidebarColor }: ChatCategoryPro
                     <Grid item>
                         <Grid container spacing={1} direction='row' justifyContent='space-between' alignItems='center'>
                             <Grid item sx={verticallyCentered}>
-                                <Typography sx={{ fontSize: '.8em', color: theme.palette.grey[600] }} color='primary'>
+                                <Typography
+                                    sx={{ fontSize: '.9em', color: theme.palette.grey[600], fontWeight: 'bold' }}
+                                    color='primary'
+                                >
                                     {category.name}
                                 </Typography>
                             </Grid>
