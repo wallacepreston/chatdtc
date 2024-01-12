@@ -4,6 +4,16 @@ import { useAuthHeader, useAuthUser } from 'react-auth-kit';
 import { UserState } from './user';
 import { useStatus } from './status';
 
+export interface Category {
+    id: number;
+    Title: string;
+    Description?: string;
+}
+
+export interface Run {
+    Created_At: Date;
+}
+
 export interface Chat {
     Thread_OpenAI_id: string;
     Winery_id?: string;
@@ -17,6 +27,8 @@ export interface Chat {
     Downloads_Public?: boolean;
     Share_Date?: Date;
     User?: UserState;
+    Category?: Category;
+    Runs: Run[];
 }
 
 type Chats = Chat[];

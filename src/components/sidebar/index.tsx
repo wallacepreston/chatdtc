@@ -1,31 +1,81 @@
 import React, { useEffect } from 'react';
-import {
-    AppBar,
-    Toolbar,
-    Button,
-    Stack,
-    Typography,
-    Menu,
-    MenuItem,
-    ListItemIcon,
-    ListItemText,
-    Tooltip
-} from '@mui/material';
+import { AppBar, Toolbar, Button, Stack, Typography, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { useAuthUser, useSignOut } from 'react-auth-kit';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { useStatus } from '../../contexts/status';
 import { REACT_APP_API_URL } from '../../constants/api';
 import { useUser } from '../../contexts/user';
-import { AccountCircle, Business } from '@mui/icons-material';
-import { useChats } from '../../contexts/chat';
+import { AccountCircle, Business, StarOutline } from '@mui/icons-material';
+import { Chat, useChats } from '../../contexts/chat';
 import theme from '../../theme';
-import ChatActionsMenu from './chatActionsMenu';
-import ChatRenameForm from './chatRenameForm';
+import ChatCategory from './chatCategory';
 
 const socket = io(REACT_APP_API_URL as string);
+
+export interface CustomChatCategory {
+    name: string;
+    icon: React.ReactNode;
+    chats: Chat[];
+}
+
+// helper used in component below
+const getCustomChatCategories = (chats: Chat[]): CustomChatCategory[] => {
+    const chatsWithCategories = chats.filter(chat => !!chat.Category);
+    const uniqueTitles = new Set();
+    chatsWithCategories.forEach(chat => {
+        if (!chat.Category) return;
+        uniqueTitles.add(chat.Category.Title);
+    });
+    const chatCategoryNames = Array.from(uniqueTitles as Set<string>);
+
+    const categorizedChats = chatCategoryNames.map(categoryName => {
+        const chatsInCategory = chats.filter(chat => chat.Category?.Title === categoryName);
+        return {
+            name: categoryName,
+            icon: <StarOutline fontSize='small' color='primary' />,
+            chats: chatsInCategory
+        };
+    });
+
+    const now = Date.now();
+    const oneWeekAgo = now - 7 * 24 * 60 * 60 * 1000;
+    const oneMonthAgo = now - 30 * 24 * 60 * 60 * 1000;
+
+    const last7DaysChats = chats.filter(
+        chat => !chat.Category && new Date(chat.Runs[0]?.Created_At).getTime() >= oneWeekAgo
+    );
+    const last30DaysChats = chats.filter(
+        chat =>
+            !chat.Category &&
+            new Date(chat.Runs[0]?.Created_At).getTime() < oneWeekAgo &&
+            new Date(chat.Runs[0]?.Created_At).getTime() >= oneMonthAgo
+    );
+    const olderChats = chats.filter(
+        chat => !chat.Category && new Date(chat.Runs[0]?.Created_At).getTime() < oneMonthAgo
+    );
+
+    return [
+        ...categorizedChats,
+        {
+            name: 'Previous 7 days',
+            icon: <StarOutline fontSize='small' color='primary' />,
+            chats: last7DaysChats
+        },
+        {
+            name: '7 to 30 days ago',
+            icon: <StarOutline fontSize='small' color='primary' />,
+            chats: last30DaysChats
+        },
+        {
+            name: 'More than 30 days ago',
+            icon: <StarOutline fontSize='small' color='primary' />,
+            chats: olderChats
+        }
+    ];
+};
 
 const SideBar = () => {
     const auth = useAuthUser();
@@ -34,9 +84,9 @@ const SideBar = () => {
     const { setStatus } = useStatus();
     const { user, setUser } = useUser();
     const { chats, getChats } = useChats();
-    const { id: activeChatId } = useParams();
-    const [editingChat, setEditingChat] = React.useState<boolean>(false);
     const { Last_Winery_id: lastWineryId } = user;
+
+    const customChatCategories = getCustomChatCategories(chats);
 
     const authData = auth()!;
 
@@ -107,7 +157,6 @@ const SideBar = () => {
 
     const sidebarColor = theme.palette.grey[100];
     const hoverInactive = theme.palette.grey[200];
-    const hoverActive = theme.palette.grey[300];
 
     return (
         <div id='SideBar'>
@@ -167,106 +216,16 @@ const SideBar = () => {
                         </Button>
                         <div
                             id='chat-list-container'
-                            style={{ marginTop: '20px', overflowY: 'auto', height: 'calc(100% - 179px)' }}
+                            style={{ marginTop: 0, overflowY: 'auto', height: 'calc(100% - 179px)' }}
                         >
-                            <Stack>
-                                {chats.map(chat => {
-                                    const title = chat.Title?.replaceAll('"', '');
-                                    const isActiveChat = chat.Thread_OpenAI_id === activeChatId;
-                                    return (
-                                        <Tooltip
-                                            title={title}
-                                            placement='right'
-                                            enterDelay={600}
-                                            slotProps={{
-                                                popper: {
-                                                    modifiers: [
-                                                        {
-                                                            name: 'offset',
-                                                            options: {
-                                                                offset: [0, 8]
-                                                            }
-                                                        }
-                                                    ]
-                                                }
-                                            }}
-                                        >
-                                            <div
-                                                id='chatBtn'
-                                                key={chat.Thread_OpenAI_id}
-                                                style={{ width: '244px', height: '40px', marginBottom: '5px' }}
-                                            >
-                                                <Link
-                                                    to={`/c/${chat.Thread_OpenAI_id}`}
-                                                    style={{ textDecoration: 'none' }}
-                                                >
-                                                    <Button
-                                                        key={chat.Thread_OpenAI_id}
-                                                        variant='text'
-                                                        color='info'
-                                                        sx={{
-                                                            textTransform: 'none',
-                                                            height: '40px',
-                                                            width: '244px',
-                                                            borderRadius: '5px',
-                                                            justifyContent: 'left',
-                                                            bgcolor: isActiveChat ? hoverActive : sidebarColor,
-                                                            textOverflow: 'ellipsis',
-                                                            overflow: 'hidden',
-                                                            whiteSpace: 'nowrap',
-                                                            '&:hover': {
-                                                                bgcolor: isActiveChat ? hoverActive : hoverInactive
-                                                            }
-                                                        }}
-                                                    >
-                                                        <div
-                                                            style={{
-                                                                fontSize: '0.8rem',
-                                                                fontFamily: 'Noto Sans, sans-serif'
-                                                            }}
-                                                        >
-                                                            {editingChat && isActiveChat ? (
-                                                                <ChatRenameForm
-                                                                    chat={chat}
-                                                                    setEditingChat={setEditingChat}
-                                                                />
-                                                            ) : (
-                                                                title
-                                                            )}
-                                                        </div>
-                                                    </Button>
-                                                </Link>
-                                                <div
-                                                    style={{
-                                                        width: isActiveChat ? '90px' : '70px',
-                                                        height: '40px',
-                                                        position: 'relative',
-                                                        bottom: '40px',
-                                                        left: isActiveChat ? '154px' : '174px',
-                                                        borderTopRightRadius: '5px',
-                                                        borderBottomRightRadius: '5px',
-                                                        background: `linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, ${
-                                                            isActiveChat ? `${hoverActive} 50%` : `${sidebarColor} 100%`
-                                                        })`,
-                                                        display: 'flex',
-                                                        flexDirection: 'row',
-                                                        alignItems: 'center',
-                                                        justifyContent: 'flex-end',
-                                                        pointerEvents: !isActiveChat ? 'none' : 'auto'
-                                                    }}
-                                                >
-                                                    {isActiveChat && (
-                                                        <ChatActionsMenu
-                                                            chatId={chat.Thread_OpenAI_id}
-                                                            handleRename={() => setEditingChat(true)}
-                                                        />
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </Tooltip>
-                                    );
-                                })}
-                            </Stack>
+                            {customChatCategories.map(category => (
+                                <ChatCategory
+                                    key={category.name}
+                                    category={category}
+                                    hoverInactive={hoverInactive}
+                                    sidebarColor={sidebarColor}
+                                />
+                            ))}
                         </div>
                         <div
                             style={{

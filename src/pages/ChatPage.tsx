@@ -81,7 +81,7 @@ const ChatPage = () => {
     const [width, setWidth] = useState<number>(window.innerWidth);
     const [title, setTitle] = useState<string>('');
     const [scrolledToBottom, setScrolledToBottom] = useState<boolean>(true);
-    const [thread, setThread] = useState<Chat>({ Thread_OpenAI_id: '', Winery_id: '' });
+    const [thread, setThread] = useState<Chat>({ Thread_OpenAI_id: '', Winery_id: '', Runs: [] });
     const { thinking, setThinking } = useThinking();
     const [loadingMessage, setLoadingMessage] = useState<string>('');
     const userMessages = messages.filter(message => message.Role === 'user');

@@ -21,7 +21,7 @@ const SharePage = () => {
     const [height, setHeight] = useState<string>('calc(100vh - 64px)');
     const [width, setWidth] = useState<number>(window.innerWidth);
     const [title, setTitle] = useState<string>('');
-    const [thread, setThread] = useState<Chat>({ Thread_OpenAI_id: '', Winery_id: '' });
+    const [thread, setThread] = useState<Chat>({ Thread_OpenAI_id: '', Winery_id: '', Runs: [] });
     const [lastUpdated, setLastUpdated] = useState<string>('');
     const userMessages = messages.filter(message => message.Role === 'user');
     const messageCount = userMessages.length;

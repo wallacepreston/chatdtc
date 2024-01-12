@@ -2,22 +2,22 @@ import * as React from 'react';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { DeleteOutline, Edit, IosShare, MoreHoriz } from '@mui/icons-material';
+import { DeleteOutline, Edit, IosShare, MoreHoriz, StarOutline } from '@mui/icons-material';
 import { Button, Grid, ListItemIcon, ListItemText, Stack, Typography } from '@mui/material';
 import theme from '../../../theme';
 import useApi from '../../../hooks/api';
 import { useStatus } from '../../../contexts/status';
-import { useChats } from '../../../contexts/chat';
+import { Chat, useChats } from '../../../contexts/chat';
 import { useNavigate } from 'react-router-dom';
 import WpModal from '../../wpModal';
 import ShareModal from './shareModal';
 
 interface ChatActionsProps {
-    chatId: string;
+    chat: Chat;
     handleRename: () => void;
 }
 
-const ChatActionsMenu = ({ chatId, handleRename }: ChatActionsProps) => {
+const ChatActionsMenu = ({ chat, handleRename }: ChatActionsProps) => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
     const [shareModalOpen, setShareModalOpen] = React.useState(false);
@@ -25,6 +25,8 @@ const ChatActionsMenu = ({ chatId, handleRename }: ChatActionsProps) => {
     const { setStatus } = useStatus();
     const { getChats } = useChats();
     const navigate = useNavigate();
+
+    const isFavorite = chat.Category?.Title === 'Favorites';
 
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -36,7 +38,7 @@ const ChatActionsMenu = ({ chatId, handleRename }: ChatActionsProps) => {
 
     const handleDelete = async () => {
         try {
-            const resp = await callApi({ url: `/api/chat/${chatId}`, method: 'delete' });
+            const resp = await callApi({ url: `/api/chat/${chat.Thread_OpenAI_id}`, method: 'delete' });
 
             if (resp?.status !== 'success') {
                 setStatus({
@@ -83,6 +85,27 @@ const ChatActionsMenu = ({ chatId, handleRename }: ChatActionsProps) => {
         handleDelete();
     };
 
+    const handleAddToFavorites = async () => {
+        try {
+            await callApi({
+                url: `/api/chat/${chat.Thread_OpenAI_id}`,
+                method: 'patch',
+                body: { category: isFavorite ? null : 'Favorites' }
+            });
+            getChats();
+            setStatus({
+                type: 'success',
+                message: isFavorite ? 'Removed chat from favorites' : 'Added chat to favorites'
+            });
+        } catch (error) {
+            setStatus({
+                type: 'error',
+                message: isFavorite ? 'Error removing chat from favorites' : 'Error adding chat to favorites'
+            });
+        }
+        handleClose();
+    };
+
     const options = [
         {
             title: 'Share',
@@ -99,12 +122,21 @@ const ChatActionsMenu = ({ chatId, handleRename }: ChatActionsProps) => {
             handleClick: () => handleOpenDeleteModal(),
             icon: <DeleteOutline fontSize='small' />,
             color: theme.palette.error.main
+        },
+        {
+            title: isFavorite ? 'Remove from Favorites' : 'Add to Favorites',
+            handleClick: handleAddToFavorites,
+            icon: <StarOutline fontSize='small' />
         }
     ];
 
     return (
         <div>
-            <ShareModal open={shareModalOpen} handleClose={() => setShareModalOpen(false)} chatId={chatId} />
+            <ShareModal
+                open={shareModalOpen}
+                handleClose={() => setShareModalOpen(false)}
+                chatId={chat.Thread_OpenAI_id}
+            />
             <WpModal title='Delete Chat' open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
                 <Grid
                     item
@@ -152,8 +184,7 @@ const ChatActionsMenu = ({ chatId, handleRename }: ChatActionsProps) => {
                 sx={{
                     transform: 'translateY(-10px)',
                     '& .MuiMenu-paper': {
-                        border: '1px solid #d3d4d5',
-                        width: '20ch'
+                        border: '1px solid #d3d4d5'
                     }
                 }}
             >
