@@ -33,6 +33,11 @@ const getCustomChatCategories = (chats: Chat[]): CustomChatCategory[] => {
 
     const categorizedChats = chatCategoryNames.map(categoryName => {
         const chatsInCategory = chats.filter(chat => chat.Category?.Title === categoryName);
+        // sort alphabetically by Title
+        chatsInCategory.sort((a, b) => {
+            if (!a.Title || !b.Title) return 0;
+            return a.Title.toLowerCase() > b.Title.toLowerCase() ? 1 : -1;
+        });
         return {
             name: categoryName,
             icon: <StarOutline fontSize='small' color='primary' />,
