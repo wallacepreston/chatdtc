@@ -118,6 +118,7 @@ const Footer = (props: {
                     body: { message: { role: 'user', content: message }, chat_id: thread.Thread_OpenAI_id },
                     exposeError: true
                 });
+                getChats();
 
                 if (window.location.pathname.match(chatPathRegex)) return;
 
@@ -130,14 +131,13 @@ const Footer = (props: {
                     body: { message: { role: 'user', content: message }, chat_id },
                     exposeError: true
                 });
+                getChats();
 
                 if (!messageResponse) {
                     setThinking(false);
                     return;
                 }
             }
-
-            getChats();
         } catch (err) {
             console.log(err);
             // if error matches INVALID_PROMPT_MESSAGE, then set status with helpful message
