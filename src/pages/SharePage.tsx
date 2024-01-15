@@ -81,7 +81,7 @@ const SharePage = () => {
         updateTitle(foundThread.Title);
         setLastUpdated(foundThread.Last_Modified_Date);
 
-        setMessages(foundThread.Messages?.reverse());
+        setMessages(foundThread.Messages);
     };
 
     // at the beginning, get all messages

@@ -31,7 +31,7 @@ const ShareModal = ({ open, handleClose, chatId }: ShareModalProps) => {
     };
 
     useEffect(() => {
-        getChat();
+        if (open) getChat();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open]);
 

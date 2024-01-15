@@ -137,13 +137,13 @@ const ChatPage = () => {
             return;
         }
 
-        setMessages(foundThread.Messages?.reverse());
+        setMessages(foundThread.Messages);
     };
 
     // at the beginning, get all messages
     useEffect(() => {
         getMessages();
-    }, [id, lastWineryId]);
+    }, [id]);
 
     const getTitle = async () => {
         const res = await axios.get(`${REACT_APP_API_URL}/api/chat/getChatTitleByID/${id}`, {
