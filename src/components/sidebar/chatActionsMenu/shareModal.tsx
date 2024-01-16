@@ -24,7 +24,18 @@ const ShareModal = ({ open, handleClose, chatId }: ShareModalProps) => {
     const url = `${REACT_APP_CLIENT_URL}/share/${chatId}`;
 
     const getChat = async () => {
-        const foundThread = await callApi({ url: `/api/chat/${chatId}`, method: 'get' });
+        const threadRes = await callApi({ url: `/api/chat/${chatId}`, method: 'get' });
+
+        if (!threadRes) {
+            setStatus({
+                type: 'error',
+                message: 'Error getting chat'
+            });
+            return;
+        }
+
+        const { data: foundThread } = threadRes;
+
         if (foundThread) {
             setDownloadsPublic(foundThread.Downloads_Public);
         }
@@ -38,13 +49,23 @@ const ShareModal = ({ open, handleClose, chatId }: ShareModalProps) => {
     const handleShare = async () => {
         try {
             // set visibility to public
-            const resp = await callApi({
+            const chatRes = await callApi({
                 url: `/api/chat/${chatId}`,
                 method: 'patch',
                 body: { public: true, downloadsPublic }
             });
 
-            if (resp?.status !== 'success') {
+            if (!chatRes) {
+                setStatus({
+                    type: 'error',
+                    message: 'Error sharing chat'
+                });
+                return;
+            }
+
+            const { data } = chatRes;
+
+            if (data?.status !== 'success') {
                 setStatus({
                     type: 'error',
                     message: 'Error sharing chat'

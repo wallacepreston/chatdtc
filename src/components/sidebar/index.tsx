@@ -107,7 +107,6 @@ const SideBar = () => {
     useEffect(() => {
         try {
             socket.on('updatedChats', (data: { Winery_id: string }) => {
-                // TODO - check if this is my winery before getting chats
                 if (data?.Winery_id === lastWineryId) getChats();
             });
         } catch (error) {

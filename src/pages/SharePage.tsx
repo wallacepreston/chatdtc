@@ -59,7 +59,13 @@ const SharePage = () => {
     }, [footerHeight, width]);
 
     const getMessages = async () => {
-        const foundThread = await callApi({ url: `/api/chat/${id}`, method: 'get' });
+        const threadRes = await callApi({ url: `/api/chat/${id}`, method: 'get' });
+
+        if (!threadRes) {
+            return;
+        }
+
+        const { data: foundThread } = threadRes;
 
         if (!foundThread) {
             navigate('/');

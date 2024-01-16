@@ -7,6 +7,7 @@ import theme from '../theme';
 import { ChatType } from '../pages/ChatPage';
 import useApi from '../hooks/api';
 import { useChats } from '../contexts/chat';
+import { useStatus } from '../contexts/status';
 
 const Footer = (props: {
     setHeight: (height: number) => void;
@@ -26,6 +27,12 @@ const Footer = (props: {
     const { setThinking } = useThinking();
     const { callApi } = useApi();
     const { getChats } = useChats();
+    const { setStatus } = useStatus();
+
+    const genericError = {
+        type: 'error' as const,
+        message: 'Error creating chat. Please reload the page and try again.'
+    };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
@@ -103,21 +110,32 @@ const Footer = (props: {
                     body: { message: { role: 'user', content: message }, chat_id: undefined },
                     exposeError: true
                 });
-
                 if (!threadRes) {
-                    return;
+                    return setStatus(genericError);
+                }
+                const { data: threadData } = threadRes;
+
+                if (!threadData) {
+                    return setStatus(genericError);
                 }
 
-                const { thread } = threadRes;
+                const { thread } = threadData;
 
                 navigate(`/c/${thread.Thread_OpenAI_id}`);
 
-                const { chat_id } = await callApi({
+                const createMessageRes = await callApi({
                     url: '/api/chat/createMessage',
                     method: 'post',
                     body: { message: { role: 'user', content: message }, chat_id: thread.Thread_OpenAI_id },
                     exposeError: true
                 });
+
+                if (!createMessageRes) {
+                    return setStatus(genericError);
+                }
+                const {
+                    data: { chat_id }
+                } = createMessageRes;
                 getChats();
 
                 if (window.location.pathname.match(chatPathRegex)) return;
@@ -125,15 +143,20 @@ const Footer = (props: {
                 navigate(`/c/${chat_id}`);
             } else if (window.location.pathname.match(chatPathRegex)) {
                 const chat_id = window.location.pathname.split('/')[2];
-                const messageResponse = await callApi({
+                const createMessageRes = await callApi({
                     url: '/api/chat/createMessage',
                     method: 'post',
                     body: { message: { role: 'user', content: message }, chat_id },
                     exposeError: true
                 });
+
+                if (!createMessageRes) {
+                    return setStatus(genericError);
+                }
+                const { data: messageData } = createMessageRes;
                 getChats();
 
-                if (!messageResponse) {
+                if (!messageData) {
                     setThinking(false);
                     return;
                 }

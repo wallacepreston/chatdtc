@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, ResponseType } from 'axios';
 import { useAuthHeader } from 'react-auth-kit';
 import { REACT_APP_API_URL } from '../constants/api';
 import { useStatus } from '../contexts/status';
@@ -9,6 +9,7 @@ interface Options {
     method?: string;
     body?: any;
     exposeError?: boolean;
+    responseType?: ResponseType;
 }
 
 const useApi = () => {
@@ -19,13 +20,15 @@ const useApi = () => {
     const { setStatus } = useStatus();
 
     const apiRequest = useCallback(
-        async ({ url, method, body = null }: Options) => {
-            return axios({
+        async ({ url, method, body = null, responseType }: Options) => {
+            const params: AxiosRequestConfig<any> = {
                 method,
                 url: `${REACT_APP_API_URL}${url}`,
                 data: body,
                 headers: { Authorization: authHeader() }
-            });
+            };
+            if (responseType) params.responseType = responseType;
+            return axios(params);
         },
         [authHeader]
     );
@@ -50,11 +53,11 @@ const useApi = () => {
         [apiRequest, setStatus]
     );
 
-    const callApi = async ({ url, method, body = null, exposeError }: Options) => {
+    const callApi = async ({ url, method, body = null, exposeError, responseType }: Options) => {
         setLoading(true);
         try {
-            const res = await apiRequest({ url, method, body });
-            return res.data;
+            const res = await apiRequest({ url, method, body, responseType });
+            return res;
         } catch (err: unknown) {
             if (err instanceof AxiosError) {
                 const errorMessage = err.response?.data.message || 'Something went wrong.';

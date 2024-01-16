@@ -2,8 +2,6 @@ import React from 'react';
 import Icon from '../icon';
 import { Grid, Typography } from '@mui/material';
 import { ThumbDownOffAlt, ThumbUpOffAlt, ContentPaste } from '@mui/icons-material';
-import { useAuthHeader } from 'react-auth-kit';
-import axios from 'axios';
 import { useStatus } from '../../contexts/status';
 import theme from '../../theme';
 import ReactMarkdown from 'react-markdown';
@@ -52,59 +50,7 @@ const ChatMessage = (props: ChatMessageProps) => {
     const userTitle = threadIsOwnedByUser ? 'You' : `${thread?.User?.FirstName} ${thread?.User?.LastName}`;
     const fileIds = message.Annotations?.map(annotation => annotation.File_OpenAI_id);
 
-    const authHeader = useAuthHeader();
-
     const { setStatus } = useStatus();
-
-    // If there was no authentication on the server, this big function would be unnecessary.
-    const handleDownload = async (fileId: string) => {
-        try {
-            // 1. Send a GET request to the file endpoint with the auth header
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/chat/files/${fileId}`, {
-                headers: { Authorization: authHeader() },
-                responseType: 'blob' // specify the response type
-            });
-
-            // 2. Check the response status
-            if (response.status !== 200) {
-                setStatus({
-                    type: 'error',
-                    message: 'HTTP error ' + response.status
-                });
-            }
-
-            // 3. Extract the filename from the Content-Disposition header
-            const contentDisposition = response.headers['content-disposition'];
-            let filename = 'file.csv'; // default filename
-            if (contentDisposition) {
-                const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-                const matches = filenameRegex.exec(contentDisposition);
-                if (matches != null && matches[1]) {
-                    filename = matches[1].replace(/['"]/g, '');
-                }
-            }
-
-            // 4. Create a Blob URL from the response data
-            const url = window.URL.createObjectURL(response.data);
-
-            // 5. Create a new <a> element and set its href to the Blob URL and its download attribute to the filename
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', filename);
-
-            // 6. Append the <a> element to the body and programmatically click it to start the download
-            document.body.appendChild(link);
-            link.click();
-
-            // 7. Remove the <a> element from the body after the download has started
-            document.body.removeChild(link);
-        } catch (error) {
-            setStatus({
-                type: 'error',
-                message: 'HTTP error ' + error
-            });
-        }
-    };
 
     const handleCopy = () => {
         copyToClipboard({
@@ -114,14 +60,23 @@ const ChatMessage = (props: ChatMessageProps) => {
 
     const handleFeedback = async (feedback: 'like' | 'dislike') => {
         try {
-            const res = await callApi({
+            const feedbackRes = await callApi({
                 url: `/api/message/${message.Message_OpenAI_id}/feedback`,
                 method: 'post',
                 body: {
                     feedback
                 }
             });
-            if (res.status !== 'success') {
+
+            if (!feedbackRes) {
+                return setStatus({
+                    type: 'error',
+                    message: 'Error submitting feedback'
+                });
+            }
+            const { data } = feedbackRes;
+
+            if (data.status !== 'success') {
                 setStatus({
                     type: 'error',
                     message: 'Error submitting feedback'
@@ -182,7 +137,6 @@ const ChatMessage = (props: ChatMessageProps) => {
                                 key={`${index}-${i}`}
                                 fileId={fileId}
                                 linkText={linkText}
-                                handleDownload={handleDownload}
                                 downloadEnabled={downloadEnabled}
                             />
                         );
@@ -264,7 +218,6 @@ const ChatMessage = (props: ChatMessageProps) => {
                         <MessageActionIcon icon={ContentPaste} onClick={handleCopy} />
                         {chatType === 'form' && role === 'assistant' && (
                             <>
-                                {/* TODO - show as selected whichever one is selected */}
                                 <MessageActionIcon
                                     icon={ThumbUpOffAlt}
                                     onClick={() => handleFeedback('like')}

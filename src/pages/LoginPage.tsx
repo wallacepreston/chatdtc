@@ -39,11 +39,19 @@ const LoginPage = () => {
 
     const handleConfirm = async (e: React.FormEvent) => {
         e.preventDefault();
-        const data = await callApi({
+        const loginRes = await callApi({
             url: `/api/auth/login`,
             body: { username, password },
             method: 'POST'
         });
+
+        if (!loginRes) {
+            setStatus({ type: 'error', message: 'Error with Login' });
+            return;
+        }
+
+        const { data } = loginRes;
+
         if (!data || !data.message) {
             setStatus({ type: 'error', message: 'Error with Login' });
         } else if (data.message === 'Login successful') {
@@ -64,12 +72,12 @@ const LoginPage = () => {
                 console.log('Login failed');
                 setStatus({ type: 'error', message: 'Error with Login' });
             }
-        } else if (data.message === 'User not registered') {
-            setStatus({ type: 'error', message: 'User not registered' });
-        } else if (data.message === 'Incorrect password') {
+        } else if (data.message === 'Incorrect username or password') {
             setStatus({ type: 'error', message: 'Incorrect username or password' });
         } else if (data.message === 'Server error') {
             setStatus({ type: 'error', message: 'Server error' });
+        } else {
+            setStatus({ type: 'error', message: 'Error with Login' });
         }
     };
 

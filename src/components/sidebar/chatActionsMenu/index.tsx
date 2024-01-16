@@ -38,9 +38,19 @@ const ChatActionsMenu = ({ chat, handleRename }: ChatActionsProps) => {
 
     const handleDelete = async () => {
         try {
-            const resp = await callApi({ url: `/api/chat/${chat.Thread_OpenAI_id}`, method: 'delete' });
+            const deleteRes = await callApi({ url: `/api/chat/${chat.Thread_OpenAI_id}`, method: 'delete' });
 
-            if (resp?.status !== 'success') {
+            if (!deleteRes) {
+                setStatus({
+                    type: 'error',
+                    message: 'Error deleting chat'
+                });
+                return;
+            }
+
+            const { data } = deleteRes;
+
+            if (data?.status !== 'success') {
                 setStatus({
                     type: 'error',
                     message: 'Error deleting chat'

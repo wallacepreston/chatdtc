@@ -118,7 +118,17 @@ const ChatPage = () => {
     }, [footerHeight, width]);
 
     const getMessages = async () => {
-        const foundThread = await callApi({ url: `/api/chat/${id}`, method: 'get' });
+        const chatRes = await callApi({ url: `/api/chat/${id}`, method: 'get' });
+
+        if (!chatRes) {
+            setStatus({
+                type: 'error',
+                message: 'Error getting chat'
+            });
+            return;
+        }
+
+        const { data: foundThread } = chatRes;
 
         if (!foundThread) {
             navigate('/');
