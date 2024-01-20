@@ -10,10 +10,24 @@ export interface Category {
     Description?: string;
 }
 
+export interface ToolCall {
+    Call_OpenAI_id: string;
+    Run_OpenAI_id: string;
+    Thread_OpenAI_id: string;
+    ActorSamAccountName?: string;
+    CallType: string;
+    FunctionName: string;
+    Arguments: string;
+    Status: string | null;
+    Created_At: string;
+    Updated_At: string;
+}
+
 export interface Run {
     Created_At: string;
     Updated_At: string;
     Status: string | null;
+    ToolCalls?: ToolCall[];
 }
 
 export interface Chat {

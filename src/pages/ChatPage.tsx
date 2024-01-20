@@ -44,6 +44,7 @@ import { Chat } from '../contexts/chat';
 import LinearBuffer from '../components/linearBuffer';
 import { useStatus } from '../contexts/status';
 import socket from '../util/socket';
+import ToolCall from '../components/ToolCall';
 
 hljs.registerLanguage('javascript', javascript);
 hljs.registerLanguage('typescript', typescript);
@@ -345,6 +346,9 @@ const ChatPage = () => {
                             );
                         })}
                         {lastRunExpired && <ExpiredRunMessage status={lastRunStatus as ExpiredRunStatus} />}
+                        {thread.Runs?.map((run, index) => {
+                            return run.ToolCalls?.map(toolCall => <ToolCall toolCall={toolCall} />);
+                        })}
                         {thinking && <LinearBuffer id={id} />}
                     </Stack>
                     {!scrolledToBottom && (
