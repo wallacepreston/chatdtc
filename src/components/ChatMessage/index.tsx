@@ -97,6 +97,9 @@ const ChatMessage = (props: ChatMessageProps) => {
     };
 
     const renderContent = () => {
+        if (message.Annotations?.length) {
+            console.log('>>>> message.Annotations', message.Annotations);
+        }
         const content: string[] = message.Content_Value.split('\n');
         if (role === 'user') {
             return content;
@@ -106,6 +109,8 @@ const ChatMessage = (props: ChatMessageProps) => {
             return content.map((line, index) => {
                 // split the line into parts based on the regex
                 const parts = line.split(/\[(.*?)\]\((sandbox:\/.*?)\)/g);
+                // console.log('>>>> parts', parts);
+                // console.log('>>>> parts.length', parts.length);
 
                 // map over the parts and convert any links into JSX
                 return parts.map((part, i) => {

@@ -44,7 +44,7 @@ import { Chat } from '../contexts/chat';
 import LinearBuffer from '../components/linearBuffer';
 import { useStatus } from '../contexts/status';
 import socket from '../util/socket';
-import ToolCall from '../components/ToolCall';
+import ToolCalls from '../components/ToolCall';
 
 hljs.registerLanguage('javascript', javascript);
 hljs.registerLanguage('typescript', typescript);
@@ -113,6 +113,30 @@ const ChatPage = () => {
     const lastRunStatus = lastRun?.Status === 'requires_action' && isExpiredFromDate ? 'expired' : lastRun?.Status;
     const lastRunExpired = EXPIRED_RUN_STATUSES.includes(lastRunStatus as ExpiredRunStatus);
     const thinking = id ? Boolean(thinkingChats[id]?.progress) : false;
+
+    const now = new Date();
+
+    // find if we have any runs with toolCalls that need user action
+    const validRun = thread.Runs?.find(run => {
+        // are there toolCalls in this run?
+        if (!run.ToolCalls?.length) {
+            return false;
+        }
+        // are there toolCalls in this run that need user action?
+        return run.ToolCalls.some(toolCall => {
+            const requiresAction = toolCall.Status === 'requires_action';
+            const createdAt = new Date(toolCall.Created_At);
+
+            const isNotExpired = differenceInMinutes(now, createdAt) <= 10;
+
+            return requiresAction && isNotExpired;
+        });
+    });
+
+    // check if any of the runs have toolCalls that need user action
+    const validToolCalls = validRun?.ToolCalls;
+
+    console.log('>>>>>>>>> validToolCalls', validToolCalls);
 
     useEffect(() => {
         const updateWidth = () => {
@@ -346,9 +370,9 @@ const ChatPage = () => {
                             );
                         })}
                         {lastRunExpired && <ExpiredRunMessage status={lastRunStatus as ExpiredRunStatus} />}
-                        {thread.Runs?.map((run, index) => {
-                            return run.ToolCalls?.map(toolCall => <ToolCall toolCall={toolCall} />);
-                        })}
+                        {validRun && validToolCalls?.length && (
+                            <ToolCalls toolCalls={validToolCalls} runId={validRun.Run_OpenAI_id} />
+                        )}
                         {thinking && <LinearBuffer id={id} />}
                     </Stack>
                     {!scrolledToBottom && (

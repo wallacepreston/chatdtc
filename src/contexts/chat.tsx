@@ -27,6 +27,7 @@ export interface Run {
     Created_At: string;
     Updated_At: string;
     Status: string | null;
+    Run_OpenAI_id: string;
     ToolCalls?: ToolCall[];
 }
 
