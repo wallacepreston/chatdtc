@@ -1,9 +1,9 @@
-import { Box, Checkbox, Divider, FormControlLabel, FormGroup, Typography } from '@mui/material';
+import { Box, Button, Checkbox, Divider, FormControlLabel, FormGroup, Typography } from '@mui/material';
 import { ToolCall } from '../../contexts/chat';
 import { useStatus } from '../../contexts/status';
 import useApi from '../../hooks/api';
 import WpModal from '../wpModal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface ToolCallProps {
     toolCalls: ToolCall[];
@@ -13,24 +13,43 @@ const ToolCalls = ({ toolCalls, runId }: ToolCallProps) => {
     const { callApi } = useApi();
     const { setStatus } = useStatus();
     const [open, setOpen] = useState(true);
-    console.log('>>>>>>>>> toolCalls', toolCalls);
+    const [toolCallsToSubmit, setToolCallsToSubmit] = useState<ToolCall[]>([]);
+
+    useEffect(() => {
+        setOpen(true);
+    }, [runId]);
+
+    useEffect(() => {
+        const toolCallsDefaultedToDeclined = toolCalls.map(toolCall => {
+            return { ...toolCall, Status: 'declined' };
+        });
+        setToolCallsToSubmit(toolCallsDefaultedToDeclined);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleClose = () => {
         setOpen(false);
     };
 
+    const handleToggleToolCall = (callId: string) => {
+        const newToolCalls = toolCallsToSubmit.map(toolCall => {
+            if (toolCall.Call_OpenAI_id === callId) {
+                return { ...toolCall, Status: toolCall.Status === 'declined' ? 'completed' : 'declined' };
+            }
+            return toolCall;
+        });
+        setToolCallsToSubmit(newToolCalls);
+    };
+
     const handleToolCall = async () => {
         try {
             // compile a list of Call_OpenAI_ids to send to the backend
-            const callIds = toolCalls.map(toolCall => toolCall.Call_OpenAI_id);
             const response = await callApi({
                 url: `/api/runs/${runId}/toolCalls/`,
                 method: 'post',
                 exposeError: true,
                 body: {
-                    // TODO - also conditionally call with 'declined' if the user clicks 'decline'?
-                    action: 'completed',
-                    callIds
+                    toolCalls: toolCallsToSubmit
                 }
             });
             if (!response) {
@@ -52,14 +71,12 @@ const ToolCalls = ({ toolCalls, runId }: ToolCallProps) => {
                 type: 'error',
                 message: 'Error executing tool call'
             });
+        } finally {
+            handleClose();
         }
     };
     return (
         <div>
-            {/* TODO - better UI for the different action options  */}
-            {/* <Button sx={{ fontSize: '2rem' }} onClick={handleToolCall}>
-                {toolCall.FunctionName}
-            </Button> */}
             <WpModal title='Recommended Actions' open={open} onClose={handleClose}>
                 <Box sx={{ p: 2 }}>
                     <Typography color='text.secondary' variant='body2'>
@@ -76,13 +93,24 @@ const ToolCalls = ({ toolCalls, runId }: ToolCallProps) => {
                         {toolCalls.map(toolCall => {
                             return (
                                 <FormControlLabel
-                                    control={<Checkbox />}
+                                    key={toolCall.Call_OpenAI_id}
+                                    control={<Checkbox onClick={() => handleToggleToolCall(toolCall.Call_OpenAI_id)} />}
                                     label={toolCall.FunctionName}
-                                    onClick={handleToolCall}
                                 />
                             );
                         })}
                     </FormGroup>
+                </Box>
+                <Box sx={{ p: 2 }}>
+                    <Button sx={{ textTransform: 'none' }} onClick={handleToolCall}>
+                        Execute These Actions
+                    </Button>
+                </Box>
+                <Divider light />
+                <Box sx={{ p: 2 }}>
+                    <Typography gutterBottom variant='body2'>
+                        <b>NOTE:</b> These actions will be executed immediately.
+                    </Typography>
                 </Box>
             </WpModal>
         </div>

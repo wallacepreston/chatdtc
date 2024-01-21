@@ -136,8 +136,6 @@ const ChatPage = () => {
     // check if any of the runs have toolCalls that need user action
     const validToolCalls = validRun?.ToolCalls;
 
-    console.log('>>>>>>>>> validToolCalls', validToolCalls);
-
     useEffect(() => {
         const updateWidth = () => {
             setWidth(window.innerWidth);
