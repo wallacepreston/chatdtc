@@ -1,22 +1,38 @@
-import { Box, Button, Checkbox, Divider, FormControlLabel, FormGroup, Typography } from '@mui/material';
+import {
+    Alert,
+    Box,
+    Button,
+    Checkbox,
+    Chip,
+    Divider,
+    FormControlLabel,
+    FormGroup,
+    Grid,
+    Typography,
+    Stack
+} from '@mui/material';
 import { ToolCall } from '../../contexts/chat';
 import { useStatus } from '../../contexts/status';
 import useApi from '../../hooks/api';
 import WpModal from '../wpModal';
 import { useEffect, useState } from 'react';
+import theme from '../../theme';
+import { Clear, Done } from '@mui/icons-material';
+import { TOOL_CALL_FUNCTION_MAP } from '../../constants/toolCalls';
 
 interface ToolCallProps {
     toolCalls: ToolCall[];
     runId: string;
 }
+
 const ToolCalls = ({ toolCalls, runId }: ToolCallProps) => {
     const { callApi } = useApi();
     const { setStatus } = useStatus();
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     const [toolCallsToSubmit, setToolCallsToSubmit] = useState<ToolCall[]>([]);
 
     useEffect(() => {
-        setOpen(true);
+        setOpen(false);
     }, [runId]);
 
     useEffect(() => {
@@ -41,7 +57,17 @@ const ToolCalls = ({ toolCalls, runId }: ToolCallProps) => {
         setToolCallsToSubmit(newToolCalls);
     };
 
-    const handleToolCall = async () => {
+    const handleDeclineAll = () => {
+        setToolCallsToSubmit(_prevToolCalls => {
+            const newToolCalls = toolCallsToSubmit.map(toolCall => {
+                return { ...toolCall, Status: 'declined' };
+            });
+            handleToolCall(newToolCalls);
+            return newToolCalls;
+        });
+    };
+
+    const handleToolCall = async (passedToolCalls?: ToolCall[]) => {
         try {
             // compile a list of Call_OpenAI_ids to send to the backend
             const response = await callApi({
@@ -49,7 +75,8 @@ const ToolCalls = ({ toolCalls, runId }: ToolCallProps) => {
                 method: 'post',
                 exposeError: true,
                 body: {
-                    toolCalls: toolCallsToSubmit
+                    // prefer the var passed in, but if not there, use the state
+                    toolCalls: passedToolCalls || toolCallsToSubmit
                 }
             });
             if (!response) {
@@ -64,7 +91,7 @@ const ToolCalls = ({ toolCalls, runId }: ToolCallProps) => {
             }
             setStatus({
                 type: 'success',
-                message: 'Tool call executed successfully'
+                message: 'Action decisions saved successfully'
             });
         } catch (error) {
             setStatus({
@@ -75,44 +102,154 @@ const ToolCalls = ({ toolCalls, runId }: ToolCallProps) => {
             handleClose();
         }
     };
+
+    const warningAlert = (
+        <Box sx={{ p: 2 }}>
+            <Alert severity='warning'>
+                <b>NOTE:</b> These actions will be executed immediately.
+            </Alert>
+        </Box>
+    );
+
     return (
         <div>
-            <WpModal title='Recommended Actions' open={open} onClose={handleClose}>
-                <Box sx={{ p: 2 }}>
-                    <Typography color='text.secondary' variant='body2'>
-                        Based on the conversation, we recommend the following actions that need confirmation to be
-                        executed.
-                    </Typography>
-                </Box>
-                <Divider light />
+            <WpModal title='Requested Actions' open={open} onClose={handleClose}>
                 <Box sx={{ p: 2 }}>
                     <Typography gutterBottom variant='body2'>
-                        Select actions to execute:
+                        The following actions will be taken:
                     </Typography>
-                    <FormGroup>
-                        {toolCalls.map(toolCall => {
+                </Box>
+                <Box sx={{ p: 2 }}>
+                    <Stack spacing={1}>
+                        {toolCallsToSubmit.map(toolCall => {
                             return (
-                                <FormControlLabel
+                                <Chip
                                     key={toolCall.Call_OpenAI_id}
-                                    control={<Checkbox onClick={() => handleToggleToolCall(toolCall.Call_OpenAI_id)} />}
-                                    label={toolCall.FunctionName}
+                                    label={
+                                        TOOL_CALL_FUNCTION_MAP[
+                                            toolCall.FunctionName as keyof typeof TOOL_CALL_FUNCTION_MAP
+                                        ]
+                                    }
+                                    avatar={toolCall.Status === 'completed' ? <Done /> : <Clear />}
+                                    variant='outlined'
+                                    color={toolCall.Status === 'completed' ? 'success' : 'info'}
                                 />
                             );
                         })}
-                    </FormGroup>
+                    </Stack>
                 </Box>
                 <Box sx={{ p: 2 }}>
-                    <Button sx={{ textTransform: 'none' }} onClick={handleToolCall}>
-                        Execute These Actions
-                    </Button>
+                    <Grid
+                        container
+                        spacing={2}
+                        sx={{
+                            p: 2
+                        }}
+                    >
+                        <Grid item xs={6}>
+                            <Button
+                                sx={{ textTransform: 'none' }}
+                                variant='contained'
+                                color='primary'
+                                onClick={() => handleToolCall()}
+                            >
+                                Execute These Actions
+                            </Button>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Button
+                                sx={{ textTransform: 'none' }}
+                                variant='outlined'
+                                color='error'
+                                onClick={() => setOpen(false)}
+                            >
+                                Cancel
+                            </Button>
+                        </Grid>
+                    </Grid>
                 </Box>
                 <Divider light />
-                <Box sx={{ p: 2 }}>
-                    <Typography gutterBottom variant='body2'>
-                        <b>NOTE:</b> These actions will be executed immediately.
-                    </Typography>
-                </Box>
+                <Box sx={{ p: 2 }}>{warningAlert}</Box>
             </WpModal>
+            <Grid
+                container
+                spacing={2}
+                sx={{
+                    width: '100%'
+                }}
+            >
+                <Grid item xs={10}>
+                    <div
+                        style={{
+                            backgroundColor: theme.palette.primary.light,
+                            borderRadius: '10px',
+                            marginBottom: '15px',
+                            marginTop: '15px',
+                            padding: '1rem'
+                        }}
+                    >
+                        <Box sx={{ p: 2 }}>
+                            <Typography>
+                                Based on the conversation, we recommend the following actions that need confirmation to
+                                be executed.
+                            </Typography>
+                        </Box>
+                        <Divider light />
+                        <Box sx={{ p: 2 }}>
+                            <Typography gutterBottom variant='body2'>
+                                Select actions to execute:
+                            </Typography>
+                            <FormGroup>
+                                {toolCalls.map(toolCall => {
+                                    return (
+                                        <FormControlLabel
+                                            key={toolCall.Call_OpenAI_id}
+                                            control={
+                                                <Checkbox
+                                                    onClick={() => handleToggleToolCall(toolCall.Call_OpenAI_id)}
+                                                />
+                                            }
+                                            label={
+                                                TOOL_CALL_FUNCTION_MAP[
+                                                    toolCall.FunctionName as keyof typeof TOOL_CALL_FUNCTION_MAP
+                                                ]
+                                            }
+                                        />
+                                    );
+                                })}
+                            </FormGroup>
+                        </Box>
+                        <Grid
+                            container
+                            spacing={2}
+                            sx={{
+                                p: 2
+                            }}
+                        >
+                            <Grid item xs={6}>
+                                <Button
+                                    sx={{ textTransform: 'none' }}
+                                    variant='contained'
+                                    color='primary'
+                                    onClick={() => setOpen(true)}
+                                >
+                                    Execute These Actions
+                                </Button>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Button
+                                    sx={{ textTransform: 'none' }}
+                                    variant='outlined'
+                                    color='error'
+                                    onClick={handleDeclineAll}
+                                >
+                                    Take no Action
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </div>
+                </Grid>
+            </Grid>
         </div>
     );
 };

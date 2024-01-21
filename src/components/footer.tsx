@@ -16,6 +16,7 @@ const Footer = (props: {
     openModal: () => void;
     isOverMaxMessages: boolean;
     insufficientBalance: boolean;
+    requiresToolCallAction?: boolean;
     type: ChatType;
 }) => {
     const navigate = useNavigate();
@@ -239,7 +240,7 @@ const Footer = (props: {
             <TextField
                 id='input'
                 autoFocus
-                disabled={props.isOverMaxMessages}
+                disabled={props.isOverMaxMessages || props.requiresToolCallAction}
                 placeholder='Send a message...'
                 variant='outlined'
                 value={input}
@@ -298,13 +299,23 @@ const Footer = (props: {
             />
         );
 
-        if (props.isOverMaxMessages) {
-            return (
-                <Tooltip title='You have reached the maximum number of messages for this chat.' placement='top'>
-                    {textField}
-                </Tooltip>
-            );
+        const toolTipMessages = {
+            isOverMaxMessages: 'You have reached the maximum number of messages for this chat.',
+            requiresToolCallAction:
+                'There is a recommended action to be taken on this chat.  Please select an action before proceeding.'
+        };
+
+        // loop over the messages and return the first one that is true
+        for (const [key, value] of Object.entries(toolTipMessages)) {
+            if (props[key as keyof typeof toolTipMessages]) {
+                return (
+                    <Tooltip title={value} placement='top'>
+                        {textField}
+                    </Tooltip>
+                );
+            }
         }
+
         return textField;
     };
 

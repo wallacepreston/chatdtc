@@ -136,6 +136,8 @@ const ChatPage = () => {
     // check if any of the runs have toolCalls that need user action
     const validToolCalls = validRun?.ToolCalls;
 
+    const requiresToolCallAction = !!(validRun && validToolCalls?.length);
+
     useEffect(() => {
         const updateWidth = () => {
             setWidth(window.innerWidth);
@@ -368,7 +370,7 @@ const ChatPage = () => {
                             );
                         })}
                         {lastRunExpired && <ExpiredRunMessage status={lastRunStatus as ExpiredRunStatus} />}
-                        {validRun && validToolCalls?.length && (
+                        {requiresToolCallAction && (
                             <ToolCalls toolCalls={validToolCalls} runId={validRun.Run_OpenAI_id} />
                         )}
                         {thinking && <LinearBuffer id={id} />}
@@ -399,6 +401,7 @@ const ChatPage = () => {
                         openModal={() => {}}
                         isOverMaxMessages={isOverMaxMessages}
                         insufficientBalance={insufficientBalance}
+                        requiresToolCallAction={requiresToolCallAction}
                         type='form'
                     />
                 </div>
