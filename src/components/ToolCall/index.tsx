@@ -31,6 +31,8 @@ const ToolCalls = ({ toolCalls, runId }: ToolCallProps) => {
     const [open, setOpen] = useState(false);
     const [toolCallsToSubmit, setToolCallsToSubmit] = useState<ToolCall[]>([]);
 
+    const allDeclined = toolCallsToSubmit.every(toolCall => toolCall.Status === 'declined');
+
     useEffect(() => {
         setOpen(false);
     }, [runId]);
@@ -41,7 +43,7 @@ const ToolCalls = ({ toolCalls, runId }: ToolCallProps) => {
         });
         setToolCallsToSubmit(toolCallsDefaultedToDeclined);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [toolCalls, runId]);
 
     const handleClose = () => {
         setOpen(false);
@@ -232,6 +234,7 @@ const ToolCalls = ({ toolCalls, runId }: ToolCallProps) => {
                                     variant='contained'
                                     color='primary'
                                     onClick={() => setOpen(true)}
+                                    disabled={allDeclined}
                                 >
                                     Execute These Actions
                                 </Button>
