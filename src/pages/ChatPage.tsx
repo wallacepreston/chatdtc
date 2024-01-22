@@ -377,7 +377,11 @@ const ChatPage = () => {
                         })}
                         {lastRunExpired && <ExpiredRunMessage status={lastRunStatus as ExpiredRunStatus} />}
                         {requiresToolCallAction && (
-                            <ToolCalls toolCalls={validToolCalls} runId={validRun.Run_OpenAI_id} />
+                            <ToolCalls
+                                toolCalls={validToolCalls}
+                                runId={validRun.Run_OpenAI_id}
+                                getMessages={getMessages}
+                            />
                         )}
                         {thinking && <LinearBuffer id={id} />}
                     </Stack>

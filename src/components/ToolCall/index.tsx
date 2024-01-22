@@ -23,9 +23,10 @@ import { TOOL_CALL_FUNCTION_MAP } from '../../constants/toolCalls';
 interface ToolCallProps {
     toolCalls: ToolCall[];
     runId: string;
+    getMessages: () => void;
 }
 
-const ToolCalls = ({ toolCalls, runId }: ToolCallProps) => {
+const ToolCalls = ({ toolCalls, runId, getMessages }: ToolCallProps) => {
     const { callApi } = useApi();
     const { setStatus } = useStatus();
     const [open, setOpen] = useState(false);
@@ -65,6 +66,7 @@ const ToolCalls = ({ toolCalls, runId }: ToolCallProps) => {
                 return { ...toolCall, Status: 'declined' };
             });
             handleToolCall(newToolCalls);
+            getMessages();
             return newToolCalls;
         });
     };
@@ -102,6 +104,7 @@ const ToolCalls = ({ toolCalls, runId }: ToolCallProps) => {
             });
         } finally {
             handleClose();
+            getMessages();
         }
     };
 
