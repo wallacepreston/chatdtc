@@ -244,6 +244,12 @@ const ChatPage = () => {
         }
     };
 
+    useEffect(() => {
+        if (validToolCalls) {
+            smoothScrollToBottom();
+        }
+    }, [validToolCalls]);
+
     const handleDivScroll = (e: any) => {
         const bottom: boolean = Math.abs(e.target.scrollHeight - e.target.scrollTop - e.target.clientHeight) < 1;
         if (bottom !== scrolledToBottom) {
