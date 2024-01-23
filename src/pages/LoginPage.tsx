@@ -108,7 +108,7 @@ const LoginPage = () => {
                         variant='h4'
                         sx={{ fontFamily: 'Noto Sans, sans-serif', letterSpacing: '-1px', width: '350px', mb: '20px' }}
                     >
-                        <b>Update Password</b>
+                        <b>Welcome Back</b>
                     </Typography>
                     <ThemeProvider theme={theme}>
                         <TextField
