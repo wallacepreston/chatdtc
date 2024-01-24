@@ -1,15 +1,30 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
-import { Typography } from '@mui/material';
+import { io } from 'socket.io-client';
+import { REACT_APP_API_URL } from '../constants/api';
 
 interface LinearBufferProps {
-    loadingMessage: string;
+    id: string;
 }
 
-const LinearBuffer = ({ loadingMessage }: LinearBufferProps) => {
+const LinearBuffer = ({ id }: LinearBufferProps) => {
+    const socket = io(REACT_APP_API_URL as string);
     const [progress, setProgress] = React.useState(0);
     const [buffer, setBuffer] = React.useState(10);
+    const [loadingMessage, setLoadingMessage] = React.useState<string>('');
+
+    socket.on('loadingMessage', (data: { chat_id: string; content: string }) => {
+        if (data.chat_id === id) {
+            setLoadingMessage(data.content);
+        }
+    });
+
+    socket.on('newMessage', (data: { chat_id: string; content: string }) => {
+        if (data.chat_id === id) {
+            setProgress(0);
+        }
+    });
 
     // anytime loadingMessage changes, set progress to 10 more than it was before
     React.useEffect(() => {
@@ -43,11 +58,6 @@ const LinearBuffer = ({ loadingMessage }: LinearBufferProps) => {
 
     return (
         <Box sx={{ display: 'flex', alignItems: 'center', height: '' }}>
-            <Box sx={{ maxWidth: '40%' }}>
-                <Typography variant='body2' color='text.secondary'>
-                    {loadingMessage}
-                </Typography>
-            </Box>
             <Box sx={{ flexGrow: 1, ml: 1 }}>
                 <LinearProgress variant='buffer' value={progress} valueBuffer={buffer} color='primary' />{' '}
             </Box>

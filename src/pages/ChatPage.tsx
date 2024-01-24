@@ -83,7 +83,6 @@ const ChatPage = () => {
     const [scrolledToBottom, setScrolledToBottom] = useState<boolean>(true);
     const [thread, setThread] = useState<Chat>({ Thread_OpenAI_id: '', Winery_id: '', Runs: [] });
     const { thinking, setThinking } = useThinking();
-    const [loadingMessage, setLoadingMessage] = useState<string>('');
     const userMessages = messages.filter(message => message.Role === 'user');
     const assistantMessages = messages.filter(message => message.Role === 'assistant');
     const messageCount = userMessages.length;
@@ -249,7 +248,6 @@ const ChatPage = () => {
                     scrollToBottom();
                 }
                 setThinking(true);
-                setLoadingMessage(data.content);
             }
         });
 
@@ -265,7 +263,6 @@ const ChatPage = () => {
             socket.off('chatgptResChunk');
             socket.off('loadingMessage');
             socket.off('resError');
-            setLoadingMessage('');
             setThinking(false);
         };
     }, [socket, id]);
@@ -291,6 +288,10 @@ const ChatPage = () => {
     };
 
     let prevRole: 'user' | 'assistant' | null = null;
+
+    if (!id) {
+        return <div>Chat not found</div>;
+    }
 
     return (
         <div id='ChatPage' style={{ width: '100%', height: '100vh', display: 'flex', justifyContent: 'center' }}>
@@ -327,7 +328,7 @@ const ChatPage = () => {
                                 />
                             );
                         })}
-                        {thinking && <LinearBuffer loadingMessage={loadingMessage} />}
+                        {thinking && <LinearBuffer id={id} />}
                     </Stack>
                     {!scrolledToBottom && (
                         <IconButton
