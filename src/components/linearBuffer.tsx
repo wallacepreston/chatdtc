@@ -1,15 +1,13 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
-import { io } from 'socket.io-client';
-import { REACT_APP_API_URL } from '../constants/api';
+import socket from '../util/socket';
 
 interface LinearBufferProps {
     id: string;
 }
 
 const LinearBuffer = ({ id }: LinearBufferProps) => {
-    const socket = io(REACT_APP_API_URL as string);
     const [progress, setProgress] = React.useState(0);
     const [buffer, setBuffer] = React.useState(10);
     const [loadingMessage, setLoadingMessage] = React.useState<string>('');

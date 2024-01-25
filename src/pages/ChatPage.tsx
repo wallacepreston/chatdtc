@@ -8,7 +8,6 @@ import SideBar from '../components/sidebar';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuthHeader } from 'react-auth-kit';
-import io from 'socket.io-client';
 import Topper from '../components/topper';
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
@@ -41,8 +40,7 @@ import { useUser } from '../contexts/user';
 import { Chat } from '../contexts/chat';
 import LinearBuffer from '../components/linearBuffer';
 import { useStatus } from '../contexts/status';
-
-const socket = io(REACT_APP_API_URL as string);
+import socket from '../util/socket';
 
 hljs.registerLanguage('javascript', javascript);
 hljs.registerLanguage('typescript', typescript);

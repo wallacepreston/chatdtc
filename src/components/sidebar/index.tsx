@@ -4,16 +4,13 @@ import AddIcon from '@mui/icons-material/Add';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { useAuthUser, useSignOut } from 'react-auth-kit';
 import { Link, useNavigate } from 'react-router-dom';
-import io from 'socket.io-client';
 import { useStatus } from '../../contexts/status';
-import { REACT_APP_API_URL } from '../../constants/api';
 import { useUser } from '../../contexts/user';
 import { AccountCircle, Business, StarOutline } from '@mui/icons-material';
 import { Chat, useChats } from '../../contexts/chat';
 import theme from '../../theme';
 import ChatCategory from './chatCategory';
-
-const socket = io(REACT_APP_API_URL as string);
+import socket from '../../util/socket';
 
 export interface CustomChatCategory {
     name: string;

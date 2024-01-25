@@ -5,10 +5,8 @@ import theme from '../../../theme';
 import { Chat } from '../../../contexts/chat';
 import ChatRenameForm from '../chatRenameForm';
 import ChatActionsMenu from '../chatActionsMenu';
-import { REACT_APP_API_URL } from '../../../constants/api';
-import { io } from 'socket.io-client';
 import TypingIndicator from '../../TypingIndicator';
-const socket = io(REACT_APP_API_URL as string);
+import socket from '../../../util/socket';
 
 interface ChatItemProps {
     chat: Chat;
