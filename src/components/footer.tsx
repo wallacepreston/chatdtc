@@ -111,7 +111,7 @@ const Footer = (props: {
                     exposeError: true
                 });
                 if (!threadRes) {
-                    return setStatus(genericError);
+                    return;
                 }
                 const { data: threadData } = threadRes;
 
@@ -131,7 +131,7 @@ const Footer = (props: {
                 });
 
                 if (!createMessageRes) {
-                    return setStatus(genericError);
+                    return;
                 }
                 const {
                     data: { chat_id }
@@ -151,7 +151,7 @@ const Footer = (props: {
                 });
 
                 if (!createMessageRes) {
-                    return setStatus(genericError);
+                    return;
                 }
                 const { data: messageData } = createMessageRes;
                 getChats();
