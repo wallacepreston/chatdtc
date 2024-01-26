@@ -24,6 +24,8 @@ const ChatItem = ({ chat, hoverInactive, sidebarColor }: ChatItemProps) => {
     const isTyping = Boolean(thinkingChats[chat_id]?.progress);
 
     const showTypingIcon = !isActiveChat && isTyping;
+    if (isActiveChat) console.log('ACTIVE CHAT', chat_id);
+    if (isTyping) console.log('TYPING', chat_id);
     const showOverlay = isActiveChat || showTypingIcon;
 
     const handleBackground = () => {

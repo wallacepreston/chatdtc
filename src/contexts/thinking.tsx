@@ -92,6 +92,15 @@ const ThinkingProvider = ({ children }: Props) => {
         };
     }, []);
 
+    useEffect(() => {
+        socket.on('requiresAction', (data: { chat_id: string }) => {
+            removeChatThinking(data.chat_id);
+        });
+        return () => {
+            socket.off('requiresAction');
+        };
+    }, [removeChatThinking]);
+
     return (
         <ThinkingContext.Provider value={{ thinkingChats, setThinkingChats, addChatThinking, removeChatThinking }}>
             {children}

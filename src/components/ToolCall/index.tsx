@@ -60,15 +60,30 @@ const ToolCalls = ({ toolCalls, runId, getMessages }: ToolCallProps) => {
         setToolCallsToSubmit(newToolCalls);
     };
 
-    const handleDeclineAll = () => {
-        setToolCallsToSubmit(_prevToolCalls => {
-            const newToolCalls = toolCallsToSubmit.map(toolCall => {
-                return { ...toolCall, Status: 'declined' };
-            });
-            handleToolCall(newToolCalls);
-            getMessages();
-            return newToolCalls;
+    const handleDeclineAll = async () => {
+        const response = await callApi({
+            url: `/api/runs/${runId}/`,
+            method: 'delete',
+            exposeError: true
         });
+        if (!response) {
+            return;
+        }
+        const { data } = response;
+
+        if (data?.status !== 'success') {
+            return setStatus({
+                type: 'error',
+                message: 'Error declining tool call'
+            });
+        }
+
+        setStatus({
+            type: 'success',
+            message: 'Action(s) declined successfully'
+        });
+
+        getMessages();
     };
 
     const handleToolCall = async (passedToolCalls?: ToolCall[]) => {
