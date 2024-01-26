@@ -11,6 +11,7 @@ import { useStatus } from '../contexts/status';
 
 const Footer = (props: {
     setHeight: (height: number) => void;
+    smoothScrollToBottom?: () => void;
     newInput: string;
     openModal: () => void;
     isOverMaxMessages: boolean;
@@ -163,10 +164,12 @@ const Footer = (props: {
             }
         } catch (err) {
             console.log(err);
-            // if error matches INVALID_PROMPT_MESSAGE, then set status with helpful message
-            // setStatus({ type: 'error', message: 'Error creating message. Please reload the page and try again.' });
             setThinking(false);
+            setCanSubmit(true);
         } finally {
+            if (props.smoothScrollToBottom) {
+                props.smoothScrollToBottom();
+            }
             setCanSubmit(true);
             return;
         }

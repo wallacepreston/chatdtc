@@ -199,7 +199,7 @@ const ChatPage = () => {
     };
 
     const handleDivScroll = (e: any) => {
-        const bottom: boolean = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+        const bottom: boolean = Math.abs(e.target.scrollHeight - e.target.scrollTop - e.target.clientHeight) < 1;
         if (bottom !== scrolledToBottom) {
             setScrolledToBottom(bottom);
         }
@@ -229,9 +229,7 @@ const ChatPage = () => {
         socket.on('chatgptResChunk', (data: { chat_id: string; content: string }) => {
             if (data.chat_id === id) {
                 setMessages(messages => {
-                    if (scrolledToBottom) {
-                        scrollToBottom();
-                    }
+                    scrollToBottom();
                     if (messages[messages.length - 1]?.Role === 'user') {
                         return [...messages, { Role: 'assistant', Content_Value: data.content }];
                     }
@@ -242,9 +240,7 @@ const ChatPage = () => {
 
         socket.on('loadingMessage', (data: { chat_id: string; content: string }) => {
             if (data.chat_id === id) {
-                if (scrolledToBottom) {
-                    scrollToBottom();
-                }
+                scrollToBottom();
                 setThinking(true);
             }
         });
@@ -349,6 +345,7 @@ const ChatPage = () => {
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <Footer
                         setHeight={handleHeightChange}
+                        smoothScrollToBottom={smoothScrollToBottom}
                         newInput=''
                         openModal={() => {}}
                         isOverMaxMessages={isOverMaxMessages}
