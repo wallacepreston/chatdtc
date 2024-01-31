@@ -15,7 +15,7 @@ import { useStatus } from '../contexts/status';
 const LoginPage = () => {
     const signIn = useSignIn();
     const navigate = useNavigate();
-    const { setUser } = useUser();
+    const { setUser, setNotifications } = useUser();
     const { setStatus } = useStatus();
     const { callApi } = useApi();
 
@@ -67,6 +67,7 @@ const LoginPage = () => {
                 })
             ) {
                 setUser(data?.user);
+                setNotifications(data?.notifications);
                 navigate('/');
             } else {
                 console.log('Login failed');

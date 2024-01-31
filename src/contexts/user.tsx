@@ -28,10 +28,24 @@ export interface UserState {
     balance?: number; // their BillingBalance.Balance amount, or zero if they have no BillingBalance record
 }
 
+export interface Notification {
+    id: number;
+    Severity?: string;
+    Type?: string;
+    Content?: string;
+    Active?: boolean;
+    Effective_Start_Date?: Date;
+    Effective_End_Date?: Date | null;
+    Created_Date?: Date;
+    Updated_Date?: Date;
+}
+
 const UserContext = createContext({
     user: { Last_Winery_id: null } as UserState,
     setUser: (user: UserState) => {},
-    getUser: () => {}
+    getUser: () => {},
+    notifications: [] as Notification[],
+    setNotifications: (notifications: Notification[]) => {}
 });
 
 interface Props {
@@ -41,6 +55,7 @@ interface Props {
 const UserProvider = ({ children }: Props) => {
     const authHeader = useAuthHeader();
     const [user, setUser] = useState<UserState>({ Last_Winery_id: null });
+    const [notifications, setNotifications] = useState<Notification[]>([]);
 
     const getUser = async () => {
         const Authorization = authHeader();
@@ -57,6 +72,11 @@ const UserProvider = ({ children }: Props) => {
             // get the list of groups from the response
             setUser(userData);
         }
+        const notifications = res?.data?.notifications;
+        if (notifications?.length) {
+            // set the notifications in the context
+            setNotifications(notifications);
+        }
     };
 
     useEffect(() => {
@@ -64,7 +84,11 @@ const UserProvider = ({ children }: Props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return <UserContext.Provider value={{ user, setUser, getUser }}>{children}</UserContext.Provider>;
+    return (
+        <UserContext.Provider value={{ user, setUser, getUser, notifications, setNotifications }}>
+            {children}
+        </UserContext.Provider>
+    );
 };
 
 const useUser = () => {

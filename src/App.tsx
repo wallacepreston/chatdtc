@@ -10,6 +10,7 @@ import SharePage from './pages/SharePage';
 import NotFoundPage from './pages/NotFoundPage';
 import { ThinkingProvider } from './contexts/thinking';
 import { StatusProvider } from './contexts/status';
+import Notifications from './components/notifications';
 import Status from './components/status';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './theme';
@@ -31,6 +32,7 @@ const App = () => {
                         >
                             <UserProvider>
                                 <ChatProvider>
+                                    <Notifications />
                                     <Status />
                                     <Router>
                                         <SelectWineryModal />
