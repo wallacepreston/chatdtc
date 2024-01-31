@@ -227,7 +227,7 @@ const Center = (props: { footerHeight: number; setInput: (input: string) => void
                     >
                         Not sure what to ask? <br />
                         Check out{' '}
-                        <a href='https://winepulse.super.site/' target='_blank' rel='noreferrer'>
+                        <a href='https://winepulse.super.site/chatdtc-help-center' target='_blank' rel='noreferrer'>
                             our Help Center
                         </a>
                     </Typography>
