@@ -3,13 +3,21 @@ import { useAuthHeader } from 'react-auth-kit';
 import { REACT_APP_API_URL } from '../constants/api';
 import axios from 'axios';
 
+export interface Winery {
+    Winery_id: string;
+    Winery_Name?: string;
+    Last_Sync_Date?: string;
+    OpenAI_model?: string;
+    POS_Name?: string;
+}
+
 export interface UserState {
     Last_Winery_id: string | null;
     Created?: string;
     Email?: string;
     FirstName?: string;
     FullName?: string;
-    Wineries?: Array<{ [key: string]: any }>;
+    Wineries?: Winery[];
     LastWinery?: { [key: string]: any };
     LastModified?: string;
     LastName?: string;
