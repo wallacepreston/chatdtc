@@ -10,6 +10,18 @@
     font-style: normal;
 }
 
+:root {
+    --main-color: #142f44;
+}
+
+a {
+    color: var(--main-color);
+}
+
+.MuiPopper-root a {
+    color: #fff;
+}
+
 code {
     font-weight: 800;
 }

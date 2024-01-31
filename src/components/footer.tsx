@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, TextField, IconButton, Stack, Tooltip, Button } from '@mui/material';
-import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
+import { InfoOutlined, SendOutlined as SendOutlinedIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useThinking } from '../contexts/thinking';
 import theme from '../theme';
@@ -332,10 +332,24 @@ const Footer = (props: {
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            gap: '10px'
+                            gap: '5px'
                         }}
                     >
                         {renderTextField()}
+                        <Tooltip
+                            title={
+                                <Typography sx={{ textAlign: 'center', fontSize: '12px' }}>
+                                    Not sure what to ask? <br />
+                                    Check out{' '}
+                                    <a href='https://winepulse.super.site/' target='_blank' rel='noreferrer'>
+                                        our Help Center
+                                    </a>
+                                </Typography>
+                            }
+                            placement='top'
+                        >
+                            <InfoOutlined sx={{ fontSize: '18px' }} />
+                        </Tooltip>
                     </div>
                     <Typography
                         variant='body2'

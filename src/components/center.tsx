@@ -216,6 +216,21 @@ const Center = (props: { footerHeight: number; setInput: (input: string) => void
                         <br />
                         Sample Questions:
                     </Typography>
+                    <Typography
+                        variant='body1'
+                        sx={{
+                            textAlign: 'center',
+                            color: 'black',
+                            fontFamily: 'Noto Sans, sans-serif',
+                            paddingBottom: '1rem'
+                        }}
+                    >
+                        Not sure what to ask? <br />
+                        Check out{' '}
+                        <a href='https://winepulse.super.site/' target='_blank' rel='noreferrer'>
+                            our Help Center
+                        </a>
+                    </Typography>
 
                     <div id='presentation'>
                         <Stack
