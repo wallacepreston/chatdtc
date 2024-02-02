@@ -22,7 +22,7 @@ const ExpiredRunMessage = () => {
                 >
                     <Box sx={{ p: 2 }}>
                         <Typography>
-                            I'm sorry, we've run into an issue, and the chat has expired. Please send a new message or
+                            I'm sorry, OpenAI ran into an issue, and the chat has expired. Please enter a new message or
                             create a new chat to continue.
                         </Typography>
                     </Box>

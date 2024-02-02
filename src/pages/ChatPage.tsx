@@ -93,7 +93,7 @@ const ChatPage = () => {
     const { setStatus } = useStatus();
     const { balance } = user;
     const insufficientBalance = !assistantMessages.length && (!balance || balance < 3);
-    const lastRunExpired = thread?.Runs?.[0]?.Status === 'expired';
+    const lastRunExpired = ['expired', 'cancelled'].includes(thread?.Runs?.[0]?.Status as 'expired' | 'cancelled');
 
     useEffect(() => {
         const updateWidth = () => {
