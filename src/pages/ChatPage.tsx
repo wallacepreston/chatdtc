@@ -5,6 +5,8 @@ import { IconButton, Stack } from '@mui/material';
 import ArrowDownwardRoundedIcon from '@mui/icons-material/ArrowDownwardRounded';
 import Footer from '../components/footer';
 import SideBar from '../components/sidebar';
+import ExpiredRunMessage from '../components/expiredRun';
+
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuthHeader } from 'react-auth-kit';
@@ -91,6 +93,7 @@ const ChatPage = () => {
     const { setStatus } = useStatus();
     const { balance } = user;
     const insufficientBalance = !assistantMessages.length && (!balance || balance < 3);
+    const lastRunExpired = thread?.Runs?.[0]?.Status === 'expired';
 
     useEffect(() => {
         const updateWidth = () => {
@@ -322,6 +325,7 @@ const ChatPage = () => {
                                 />
                             );
                         })}
+                        {lastRunExpired && <ExpiredRunMessage />}
                         {thinking && <LinearBuffer id={id} />}
                     </Stack>
                     {!scrolledToBottom && (

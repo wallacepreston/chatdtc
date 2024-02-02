@@ -12,6 +12,7 @@ export interface Category {
 
 export interface Run {
     Created_At: Date;
+    Status: string | null;
 }
 
 export interface Chat {
