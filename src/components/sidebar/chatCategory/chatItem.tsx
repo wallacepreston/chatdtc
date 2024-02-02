@@ -22,7 +22,9 @@ const ChatItem = ({ chat, hoverInactive, sidebarColor }: ChatItemProps) => {
     const hoverActive = theme.palette.grey[300];
     const [isTyping, setIsTyping] = React.useState<boolean>(false);
 
-    const showTypingIcon = !isActiveChat && isTyping;
+    const statusIsComplete = chat.Runs[0]?.Status === 'complete';
+
+    const showTypingIcon = !isActiveChat && !statusIsComplete && isTyping;
     const showOverlay = isActiveChat || showTypingIcon;
 
     if (showTypingIcon) {
@@ -30,18 +32,22 @@ const ChatItem = ({ chat, hoverInactive, sidebarColor }: ChatItemProps) => {
     }
 
     useEffect(() => {
+        console.log('loadingMessage effect');
         socket.on('loadingMessage', (data: { chat_id: string; content: string }) => {
+            console.log('loadingMessage new event');
             if (data.chat_id === chat_id) {
                 setIsTyping(true);
             }
         });
         return () => {
+            console.log('loadingMessage cleanup');
             socket.off('loadingMessage');
         };
     }, [chat_id]);
 
     useEffect(() => {
         socket.on('runComplete', (data: { chat_id: string }) => {
+            console.log('runComplete new event');
             if (data.chat_id === chat_id) {
                 setIsTyping(false);
             }
