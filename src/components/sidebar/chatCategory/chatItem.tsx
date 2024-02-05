@@ -21,16 +21,10 @@ const ChatItem = ({ chat, hoverInactive, sidebarColor }: ChatItemProps) => {
     const isActiveChat = chat.Thread_OpenAI_id === activeChatId;
     const hoverActive = theme.palette.grey[300];
     const { thinkingChats } = useThinking();
-    const isTyping = thinkingChats[chat_id]?.isThinking;
+    const isTyping = Boolean(thinkingChats[chat_id]?.progress);
 
-    const runIsComplete = chat.Runs[0]?.Status === 'complete';
-
-    const showTypingIcon = !isActiveChat && !runIsComplete && isTyping;
+    const showTypingIcon = !isActiveChat && isTyping;
     const showOverlay = isActiveChat || showTypingIcon;
-
-    if (showTypingIcon) {
-        console.log('SHOULD BE TYPING');
-    }
 
     const handleBackground = () => {
         const color = isActiveChat ? hoverActive : sidebarColor;

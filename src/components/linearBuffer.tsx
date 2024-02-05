@@ -1,44 +1,25 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
-import socket from '../util/socket';
+import { useThinking } from '../contexts/thinking';
 
 interface LinearBufferProps {
     id: string;
 }
 
 const LinearBuffer = ({ id }: LinearBufferProps) => {
-    const [progress, setProgress] = React.useState(0);
     const [buffer, setBuffer] = React.useState(10);
-    const [loadingMessage, setLoadingMessage] = React.useState<string>('');
-
-    socket.on('loadingMessage', (data: { chat_id: string; content: string }) => {
-        if (data.chat_id === id) {
-            setLoadingMessage(data.content);
-        }
-    });
-
-    socket.on('newMessage', (data: { chat_id: string; content: string }) => {
-        if (data.chat_id === id) {
-            setProgress(0);
-        }
-    });
-
-    // anytime loadingMessage changes, set progress to 10 more than it was before
-    React.useEffect(() => {
-        setProgress(prevProgress => (prevProgress >= 100 ? 0 : prevProgress + 10));
-    }, [loadingMessage]);
+    const { thinkingChats } = useThinking();
+    const progress = thinkingChats[id]?.progress || 0;
 
     const progressRef = React.useRef(() => {});
     React.useEffect(() => {
         progressRef.current = () => {
-            if (progress > 100) {
-                setProgress(0);
+            if (progress === 100) {
                 setBuffer(10);
             } else {
                 const diff = Math.random() * 10;
                 const diff2 = Math.random() * 10;
-                // setProgress(progress + diff);
                 setBuffer(progress + diff + diff2);
             }
         };

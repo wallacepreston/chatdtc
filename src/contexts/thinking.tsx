@@ -1,9 +1,9 @@
-import React, { ReactNode, createContext, useContext, useEffect } from 'react';
+import React, { ReactNode, createContext, useCallback, useContext, useEffect } from 'react';
 import { useState } from 'react';
 import socket from '../util/socket';
 
 type ChatThinkingState = {
-    [chat_id: string]: { isThinking: boolean; lastUpdated: number };
+    [chat_id: string]: { progress: number; lastUpdated: number };
 };
 
 let thinkingChats: ChatThinkingState = {};
@@ -11,7 +11,8 @@ let thinkingChats: ChatThinkingState = {};
 const ThinkingContext = createContext({
     thinkingChats,
     setThinkingChats: (thinkingChats: ChatThinkingState) => {},
-    setChatThinking: (chat_id: string, isThinking: boolean, now: number) => {}
+    addChatThinking: (chat_id: string, progress: number, now: number) => {},
+    removeChatThinking: (chat_id: string) => {}
 });
 
 interface Props {
@@ -21,17 +22,24 @@ interface Props {
 const ThinkingProvider = ({ children }: Props) => {
     const [thinkingChats, setThinkingChats] = useState<ChatThinkingState>({});
 
-    const setChatThinking = (chat_id: string, isThinking: boolean, now: number) => {
-        if (isThinking) {
-        }
+    const removeChatThinking = useCallback(
+        (chat_id: string) => {
+            const updatedChats = { ...thinkingChats };
+            delete updatedChats[chat_id];
+            setThinkingChats(updatedChats);
+        },
+        [thinkingChats]
+    );
+
+    const addChatThinking = (chat_id: string, progress: number, now: number) => {
         setThinkingChats(prevState => {
-            return { ...prevState, [chat_id]: { isThinking, lastUpdated: now } };
+            return { ...prevState, [chat_id]: { progress, lastUpdated: Date.now() } };
         });
     };
 
     useEffect(() => {
         const intervalId = setInterval(() => {
-            // Cleanup entries older than 20 seconds
+            // Cleanup entries older than 15 seconds
             const currentTime = Date.now();
 
             setThinkingChats(prevState => {
@@ -39,7 +47,7 @@ const ThinkingProvider = ({ children }: Props) => {
 
                 for (const chat_id in updatedChats) {
                     const diff = currentTime - updatedChats[chat_id].lastUpdated;
-                    const isExpired = diff > 20000;
+                    const isExpired = diff > 15000;
 
                     if (isExpired) {
                         delete updatedChats[chat_id];
@@ -57,24 +65,33 @@ const ThinkingProvider = ({ children }: Props) => {
 
     useEffect(() => {
         socket.on('runComplete', (data: { chat_id: string }) => {
-            setChatThinking(data.chat_id, false, Date.now());
+            removeChatThinking(data.chat_id);
         });
         return () => {
             socket.off('runComplete');
         };
-    }, []);
+    }, [removeChatThinking]);
 
     useEffect(() => {
         socket.on('loadingMessage', (data: { chat_id: string; content: string }) => {
-            setChatThinking(data.chat_id, true, Date.now());
+            addChatThinking(data.chat_id, Number(data.content), Date.now());
         });
         return () => {
             socket.off('loadingMessage');
         };
     }, []);
 
+    useEffect(() => {
+        socket.on('newMessage', (data: { chat_id: string; content: string }) => {
+            addChatThinking(data.chat_id, 10, Date.now());
+        });
+        return () => {
+            socket.off('newMessage');
+        };
+    }, []);
+
     return (
-        <ThinkingContext.Provider value={{ thinkingChats, setThinkingChats, setChatThinking }}>
+        <ThinkingContext.Provider value={{ thinkingChats, setThinkingChats, addChatThinking, removeChatThinking }}>
             {children}
         </ThinkingContext.Provider>
     );

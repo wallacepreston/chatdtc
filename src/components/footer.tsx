@@ -25,7 +25,7 @@ const Footer = (props: {
     const [pasteHandler, setPasteHandler] = useState<boolean>(false);
     const [canSubmit, setCanSubmit] = useState<boolean>(true);
     const [width, setWidth] = useState<number>(window.innerWidth);
-    const { setChatThinking } = useThinking();
+    const { addChatThinking, removeChatThinking } = useThinking();
     const { callApi } = useApi();
     const { getChats } = useChats();
     const { setStatus } = useStatus();
@@ -137,7 +137,7 @@ const Footer = (props: {
                     data: { chat_id }
                 } = createMessageRes;
 
-                setChatThinking(chat_id, true, Date.now());
+                addChatThinking(chat_id, 10, Date.now());
                 getChats();
 
                 if (window.location.pathname.match(chatPathRegex)) return;
@@ -159,10 +159,10 @@ const Footer = (props: {
                 getChats();
 
                 if (!messageData) {
-                    setChatThinking(chat_id, false, Date.now());
+                    removeChatThinking(chat_id);
                     return;
                 }
-                setChatThinking(chat_id, true, Date.now());
+                addChatThinking(chat_id, 10, Date.now());
             }
         } catch (err) {
             console.log(err);
