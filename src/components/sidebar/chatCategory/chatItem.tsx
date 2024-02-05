@@ -1,12 +1,12 @@
 import { Button, Tooltip } from '@mui/material';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import theme from '../../../theme';
 import { Chat } from '../../../contexts/chat';
 import ChatRenameForm from '../chatRenameForm';
 import ChatActionsMenu from '../chatActionsMenu';
 import TypingIndicator from '../../TypingIndicator';
-import socket from '../../../util/socket';
+import { useThinking } from '../../../contexts/thinking';
 
 interface ChatItemProps {
     chat: Chat;
@@ -20,7 +20,8 @@ const ChatItem = ({ chat, hoverInactive, sidebarColor }: ChatItemProps) => {
     const chat_id = chat.Thread_OpenAI_id;
     const isActiveChat = chat.Thread_OpenAI_id === activeChatId;
     const hoverActive = theme.palette.grey[300];
-    const [isTyping, setIsTyping] = React.useState<boolean>(false);
+    const { thinkingChats } = useThinking();
+    const isTyping = thinkingChats[chat_id]?.isThinking;
 
     const runIsComplete = chat.Runs[0]?.Status === 'complete';
 
@@ -30,30 +31,6 @@ const ChatItem = ({ chat, hoverInactive, sidebarColor }: ChatItemProps) => {
     if (showTypingIcon) {
         console.log('SHOULD BE TYPING');
     }
-
-    useEffect(() => {
-        socket.on('loadingMessage', (data: { chat_id: string; content: string }) => {
-            if (data.chat_id === chat_id) {
-                console.log('loadingMessage new event for chat_id ', chat_id);
-                setIsTyping(true);
-            }
-        });
-        return () => {
-            socket.off('loadingMessage');
-        };
-    }, [chat_id]);
-
-    useEffect(() => {
-        socket.on('runComplete', (data: { chat_id: string }) => {
-            if (data.chat_id === chat_id) {
-                console.log('runComplete new event for chat_id ', chat_id);
-                setIsTyping(false);
-            }
-        });
-        return () => {
-            socket.off('runComplete');
-        };
-    }, [chat_id]);
 
     const handleBackground = () => {
         const color = isActiveChat ? hoverActive : sidebarColor;

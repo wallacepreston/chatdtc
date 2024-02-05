@@ -25,7 +25,7 @@ const Footer = (props: {
     const [pasteHandler, setPasteHandler] = useState<boolean>(false);
     const [canSubmit, setCanSubmit] = useState<boolean>(true);
     const [width, setWidth] = useState<number>(window.innerWidth);
-    const { setThinking } = useThinking();
+    const { setChatThinking } = useThinking();
     const { callApi } = useApi();
     const { getChats } = useChats();
     const { setStatus } = useStatus();
@@ -92,7 +92,6 @@ const Footer = (props: {
     const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
         e?.preventDefault();
         if (canSubmit === false) return;
-        setThinking(true);
         const message = input.trim();
         setTimeout(() => setInput(''), 1);
 
@@ -137,6 +136,8 @@ const Footer = (props: {
                 const {
                     data: { chat_id }
                 } = createMessageRes;
+
+                setChatThinking(chat_id, true, Date.now());
                 getChats();
 
                 if (window.location.pathname.match(chatPathRegex)) return;
@@ -158,13 +159,13 @@ const Footer = (props: {
                 getChats();
 
                 if (!messageData) {
-                    setThinking(false);
+                    setChatThinking(chat_id, false, Date.now());
                     return;
                 }
+                setChatThinking(chat_id, true, Date.now());
             }
         } catch (err) {
             console.log(err);
-            setThinking(false);
             setCanSubmit(true);
         } finally {
             if (props.smoothScrollToBottom) {

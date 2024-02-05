@@ -82,7 +82,7 @@ const ChatPage = () => {
     const [title, setTitle] = useState<string>('');
     const [scrolledToBottom, setScrolledToBottom] = useState<boolean>(true);
     const [thread, setThread] = useState<Chat>({ Thread_OpenAI_id: '', Winery_id: '', Runs: [] });
-    const { thinking, setThinking } = useThinking();
+    const { thinkingChats, setChatThinking } = useThinking();
     const userMessages = messages.filter(message => message.Role === 'user');
     const assistantMessages = messages.filter(message => message.Role === 'assistant');
     const messageCount = userMessages.length;
@@ -94,6 +94,7 @@ const ChatPage = () => {
     const { balance } = user;
     const insufficientBalance = !assistantMessages.length && (!balance || balance < 3);
     const lastRunExpired = ['expired', 'cancelled'].includes(thread?.Runs?.[0]?.Status as 'expired' | 'cancelled');
+    const thinking = id ? thinkingChats[id]?.isThinking : false;
 
     useEffect(() => {
         const updateWidth = () => {
@@ -214,12 +215,6 @@ const ChatPage = () => {
     }, [width]);
 
     useEffect(() => {
-        socket.on('runComplete', (data: { chat_id: string }) => {
-            if (data.chat_id === id) {
-                getMessages();
-                setThinking(false);
-            }
-        });
         socket.on('newMessage', (data: { chat_id: string }) => {
             if (data.chat_id === id) {
                 getMessages();
@@ -244,14 +239,14 @@ const ChatPage = () => {
         socket.on('loadingMessage', (data: { chat_id: string; content: string }) => {
             if (data.chat_id === id) {
                 scrollToBottom();
-                setThinking(true);
+                setChatThinking(id, true, Date.now());
             }
         });
 
         socket.on('resError', (data: { chat_id: string; error: unknown }) => {
             if (data.chat_id === id) {
                 setStatus({ type: 'error', message: 'There was an error with the chat. Please reload the page.' });
-                setThinking(false);
+                setChatThinking(id, false, Date.now());
             }
         });
         return () => {
@@ -260,7 +255,6 @@ const ChatPage = () => {
             socket.off('chatgptResChunk');
             socket.off('loadingMessage');
             socket.off('resError');
-            setThinking(false);
         };
     }, [socket, id]);
 
