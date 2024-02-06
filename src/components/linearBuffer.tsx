@@ -36,7 +36,7 @@ const LinearBuffer = ({ id }: LinearBufferProps) => {
     }, []);
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center', height: '' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', height: '15px' }}>
             <Box sx={{ flexGrow: 1, ml: 1 }}>
                 <LinearProgress variant='buffer' value={progress} valueBuffer={buffer} color='primary' />{' '}
             </Box>
