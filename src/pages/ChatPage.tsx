@@ -93,7 +93,9 @@ const ChatPage = () => {
     const { setStatus } = useStatus();
     const { balance } = user;
     const insufficientBalance = !assistantMessages.length && (!balance || balance < 3);
-    const lastRunExpired = ['expired', 'cancelled'].includes(thread?.Runs?.[0]?.Status as 'expired' | 'cancelled');
+    const lastRunExpired = ['expired', 'cancelled', 'failed'].includes(
+        thread?.Runs?.[0]?.Status as 'expired' | 'cancelled'
+    );
     const thinking = id ? Boolean(thinkingChats[id]?.progress) : false;
 
     useEffect(() => {
@@ -250,6 +252,7 @@ const ChatPage = () => {
             if (data.chat_id === id) {
                 setStatus({ type: 'error', message: 'There was an error with the chat. Please reload the page.' });
                 removeChatThinking(id);
+                scrollToBottom();
             }
         });
         return () => {
