@@ -259,6 +259,7 @@ const ChatPage = () => {
             socket.off('runComplete');
             socket.off('newMessage');
             socket.off('chatgptResChunk');
+            socket.off('loadingMessage');
             socket.off('resError');
         };
     }, [socket, id]);
