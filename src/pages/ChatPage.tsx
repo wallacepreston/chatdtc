@@ -94,7 +94,7 @@ const ChatPage = () => {
     const { balance } = user;
     const insufficientBalance = !assistantMessages.length && (!balance || balance < 3);
     const lastRunExpired = ['expired', 'cancelled', 'failed'].includes(
-        thread?.Runs?.[0]?.Status as 'expired' | 'cancelled'
+        thread?.Runs?.[0]?.Status as 'expired' | 'cancelled' | 'failed'
     );
     const thinking = id ? Boolean(thinkingChats[id]?.progress) : false;
 
