@@ -136,7 +136,7 @@ const ChatPage = () => {
     // check if any of the runs have toolCalls that need user action
     const validToolCalls = validRun?.ToolCalls;
 
-    const requiresToolCallAction = !!(validRun && validToolCalls?.length);
+    const requiresToolCallAction = !lastRunExpired && !!(validRun && validToolCalls?.length);
 
     useEffect(() => {
         const updateWidth = () => {
@@ -196,7 +196,7 @@ const ChatPage = () => {
     // at the beginning, get all messages
     useEffect(() => {
         getMessages();
-    }, [id]);
+    }, [id, thinking]);
 
     const getTitle = async () => {
         const res = await axios.get(`${REACT_APP_API_URL}/api/chat/getChatTitleByID/${id}`, {
@@ -340,6 +340,23 @@ const ChatPage = () => {
         return <div>Chat not found</div>;
     }
 
+    const renderAlertState = () => {
+        // should only ever return ONE of these
+
+        if (thinking) {
+            return <LinearBuffer id={id} />;
+        }
+        if (lastRunExpired) {
+            return <ExpiredRunMessage status={lastRunStatus as ExpiredRunStatus} />;
+        }
+        // if (insufficientBalance) {
+        //     return <div>Insufficient balance</div>;
+        // }
+        if (requiresToolCallAction) {
+            return <ToolCalls toolCalls={validToolCalls} runId={validRun.Run_OpenAI_id} getMessages={getMessages} />;
+        }
+    };
+
     return (
         <div id='ChatPage' style={{ width: '100%', height: '100vh', display: 'flex', justifyContent: 'center' }}>
             <div id='side' style={{ width: handleWidthSide(), height: '100%' }}>
@@ -375,15 +392,7 @@ const ChatPage = () => {
                                 />
                             );
                         })}
-                        {lastRunExpired && <ExpiredRunMessage status={lastRunStatus as ExpiredRunStatus} />}
-                        {requiresToolCallAction && (
-                            <ToolCalls
-                                toolCalls={validToolCalls}
-                                runId={validRun.Run_OpenAI_id}
-                                getMessages={getMessages}
-                            />
-                        )}
-                        {thinking && <LinearBuffer id={id} />}
+                        {renderAlertState()}
                     </Stack>
                     {!scrolledToBottom && (
                         <IconButton
