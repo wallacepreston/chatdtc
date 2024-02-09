@@ -353,7 +353,14 @@ const ChatPage = () => {
         //     return <div>Insufficient balance</div>;
         // }
         if (requiresToolCallAction) {
-            return <ToolCalls toolCalls={validToolCalls} runId={validRun.Run_OpenAI_id} getMessages={getMessages} />;
+            return (
+                <ToolCalls
+                    toolCalls={validToolCalls}
+                    runId={validRun.Run_OpenAI_id}
+                    getMessages={getMessages}
+                    chat_id={id}
+                />
+            );
         }
     };
 

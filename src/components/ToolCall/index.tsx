@@ -19,18 +19,21 @@ import { useEffect, useState } from 'react';
 import theme from '../../theme';
 import { Clear, Done } from '@mui/icons-material';
 import { TOOL_CALL_FUNCTION_MAP } from '../../constants/toolCalls';
+import { useThinking } from '../../contexts/thinking';
 
 interface ToolCallProps {
     toolCalls: ToolCall[];
     runId: string;
     getMessages: () => void;
+    chat_id: string;
 }
 
-const ToolCalls = ({ toolCalls, runId, getMessages }: ToolCallProps) => {
+const ToolCalls = ({ toolCalls, runId, getMessages, chat_id }: ToolCallProps) => {
     const { callApi } = useApi();
     const { setStatus } = useStatus();
     const [open, setOpen] = useState(false);
     const [toolCallsToSubmit, setToolCallsToSubmit] = useState<ToolCall[]>([]);
+    const { addChatThinking } = useThinking();
 
     const allDeclined = toolCallsToSubmit.every(toolCall => toolCall.Status === 'declined');
 
@@ -88,6 +91,8 @@ const ToolCalls = ({ toolCalls, runId, getMessages }: ToolCallProps) => {
 
     const handleToolCall = async (passedToolCalls?: ToolCall[]) => {
         try {
+            addChatThinking(chat_id, 10, Date.now());
+
             // compile a list of Call_OpenAI_ids to send to the backend
             const response = await callApi({
                 url: `/api/runs/${runId}/toolCalls/`,
