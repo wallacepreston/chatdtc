@@ -32,6 +32,7 @@ const ThinkingProvider = ({ children }: Props) => {
     );
 
     const addChatThinking = (chat_id: string, progress: number, now: number) => {
+        console.log('>>>> addChatThinking', chat_id, progress);
         setThinkingChats(prevState => {
             return { ...prevState, [chat_id]: { progress, lastUpdated: Date.now() } };
         });

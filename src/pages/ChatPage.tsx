@@ -180,10 +180,6 @@ const ChatPage = () => {
 
     const scrollToBottom = () => {
         if (scrollDiv.current) {
-            scrollDiv.current.scrollTo({
-                top: scrollDiv.current.scrollHeight,
-                behavior: 'auto'
-            });
             setTimeout(() => {
                 if (scrollDiv.current) {
                     scrollDiv.current.scrollTo({
@@ -191,16 +187,20 @@ const ChatPage = () => {
                         behavior: 'auto'
                     });
                 }
-            }, 100);
+            }, 300);
         }
     };
 
     const smoothScrollToBottom = () => {
         if (scrollDiv.current) {
-            scrollDiv.current.scrollTo({
-                top: scrollDiv.current.scrollHeight,
-                behavior: 'smooth'
-            });
+            setTimeout(() => {
+                if (scrollDiv.current) {
+                    scrollDiv.current.scrollTo({
+                        top: scrollDiv.current.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                }
+            }, 300);
         }
     };
 
@@ -211,10 +211,16 @@ const ChatPage = () => {
         }
     };
 
+    const loadingListenerForChatPage = (data: { chat_id: string; content: string }) => {
+        if (data.chat_id === id) {
+            scrollToBottom();
+        }
+    };
+
     // when page is loaded, scroll to the bottom of the page
     useEffect(() => {
-        scrollToBottom();
-    }, [width]);
+        smoothScrollToBottom();
+    }, [width, id, thinking]);
 
     useEffect(() => {
         socket.on('newMessage', (data: { chat_id: string }) => {
@@ -242,11 +248,7 @@ const ChatPage = () => {
             }
         });
 
-        socket.on('loadingMessage', (data: { chat_id: string; content: string }) => {
-            if (data.chat_id === id) {
-                scrollToBottom();
-            }
-        });
+        socket.on('loadingMessage', loadingListenerForChatPage);
 
         socket.on('resError', (data: { chat_id: string; error: unknown }) => {
             if (data.chat_id === id) {
@@ -259,7 +261,7 @@ const ChatPage = () => {
             socket.off('runComplete');
             socket.off('newMessage');
             socket.off('chatgptResChunk');
-            socket.off('loadingMessage');
+            socket.removeListener('loadingMessage', loadingListenerForChatPage);
             socket.off('resError');
         };
     }, [socket, id]);
