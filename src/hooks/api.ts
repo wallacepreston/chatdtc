@@ -42,7 +42,8 @@ const useApi = () => {
             } catch (err: unknown) {
                 if (err instanceof AxiosError) {
                     setError(err);
-                    const errorMessage = err.response?.data.message || 'Something went wrong.';
+                    const errorMessage =
+                        err.response?.data.message || err.response?.data.error || 'Something went wrong.';
                     if (exposeError) {
                         setStatus({ type: 'error', message: errorMessage });
                     }
@@ -60,7 +61,10 @@ const useApi = () => {
             return res;
         } catch (err: unknown) {
             if (err instanceof AxiosError) {
-                const errorMessage = err.response?.data.message || 'Something went wrong.';
+                console.log('>>>>>>>>> err', err);
+                console.log('>>>>>>>>> err.response.data', err.response?.data);
+
+                const errorMessage = err.response?.data.message || err.response?.data.error || 'Something went wrong.';
                 if (exposeError) {
                     setStatus({ type: 'error', message: errorMessage });
                 }
