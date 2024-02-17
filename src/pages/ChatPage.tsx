@@ -232,6 +232,7 @@ const ChatPage = () => {
 
         socket.on('runComplete', (data: { chat_id: string }) => {
             if (data.chat_id === id) {
+                getMessages();
                 removeChatThinking(data.chat_id);
                 smoothScrollToBottom();
             }
