@@ -71,7 +71,8 @@ const ThinkingProvider = ({ children }: Props) => {
         return () => {
             socket.off('runComplete');
         };
-    }, [removeChatThinking]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
         socket.on('loadingMessage', (data: { chat_id: string; content: string }) => {
