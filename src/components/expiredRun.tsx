@@ -1,7 +1,16 @@
 import { Box, Grid, Typography } from '@mui/material';
 import theme from '../theme';
+import { ExpiredRunStatus } from '../pages/ChatPage';
 
-const ExpiredRunMessage = () => {
+interface ExpiredRunMessageProps {
+    status: ExpiredRunStatus | null;
+}
+
+const ExpiredRunMessage = ({ status }: ExpiredRunMessageProps) => {
+    const isOpenAiIssue = status === 'failed';
+
+    const statusForDisplay = status === 'cancelled' ? 'been cancelled' : status;
+
     return (
         <Grid
             container
@@ -22,8 +31,8 @@ const ExpiredRunMessage = () => {
                 >
                     <Box sx={{ p: 2 }}>
                         <Typography>
-                            I'm sorry, OpenAI ran into an issue, and the chat has expired. Please enter a new message or
-                            create a new chat to continue.
+                            I'm sorry, {isOpenAiIssue ? 'OpenAI ran into an issue, and ' : ''}the chat has{' '}
+                            {statusForDisplay}. Please enter a new message or create a new chat to continue.
                         </Typography>
                     </Box>
                 </div>

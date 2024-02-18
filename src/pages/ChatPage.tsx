@@ -68,6 +68,8 @@ const DownIcon = ArrowDownwardRoundedIcon;
 
 export type ChatType = 'form' | 'share';
 
+export type ExpiredRunStatus = 'expired' | 'cancelled' | 'failed';
+
 const ChatPage = () => {
     const { id } = useParams<{ id: string }>();
     const authHeader = useAuthHeader();
@@ -93,9 +95,10 @@ const ChatPage = () => {
     const { setStatus } = useStatus();
     const { balance } = user;
     const insufficientBalance = !assistantMessages.length && (!balance || balance < 3);
-    const lastRunExpired = ['expired', 'cancelled', 'failed'].includes(
-        thread?.Runs?.[0]?.Status as 'expired' | 'cancelled' | 'failed'
-    );
+
+    const lastRun = thread?.Runs?.[0];
+    const lastRunStatus = lastRun?.Status;
+    const lastRunExpired = ['expired', 'cancelled', 'failed'].includes(lastRunStatus as ExpiredRunStatus);
     const thinking = id ? Boolean(thinkingChats[id]?.progress) : false;
 
     useEffect(() => {
@@ -329,7 +332,7 @@ const ChatPage = () => {
                                 />
                             );
                         })}
-                        {lastRunExpired && <ExpiredRunMessage />}
+                        {lastRunExpired && <ExpiredRunMessage status={lastRunStatus as ExpiredRunStatus} />}
                         {thinking && <LinearBuffer id={id} />}
                     </Stack>
                     {!scrolledToBottom && (
