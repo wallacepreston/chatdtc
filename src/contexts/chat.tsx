@@ -11,7 +11,8 @@ export interface Category {
 }
 
 export interface Run {
-    Created_At: Date;
+    Created_At: string;
+    Updated_At: string;
     Status: string | null;
 }
 

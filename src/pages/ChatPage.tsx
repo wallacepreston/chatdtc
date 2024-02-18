@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable array-callback-return */
 import React, { useState, useEffect, useRef } from 'react';
+import { differenceInMinutes } from 'date-fns';
 import { IconButton, Stack } from '@mui/material';
 import ArrowDownwardRoundedIcon from '@mui/icons-material/ArrowDownwardRounded';
 import Footer from '../components/footer';
@@ -68,7 +69,9 @@ const DownIcon = ArrowDownwardRoundedIcon;
 
 export type ChatType = 'form' | 'share';
 
-export type ExpiredRunStatus = 'expired' | 'cancelled' | 'failed';
+export const EXPIRED_RUN_STATUSES = ['completed', 'failed', 'cancelled', 'expired'] as const;
+
+export type ExpiredRunStatus = (typeof EXPIRED_RUN_STATUSES)[number];
 
 const ChatPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -97,8 +100,17 @@ const ChatPage = () => {
     const insufficientBalance = !assistantMessages.length && (!balance || balance < 3);
 
     const lastRun = thread?.Runs?.[0];
-    const lastRunStatus = lastRun?.Status;
-    const lastRunExpired = ['expired', 'cancelled', 'failed'].includes(lastRunStatus as ExpiredRunStatus);
+
+    // Handle expired based on date (for if the user doesn't refresh the page)
+    const now = new Date();
+    const isExpiredBasedOnDate = (date: string) => {
+        return differenceInMinutes(now, new Date(date)) > 10;
+    };
+
+    const isExpiredFromDate = isExpiredBasedOnDate(lastRun?.Updated_At);
+
+    const lastRunStatus = lastRun?.Status === 'requires_action' && isExpiredFromDate ? 'expired' : lastRun?.Status;
+    const lastRunExpired = EXPIRED_RUN_STATUSES.includes(lastRunStatus as ExpiredRunStatus);
     const thinking = id ? Boolean(thinkingChats[id]?.progress) : false;
 
     useEffect(() => {
