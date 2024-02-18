@@ -69,7 +69,7 @@ const DownIcon = ArrowDownwardRoundedIcon;
 
 export type ChatType = 'form' | 'share';
 
-export const EXPIRED_RUN_STATUSES = ['completed', 'failed', 'cancelled', 'expired'] as const;
+export const EXPIRED_RUN_STATUSES = ['failed', 'cancelled', 'expired'] as const;
 
 export type ExpiredRunStatus = (typeof EXPIRED_RUN_STATUSES)[number];
 
