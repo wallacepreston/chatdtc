@@ -20,6 +20,7 @@ import theme from '../../theme';
 import { Clear, Done } from '@mui/icons-material';
 import { TOOL_CALL_FUNCTION_MAP } from '../../constants/toolCalls';
 import { useThinking } from '../../contexts/thinking';
+import { renderToolCallDescription } from './helpers';
 
 interface ToolCallProps {
     toolCalls: ToolCall[];
@@ -227,19 +228,24 @@ const ToolCalls = ({ toolCalls, runId, getMessages, chat_id }: ToolCallProps) =>
                             <FormGroup>
                                 {toolCalls.map(toolCall => {
                                     return (
-                                        <FormControlLabel
-                                            key={toolCall.Call_OpenAI_id}
-                                            control={
-                                                <Checkbox
-                                                    onClick={() => handleToggleToolCall(toolCall.Call_OpenAI_id)}
-                                                />
-                                            }
-                                            label={
-                                                TOOL_CALL_FUNCTION_MAP[
-                                                    toolCall.FunctionName as keyof typeof TOOL_CALL_FUNCTION_MAP
-                                                ]
-                                            }
-                                        />
+                                        <>
+                                            <FormControlLabel
+                                                key={toolCall.Call_OpenAI_id}
+                                                control={
+                                                    <Checkbox
+                                                        onClick={() => handleToggleToolCall(toolCall.Call_OpenAI_id)}
+                                                    />
+                                                }
+                                                label={
+                                                    TOOL_CALL_FUNCTION_MAP[
+                                                        toolCall.FunctionName as keyof typeof TOOL_CALL_FUNCTION_MAP
+                                                    ]
+                                                }
+                                            />
+                                            <Typography variant='body2' color='textSecondary'>
+                                                {renderToolCallDescription(toolCall)}
+                                            </Typography>
+                                        </>
                                     );
                                 })}
                             </FormGroup>
