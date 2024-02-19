@@ -61,7 +61,7 @@ const ToolCalls = ({ toolCalls, runId, getMessages, chat_id }: ToolCallProps) =>
         });
         setToolCallsToSubmit(toolCallsDefaultedToDeclined);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [toolCalls, runId]);
+    }, [runId]);
 
     const handleClose = () => {
         setOpen(false);
@@ -94,11 +94,6 @@ const ToolCalls = ({ toolCalls, runId, getMessages, chat_id }: ToolCallProps) =>
                 message: 'Error declining tool call'
             });
         }
-
-        setStatus({
-            type: 'success',
-            message: 'Action(s) declined successfully'
-        });
 
         getMessages();
     };
