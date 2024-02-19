@@ -114,8 +114,6 @@ const ChatPage = () => {
     const lastRunExpired = EXPIRED_RUN_STATUSES.includes(lastRunStatus as ExpiredRunStatus);
     const thinking = id ? Boolean(thinkingChats[id]?.progress) : false;
 
-    const now = new Date();
-
     // find if we have any runs with toolCalls that need user action
     const validRun = thread.Runs?.find(run => {
         // are there toolCalls in this run?
@@ -125,9 +123,8 @@ const ChatPage = () => {
         // are there toolCalls in this run that need user action?
         return run.ToolCalls.some(toolCall => {
             const requiresAction = toolCall.Status === 'requires_action';
-            const createdAt = new Date(toolCall.Created_At);
 
-            const isNotExpired = differenceInMinutes(now, createdAt) <= 10;
+            const isNotExpired = !isExpiredBasedOnDate(toolCall.Created_At);
 
             return requiresAction && isNotExpired;
         });
