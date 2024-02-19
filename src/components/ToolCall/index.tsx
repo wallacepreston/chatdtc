@@ -16,11 +16,11 @@ import { useStatus } from '../../contexts/status';
 import useApi from '../../hooks/api';
 import WpModal from '../wpModal';
 import { useEffect, useState } from 'react';
-import theme from '../../theme';
 import { Clear, Done } from '@mui/icons-material';
 import { TOOL_CALLS_THAT_REQUIRE_CONFIRMATION, TOOL_CALL_FUNCTION_MAP } from '../../constants/toolCalls';
 import { useThinking } from '../../contexts/thinking';
 import { renderToolCallDescription } from './helpers';
+import MessageBox from '../ChatMessage/MessageBox';
 
 interface ToolCallProps {
     toolCalls: ToolCall[];
@@ -225,15 +225,7 @@ const ToolCalls = ({ toolCalls, runId, getMessages, chat_id }: ToolCallProps) =>
                 }}
             >
                 <Grid item xs={10}>
-                    <div
-                        style={{
-                            backgroundColor: theme.palette.primary.light,
-                            borderRadius: '10px',
-                            marginBottom: '15px',
-                            marginTop: '15px',
-                            padding: '1rem'
-                        }}
-                    >
+                    <MessageBox role='assistant'>
                         <Box sx={{ p: 2 }}>
                             <Typography>
                                 Based on the conversation, we recommend the following actions that need confirmation to
@@ -299,7 +291,7 @@ const ToolCalls = ({ toolCalls, runId, getMessages, chat_id }: ToolCallProps) =>
                                 </Button>
                             </Grid>
                         </Grid>
-                    </div>
+                    </MessageBox>
                 </Grid>
             </Grid>
         </div>

@@ -45,6 +45,7 @@ import LinearBuffer from '../components/linearBuffer';
 import { useStatus } from '../contexts/status';
 import socket from '../util/socket';
 import ToolCalls from '../components/ToolCall';
+import { getCompletedToolCalls, getToolCallsForMessage } from '../components/ToolCall/helpers';
 
 hljs.registerLanguage('javascript', javascript);
 hljs.registerLanguage('typescript', typescript);
@@ -131,7 +132,7 @@ const ChatPage = () => {
     });
 
     // check if any of the runs have toolCalls that need user action
-    const validToolCalls = validRun?.ToolCalls;
+    const validToolCalls = validRun?.ToolCalls?.filter(toolCall => toolCall.Status === 'requires_action');
 
     const requiresToolCallAction = !lastRunExpired && !!(validRun && validToolCalls?.length);
 
@@ -361,6 +362,9 @@ const ChatPage = () => {
         }
     };
 
+    // get all thread.Runs.ToolCalls that are completed
+    const completedToolCalls = getCompletedToolCalls(thread.Runs);
+
     return (
         <div id='ChatPage' style={{ width: '100%', height: '100vh', display: 'flex', justifyContent: 'center' }}>
             <div id='side' style={{ width: handleWidthSide(), height: '100%' }}>
@@ -384,6 +388,14 @@ const ChatPage = () => {
                         {messages.map((message, index) => {
                             const showIcon = prevRole !== message.Role;
                             prevRole = message.Role;
+
+                            // get the "in between" toolCalls: completed toolCalls that have an Updated_At date after the message.Created_At date but before the next message.Created_At date
+                            const toolCallsForMessage = getToolCallsForMessage(
+                                completedToolCalls,
+                                message,
+                                messages[index + 1]
+                            );
+
                             return (
                                 <ChatMessage
                                     key={index}
@@ -393,6 +405,7 @@ const ChatPage = () => {
                                     thread={thread}
                                     getMessages={getMessages}
                                     width={width}
+                                    toolCalls={toolCallsForMessage}
                                 />
                             );
                         })}

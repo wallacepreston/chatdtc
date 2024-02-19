@@ -1,17 +1,19 @@
 import React from 'react';
 import Icon from '../icon';
-import { Grid, Typography } from '@mui/material';
-import { ThumbDownOffAlt, ThumbUpOffAlt, ContentPaste } from '@mui/icons-material';
+import { Grid, Typography, Chip } from '@mui/material';
+import { ThumbDownOffAlt, ThumbUpOffAlt, ContentPaste, Done, Clear } from '@mui/icons-material';
 import { useStatus } from '../../contexts/status';
-import theme from '../../theme';
 import ReactMarkdown from 'react-markdown';
 import { ChatType } from '../../pages/ChatPage';
 import { useUser } from '../../contexts/user';
-import { Chat } from '../../contexts/chat';
+import { Chat, ToolCall } from '../../contexts/chat';
 import MessageActionIcon from './MessageActionIcon';
 import useClipboard from '../../hooks/useClipboard';
 import useApi from '../../hooks/api';
 import LinkButton from './LinkButton';
+import { renderToolCallDescription } from '../ToolCall/helpers';
+import MessageBox from './MessageBox';
+import { TOOL_CALLS_THAT_REQUIRE_CONFIRMATION } from '../../constants/toolCalls';
 
 export interface Message {
     Role: 'user' | 'assistant';
@@ -22,6 +24,8 @@ export interface Message {
     }[];
     Message_OpenAI_id?: string;
     Feedback?: string;
+    Run_OpenAI_id?: string;
+    Created_Date?: string;
 }
 
 export interface ChatMessageProps {
@@ -31,16 +35,22 @@ export interface ChatMessageProps {
     thread: Chat;
     getMessages: () => void;
     width: number;
+    toolCalls?: ToolCall[];
 }
 
 const ChatMessage = (props: ChatMessageProps) => {
-    const { message, showIcon, thread, chatType, getMessages, width } = props;
+    const { message, showIcon, thread, chatType, getMessages, width, toolCalls } = props;
     const { copyToClipboard } = useClipboard();
     const { callApi } = useApi();
     const { Role: role } = message;
     const { user } = useUser();
     const { SamAccountName } = user;
     const threadIsOwnedByUser = SamAccountName === thread?.SamAccountName;
+    const confirmedToolCalls = toolCalls?.filter(toolCall =>
+        TOOL_CALLS_THAT_REQUIRE_CONFIRMATION.includes(
+            toolCall.FunctionName as (typeof TOOL_CALLS_THAT_REQUIRE_CONFIRMATION)[number]
+        )
+    );
 
     // three cases: (1) form, (2) share view and I own it, (3) share view and I don't own it
     const fileIsDownloadableByUser = chatType === 'form' || threadIsOwnedByUser;
@@ -195,18 +205,7 @@ const ChatMessage = (props: ChatMessageProps) => {
                 }}
             >
                 <Grid item xs={10}>
-                    <div
-                        style={{
-                            backgroundColor:
-                                role === 'assistant' ? theme.palette.primary.light : theme.palette.grey[200],
-                            borderRadius: '10px',
-                            marginBottom: '15px',
-                            marginTop: '15px',
-                            padding: '1rem'
-                        }}
-                    >
-                        {renderContent()}
-                    </div>
+                    <MessageBox role={role}>{renderContent()}</MessageBox>
                 </Grid>
                 <Grid item xs={2}>
                     <Grid
@@ -234,6 +233,31 @@ const ChatMessage = (props: ChatMessageProps) => {
                             </>
                         )}
                     </Grid>
+                </Grid>
+                {/* confirmed tool calls (check or x if user has taken action) */}
+                <Grid item xs={12}>
+                    {confirmedToolCalls?.map((toolCall, index) => {
+                        const isConfirmed = toolCall.Status === 'completed';
+                        return (
+                            <div>
+                                <Chip
+                                    icon={isConfirmed ? <Done /> : <Clear />}
+                                    label={`${
+                                        isConfirmed ? 'Confirmed' : 'Declined'
+                                    } Action: ${renderToolCallDescription(toolCall)}`}
+                                    variant='outlined'
+                                    sx={{
+                                        marginBottom: '16px',
+                                        height: 'auto',
+                                        '& .MuiChip-label': {
+                                            display: 'block',
+                                            whiteSpace: 'normal'
+                                        }
+                                    }}
+                                />
+                            </div>
+                        );
+                    })}
                 </Grid>
             </Grid>
         </div>

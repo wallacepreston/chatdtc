@@ -12,6 +12,7 @@ import type { Message as ChatMessageProps } from '../components/ChatMessage';
 import useApi from '../hooks/api';
 import { useUser } from '../contexts/user';
 import { Chat } from '../contexts/chat';
+import { getCompletedToolCalls, getToolCallsForMessage } from '../components/ToolCall/helpers';
 
 const SharePage = () => {
     const { id } = useParams<{ id: string }>();
@@ -97,6 +98,9 @@ const SharePage = () => {
 
     let prevRole: 'user' | 'assistant' | null = null;
 
+    // get all thread.Runs.ToolCalls that are completed
+    const completedToolCalls = getCompletedToolCalls(thread.Runs);
+
     return (
         <div id='ChatPage' style={{ width: '100%', height: '100vh', display: 'flex', justifyContent: 'center' }}>
             <div
@@ -125,6 +129,14 @@ const SharePage = () => {
                         {messages?.map((message, index) => {
                             const showIcon = prevRole !== message.Role;
                             prevRole = message.Role;
+
+                            // get the "in between" toolCalls: completed toolCalls that have an Updated_At date after the message.Created_At date but before the next message.Created_At date
+                            const toolCallsForMessage = getToolCallsForMessage(
+                                completedToolCalls,
+                                message,
+                                messages[index + 1]
+                            );
+
                             return (
                                 <ChatMessage
                                     key={index}
@@ -134,6 +146,7 @@ const SharePage = () => {
                                     thread={thread}
                                     getMessages={getMessages}
                                     width={width}
+                                    toolCalls={toolCallsForMessage}
                                 />
                             );
                         })}
