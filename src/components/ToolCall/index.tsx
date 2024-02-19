@@ -131,17 +131,13 @@ const ToolCalls = ({ toolCalls, runId, getMessages, chat_id }: ToolCallProps) =>
             if (data?.status !== 'success') {
                 return setStatus({
                     type: 'error',
-                    message: 'Error executing tool call'
+                    message: 'Error saving actions.'
                 });
             }
-            setStatus({
-                type: 'success',
-                message: 'Action decisions saved successfully'
-            });
         } catch (error) {
             setStatus({
                 type: 'error',
-                message: 'Error executing tool call'
+                message: 'Error saving actions.'
             });
         } finally {
             handleClose();
@@ -199,7 +195,7 @@ const ToolCalls = ({ toolCalls, runId, getMessages, chat_id }: ToolCallProps) =>
                                 color='primary'
                                 onClick={() => handleToolCall()}
                             >
-                                Execute These Actions
+                                Approve
                             </Button>
                         </Grid>
                         <Grid item xs={6}>
@@ -228,14 +224,13 @@ const ToolCalls = ({ toolCalls, runId, getMessages, chat_id }: ToolCallProps) =>
                     <MessageBox role='assistant'>
                         <Box sx={{ p: 2 }}>
                             <Typography>
-                                Based on the conversation, we recommend the following actions that need confirmation to
-                                be executed.
+                                Based on your input, we need your approval before performing the following actions.
                             </Typography>
                         </Box>
                         <Divider light />
                         <Box sx={{ p: 2 }}>
                             <Typography gutterBottom variant='body2'>
-                                Select actions to execute:
+                                Approve the following actions:
                             </Typography>
                             <FormGroup>
                                 {toolCallsToConfirm.map(toolCall => {
@@ -277,7 +272,7 @@ const ToolCalls = ({ toolCalls, runId, getMessages, chat_id }: ToolCallProps) =>
                                     onClick={() => setOpen(true)}
                                     disabled={allDeclined}
                                 >
-                                    Execute These Actions
+                                    Approve
                                 </Button>
                             </Grid>
                             <Grid item xs={6}>
@@ -287,7 +282,7 @@ const ToolCalls = ({ toolCalls, runId, getMessages, chat_id }: ToolCallProps) =>
                                     color='error'
                                     onClick={handleDeclineAll}
                                 >
-                                    Take no Action
+                                    Decline
                                 </Button>
                             </Grid>
                         </Grid>

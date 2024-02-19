@@ -7,7 +7,7 @@ interface ExpiredRunMessageProps {
 }
 
 const ExpiredRunMessage = ({ status }: ExpiredRunMessageProps) => {
-    const isOpenAiIssue = status === 'failed';
+    const isFailed = status === 'failed';
 
     const statusForDisplay = status === 'cancelled' ? 'been cancelled' : status;
 
@@ -31,8 +31,22 @@ const ExpiredRunMessage = ({ status }: ExpiredRunMessageProps) => {
                 >
                     <Box sx={{ p: 2 }}>
                         <Typography>
-                            I'm sorry, {isOpenAiIssue ? 'OpenAI ran into an issue, and ' : ''}the chat has{' '}
-                            {statusForDisplay}. Please enter a new message or create a new chat to continue.
+                            {/* 
+
+                            'failed', 'cancelled', 'expired'
+
+                            Your latest request has been cancelled. Please enter a new message or create a new chat to continue.
+                            TODO - different text for failed or (expired/cancelled)
+
+                            */}
+                            {isFailed ? (
+                                <>I'm sorry, OpenAI ran into an issue.</>
+                            ) : (
+                                <>
+                                    Your latest request has {statusForDisplay}. Please enter a new message or create a
+                                    new chat to continue.
+                                </>
+                            )}
                         </Typography>
                     </Box>
                 </div>
