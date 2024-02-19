@@ -267,16 +267,16 @@ const ChatPage = () => {
     }, [width, id, thinking]);
 
     useEffect(() => {
-        socket.on('newMessage', (data: { chat_id: string }) => {
+        socket.on('newMessage', async (data: { chat_id: string }) => {
             if (data.chat_id === id) {
-                getMessages();
+                await getMessages();
                 scrollToBottom();
             }
         });
 
-        socket.on('runComplete', (data: { chat_id: string }) => {
+        socket.on('runComplete', async (data: { chat_id: string }) => {
             if (data.chat_id === id) {
-                getMessages();
+                await getMessages();
                 removeChatThinking(data.chat_id);
                 smoothScrollToBottom();
             }
