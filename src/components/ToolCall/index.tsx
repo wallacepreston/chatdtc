@@ -165,31 +165,28 @@ const ToolCalls = ({ toolCalls, runId, getMessages, chat_id }: ToolCallProps) =>
                         <Grid
                             container
                             spacing={2}
+                            gap={2}
                             sx={{
-                                p: 2
+                                p: 4
                             }}
                         >
-                            <Grid item xs={6}>
-                                <Button
-                                    sx={{ textTransform: 'none' }}
-                                    variant='contained'
-                                    color='primary'
-                                    onClick={() => handleToolCall()}
-                                    disabled={allDeclined}
-                                >
-                                    Approve
-                                </Button>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Button
-                                    sx={{ textTransform: 'none' }}
-                                    variant='outlined'
-                                    color='error'
-                                    onClick={handleDeclineAll}
-                                >
-                                    Decline
-                                </Button>
-                            </Grid>
+                            <Button
+                                sx={{ textTransform: 'none' }}
+                                variant='contained'
+                                color='primary'
+                                onClick={() => handleToolCall()}
+                                disabled={allDeclined}
+                            >
+                                Approve
+                            </Button>
+                            <Button
+                                sx={{ textTransform: 'none' }}
+                                variant='outlined'
+                                color='error'
+                                onClick={handleDeclineAll}
+                            >
+                                Decline
+                            </Button>
                         </Grid>
                     </MessageBox>
                 </Grid>
