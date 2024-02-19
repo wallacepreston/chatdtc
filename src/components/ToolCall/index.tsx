@@ -18,7 +18,7 @@ import WpModal from '../wpModal';
 import { useEffect, useState } from 'react';
 import theme from '../../theme';
 import { Clear, Done } from '@mui/icons-material';
-import { TOOL_CALL_FUNCTION_MAP } from '../../constants/toolCalls';
+import { TOOL_CALLS_THAT_REQUIRE_CONFIRMATION, TOOL_CALL_FUNCTION_MAP } from '../../constants/toolCalls';
 import { useThinking } from '../../contexts/thinking';
 import { renderToolCallDescription } from './helpers';
 
@@ -36,6 +36,19 @@ const ToolCalls = ({ toolCalls, runId, getMessages, chat_id }: ToolCallProps) =>
     const [toolCallsToSubmit, setToolCallsToSubmit] = useState<ToolCall[]>([]);
     const { addChatThinking } = useThinking();
 
+    // filter out the tool calls that don't need confirmation.
+    const toolCallsToConfirm = toolCalls.filter(toolCall =>
+        TOOL_CALLS_THAT_REQUIRE_CONFIRMATION.includes(
+            toolCall.FunctionName as (typeof TOOL_CALLS_THAT_REQUIRE_CONFIRMATION)[number]
+        )
+    );
+    const toolCallsNoConfirmationNeeded = toolCalls.filter(
+        toolCall =>
+            !TOOL_CALLS_THAT_REQUIRE_CONFIRMATION.includes(
+                toolCall.FunctionName as (typeof TOOL_CALLS_THAT_REQUIRE_CONFIRMATION)[number]
+            )
+    );
+
     const allDeclined = toolCallsToSubmit.every(toolCall => toolCall.Status === 'declined');
 
     useEffect(() => {
@@ -43,7 +56,7 @@ const ToolCalls = ({ toolCalls, runId, getMessages, chat_id }: ToolCallProps) =>
     }, [runId]);
 
     useEffect(() => {
-        const toolCallsDefaultedToDeclined = toolCalls.map(toolCall => {
+        const toolCallsDefaultedToDeclined = toolCallsToConfirm.map(toolCall => {
             return { ...toolCall, Status: 'declined' };
         });
         setToolCallsToSubmit(toolCallsDefaultedToDeclined);
@@ -90,9 +103,16 @@ const ToolCalls = ({ toolCalls, runId, getMessages, chat_id }: ToolCallProps) =>
         getMessages();
     };
 
-    const handleToolCall = async (passedToolCalls?: ToolCall[]) => {
+    const handleToolCall = async () => {
         try {
             addChatThinking(chat_id, 10, Date.now());
+
+            // any that don't need confirmation, we can just mark as completed so that Assistant will call them
+            const noConfirmationNeeded = toolCallsNoConfirmationNeeded.map(toolCall => {
+                return { ...toolCall, Status: 'completed' };
+            });
+
+            const allToolCalls = [...toolCallsToSubmit, ...noConfirmationNeeded];
 
             // compile a list of Call_OpenAI_ids to send to the backend
             const response = await callApi({
@@ -101,7 +121,7 @@ const ToolCalls = ({ toolCalls, runId, getMessages, chat_id }: ToolCallProps) =>
                 exposeError: true,
                 body: {
                     // prefer the var passed in, but if not there, use the state
-                    toolCalls: passedToolCalls || toolCallsToSubmit
+                    toolCalls: allToolCalls
                 }
             });
             if (!response) {
@@ -226,7 +246,7 @@ const ToolCalls = ({ toolCalls, runId, getMessages, chat_id }: ToolCallProps) =>
                                 Select actions to execute:
                             </Typography>
                             <FormGroup>
-                                {toolCalls.map(toolCall => {
+                                {toolCallsToConfirm.map(toolCall => {
                                     return (
                                         <>
                                             <FormControlLabel
