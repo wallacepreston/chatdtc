@@ -107,9 +107,6 @@ const ChatMessage = (props: ChatMessageProps) => {
     };
 
     const renderContent = () => {
-        if (message.Annotations?.length) {
-            console.log('>>>> message.Annotations', message.Annotations);
-        }
         const content: string[] = message.Content_Value.split('\n');
         if (role === 'user') {
             return content;

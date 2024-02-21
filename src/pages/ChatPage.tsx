@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable array-callback-return */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { differenceInMinutes } from 'date-fns';
 import { IconButton, Stack } from '@mui/material';
 import ArrowDownwardRoundedIcon from '@mui/icons-material/ArrowDownwardRounded';
@@ -116,23 +116,27 @@ const ChatPage = () => {
     const thinking = id ? Boolean(thinkingChats[id]?.progress) : false;
 
     // find if we have any runs with toolCalls that need user action
-    const validRun = thread.Runs?.find(run => {
-        // are there toolCalls in this run?
-        if (!run.ToolCalls?.length) {
-            return false;
-        }
-        // are there toolCalls in this run that need user action?
-        return run.ToolCalls.some(toolCall => {
-            const requiresAction = toolCall.Status === 'requires_action';
+    const validRun = useMemo(() => {
+        return thread.Runs?.find(run => {
+            // are there toolCalls in this run?
+            if (!run.ToolCalls?.length) {
+                return false;
+            }
+            // are there toolCalls in this run that need user action?
+            return run.ToolCalls.some(toolCall => {
+                const requiresAction = toolCall.Status === 'requires_action';
 
-            const isNotExpired = !isExpiredBasedOnDate(toolCall.Created_At);
+                const isNotExpired = !isExpiredBasedOnDate(toolCall.Created_At);
 
-            return requiresAction && isNotExpired;
+                return requiresAction && isNotExpired;
+            });
         });
-    });
+    }, [thread]);
 
     // check if any of the runs have toolCalls that need user action
-    const validToolCalls = validRun?.ToolCalls?.filter(toolCall => toolCall.Status === 'requires_action');
+    const validToolCalls = useMemo(() => {
+        return validRun?.ToolCalls?.filter(toolCall => toolCall.Status === 'requires_action');
+    }, [validRun]);
 
     const requiresToolCallAction = !lastRunExpired && !!(validRun && validToolCalls?.length);
 
