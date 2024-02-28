@@ -25,6 +25,16 @@ export const renderToolCallDescription = (toolCall: Partial<ToolCall>) => {
 
             fullDescription = `Tag ${numCustomers} customer${sOrNoS} in Commerce7, with Tag Name "${parsedArguments.tagName}"`;
             break;
+        case 'tagOrdersCommerce7':
+            const numOrders = parsedArguments?.orderNumbers?.length;
+            if (!numOrders || !parsedArguments.tagName) return 'Tag Orders in Commerce7';
+            const sOrNoSOrders = numOrders === 1 ? '' : 's';
+
+            fullDescription = `Tag ${numOrders} order${sOrNoSOrders} in Commerce7, with Tag Name "${parsedArguments.tagName}"`;
+            break;
+        case 'createOrderTagInCommerce7':
+            fullDescription = `Create new Order Tag in Commerce7, called "${parsedArguments.tagName}"`;
+            break;
         case 'createCustomerTagInCommerce7':
             fullDescription = `Create new Customer Tag in Commerce7, called "${parsedArguments.tagName}"`;
             break;
