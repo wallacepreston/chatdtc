@@ -17,7 +17,7 @@ import { TOOL_CALLS_THAT_REQUIRE_CONFIRMATION } from '../../constants/toolCalls'
 
 export interface Message {
     Role: 'user' | 'assistant';
-    Content_Value: string;
+    Content_Value?: string | null;
     fileIds?: string[];
     Annotations?: {
         File_OpenAI_id: string;
@@ -64,7 +64,7 @@ const ChatMessage = (props: ChatMessageProps) => {
 
     const handleCopy = () => {
         copyToClipboard({
-            textContent: message.Content_Value
+            textContent: message.Content_Value || ''
         });
     };
 
@@ -107,7 +107,12 @@ const ChatMessage = (props: ChatMessageProps) => {
     };
 
     const renderContent = () => {
-        const content: string[] = message.Content_Value.split('\n');
+        if (typeof message.Content_Value !== 'string') {
+            return null;
+        }
+
+        // const content: string[] = contentValue?.split('\n');
+        const content: string[] = message.Content_Value?.split('\n');
         if (role === 'user') {
             return content;
         } else {
@@ -115,6 +120,7 @@ const ChatMessage = (props: ChatMessageProps) => {
 
             return content.map((line, index) => {
                 // split the line into parts based on the regex
+                // for example, `normal message text, with instruction to [Download the file](sandbox:/mnt/data/some_filename.csv)` becomes ["normal message text, with instruction to ", "Download the file", "sandbox:/mnt/data/some_filename.csv"]
                 const parts = line.split(/\[(.*?)\]\((sandbox:\/.*?)\)/g);
 
                 // map over the parts and convert any links into JSX
@@ -138,9 +144,13 @@ const ChatMessage = (props: ChatMessageProps) => {
                             </div>
                         );
                     } else if (i % 3 === 1) {
+                        if (!part || !fileIds) return null;
                         // this part is the link text
                         const linkText = part;
                         const fileId = fileIds ? fileIds[linkIndex] : '';
+                        if (!fileId) return null;
+                        // if fileId doesn't look like `file-wY9mfN4AMi9pZp3ilN4B8ePv`, then it's not a file link
+                        if (!fileId.startsWith('file-')) return null;
                         linkIndex++;
                         return (
                             <LinkButton
