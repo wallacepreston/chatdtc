@@ -87,6 +87,7 @@ const SideBar = () => {
     const { user, setUser } = useUser();
     const { chats, getChats } = useChats();
     const { Last_Winery_id: lastWineryId } = user;
+    console.log('>>>>>>> user', user);
 
     const customChatCategories = getCustomChatCategories(chats);
 
@@ -184,9 +185,9 @@ const SideBar = () => {
                         <Typography variant='h6' sx={{ color: 'black' }}>
                             {user.LastWinery?.Winery_Name || 'No Winery Selected'}
                         </Typography>
-                        {user.LastWinery?.Last_Sync_Date && (
+                        {user.LastWinery?.WineryInfo?.Last_Sync_Date && (
                             <div style={{ color: 'black', marginTop: '0px' }}>
-                                Last synced: {user.LastWinery?.Last_Sync_Date}
+                                Last synced: {user.LastWinery?.WineryInfo?.Last_Sync_Date}
                             </div>
                         )}
                         <Button

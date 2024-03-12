@@ -182,12 +182,12 @@ const ChatPage = () => {
 
         setThread(foundThread);
 
-        const isAdmin = user.Admin;
+        const isSysAdmin = user.Sys_Admin;
 
         const notUserWinery = lastWineryId && foundThread?.Winery_id !== lastWineryId;
 
         // if the user doesn't have access to this thread
-        if (!isAdmin && notUserWinery) {
+        if (!isSysAdmin && notUserWinery) {
             navigate('/');
             return;
         }

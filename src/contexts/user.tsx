@@ -24,7 +24,7 @@ export interface UserState {
     SamAccountName?: string;
     UserRole?: string;
     Default_Winery_id?: string;
-    Admin?: boolean;
+    Sys_Admin?: boolean;
     balance?: number; // their BillingBalance.Balance amount, or zero if they have no BillingBalance record
 }
 
