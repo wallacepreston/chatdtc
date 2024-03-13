@@ -40,7 +40,7 @@ const LoginPage = () => {
     const handleConfirm = async (e: React.FormEvent) => {
         e.preventDefault();
         const loginRes = await callApi({
-            url: `/api/auth/login`,
+            url: `/api/auth/login-ad`,
             body: { username, password },
             method: 'POST'
         });
