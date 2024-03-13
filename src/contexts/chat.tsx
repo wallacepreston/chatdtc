@@ -1,8 +1,8 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import axios from 'axios';
-import { useAuthHeader, useAuthUser } from 'react-auth-kit';
+import { useAuthUser } from 'react-auth-kit';
 import { UserState } from './user';
 import { useStatus } from './status';
+import useApi from '../hooks/api';
 
 export interface Category {
     id: number;
@@ -58,7 +58,6 @@ export const useChats = () => {
     return useContext(ChatContext);
 };
 
-const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
 interface Props {
     children?: React.ReactNode;
 }
@@ -66,19 +65,28 @@ interface Props {
 export const ChatProvider = ({ children }: Props) => {
     const auth = useAuthUser();
     const isAuthenticated = Boolean(auth());
-    const authHeader = useAuthHeader();
     const { setStatus } = useStatus();
+    const { callApi } = useApi();
 
     const [chats, setChats] = useState([]);
 
     const getChats = async () => {
         try {
-            const res = await axios.get(`${REACT_APP_API_URL}/api/chat/getChats`, {
-                headers: { Authorization: authHeader() }
-            });
-            setChats(res.data);
+            const res = await callApi({ url: '/api/chat/getChats', method: 'get', exposeError: true });
+
+            if (!res) {
+                return;
+            }
+
+            const data = res.data;
+            if (!data || !data.length) {
+                return;
+            }
+
+            setChats(data);
         } catch (err) {
-            console.log(err);
+            console.log('???? err:', err);
+            // Please select the winery about which you would like to chat
             setStatus({ type: 'error', message: 'Error getting Chats' });
         }
     };
