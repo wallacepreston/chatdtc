@@ -17,7 +17,7 @@ export interface UserState {
     Email?: string;
     FirstName?: string;
     FullName?: string;
-    Wineries?: Winery[];
+    WineriesChatDTC?: Winery[];
     LastWinery?: { [key: string]: any };
     LastModified?: string;
     LastName?: string;

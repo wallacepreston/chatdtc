@@ -22,7 +22,7 @@ const SelectWineryModal = () => {
     const { getChats } = useChats();
     const navigate = useNavigate();
 
-    const wineries = user.Wineries;
+    const wineries = user.WineriesChatDTC;
 
     const handleChange = (event: any) => {
         setChosenWineryId(event.target.value as string);
