@@ -79,7 +79,7 @@ export const ChatProvider = ({ children }: Props) => {
             }
 
             const data = res.data;
-            if (!data || !data.length) {
+            if (!data) {
                 return;
             }
 
