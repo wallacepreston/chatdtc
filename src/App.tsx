@@ -17,6 +17,7 @@ import theme from './theme';
 import SelectWineryModal from './components/selectWineryModal';
 import { UserProvider } from './contexts/user';
 import { ChatProvider } from './contexts/chat';
+import LoginAsUserPage from './pages/LoginAsUserPage';
 
 const App = () => {
     return (
@@ -56,6 +57,7 @@ const App = () => {
                                             <Route path='/share/:id' element={<SharePage />} />
                                             <Route path='/auth' element={<AuthPage />} />
                                             <Route path='/auth/login' element={<LoginPage />} />
+                                            <Route path='/auth/login-as' element={<LoginAsUserPage />} />
                                             <Route path='*' element={<NotFoundPage />} />
                                         </Routes>
                                     </Router>
