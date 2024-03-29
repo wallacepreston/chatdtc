@@ -4,7 +4,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import theme from '../theme';
 import Visibility from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOff from '@mui/icons-material/VisibilityOffOutlined';
-import { useSignIn } from 'react-auth-kit';
+import { useSignIn, useSignOut } from 'react-auth-kit';
 import { useNavigate } from 'react-router-dom';
 import { CHAT_DTC_TITLE } from '../constants/api';
 import { useUser } from '../contexts/user';
@@ -14,6 +14,7 @@ import { useStatus } from '../contexts/status';
 
 const LoginPage = () => {
     const signIn = useSignIn();
+    const signOut = useSignOut();
     const navigate = useNavigate();
     const { setUser, setNotifications } = useUser();
     const { setStatus } = useStatus();
@@ -55,6 +56,17 @@ const LoginPage = () => {
         if (!data || !data.message) {
             setStatus({ type: 'error', message: 'Error with Login' });
         } else if (data.message === 'Login successful') {
+            signOut();
+            const user = data?.user;
+            const userHasChatDTC = !!user?.WineriesChatDTC?.length;
+            if (!userHasChatDTC) {
+                setStatus({
+                    type: 'error',
+                    message: 'You do not have access to ChatDTC.'
+                });
+                navigate('/auth/login');
+                return;
+            }
             if (
                 signIn({
                     token: data.token,

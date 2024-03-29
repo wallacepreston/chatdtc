@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { CircularProgress } from '@mui/material';
-import { useSignIn } from 'react-auth-kit';
+import { useSignIn, useSignOut } from 'react-auth-kit';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/user';
 import { useStatus } from '../contexts/status';
@@ -9,6 +9,7 @@ import { REACT_APP_API_URL } from '../constants/api';
 
 const LoginAsUserPage = () => {
     const signIn = useSignIn();
+    const signOut = useSignOut();
     const navigate = useNavigate();
     const { setUser, setNotifications } = useUser();
     const { setStatus } = useStatus();
@@ -33,6 +34,17 @@ const LoginAsUserPage = () => {
             if (!data || !data.message) {
                 setStatus({ type: 'error', message: 'Error with Login' });
             } else if (data.message === 'User data retrieved') {
+                signOut();
+                const user = data?.user;
+                const userHasChatDTC = !!user?.WineriesChatDTC?.length;
+                if (!userHasChatDTC) {
+                    setStatus({
+                        type: 'error',
+                        message: 'You do not have access to ChatDTC.'
+                    });
+                    navigate('/auth/login');
+                    return;
+                }
                 if (
                     signIn({
                         token: token as string,
