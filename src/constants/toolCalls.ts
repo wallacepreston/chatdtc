@@ -1,7 +1,7 @@
 export const TOOL_CALL_FUNCTION_MAP = {
     getCustomerTagsInCommerce7: 'Get Available Tags for Customers in Commerce7',
     // textCustomersInRedchirp: 'Text Customers in Redchirp',
-    tagCustomersCommerce7: 'Tag Customers in Commerce7',
+    tagCustomersCommerce7Internal: 'Tag Customers in Commerce7',
     createCustomerTagInCommerce7: 'Create Customer Tag in Commerce7',
     getOrderTagsInCommerce7: 'Get Available Tags for Orders in Commerce7',
     tagOrdersCommerce7: 'Tag Orders in Commerce7',
@@ -9,7 +9,7 @@ export const TOOL_CALL_FUNCTION_MAP = {
 } as const;
 
 export const TOOL_CALLS_THAT_REQUIRE_CONFIRMATION = [
-    'tagCustomersCommerce7',
+    'tagCustomersCommerce7Internal',
     'createCustomerTagInCommerce7',
     'tagOrdersCommerce7',
     'createOrderTagInCommerce7'

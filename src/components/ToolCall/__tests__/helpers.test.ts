@@ -3,10 +3,10 @@ import { ToolCall } from '../../../contexts/chat';
 import { renderToolCallDescription } from '../helpers';
 
 describe('renderToolCallDescription', () => {
-    describe('tagCustomersCommerce7', () => {
+    describe('tagCustomersCommerce7Internal', () => {
         it('should handle 1 customer with a tagName', () => {
             const toolCall: Partial<ToolCall> = {
-                FunctionName: 'tagCustomersCommerce7',
+                FunctionName: 'tagCustomersCommerce7Internal',
                 Arguments: JSON.stringify({ customerNumbers: ['1'], tagName: 'test' })
             };
 
@@ -14,7 +14,7 @@ describe('renderToolCallDescription', () => {
         });
         it('should handle 3 customers with a tagName', () => {
             const toolCall: Partial<ToolCall> = {
-                FunctionName: 'tagCustomersCommerce7',
+                FunctionName: 'tagCustomersCommerce7Internal',
                 Arguments: JSON.stringify({ customerNumbers: ['1', '2', '3'], tagName: 'test' })
             };
 
@@ -22,7 +22,7 @@ describe('renderToolCallDescription', () => {
         });
         it('0 customers with a tagName: Should just return function description', () => {
             const toolCall: Partial<ToolCall> = {
-                FunctionName: 'tagCustomersCommerce7',
+                FunctionName: 'tagCustomersCommerce7Internal',
                 Arguments: JSON.stringify({ customerNumbers: [], tagName: 'test' })
             };
 
@@ -54,7 +54,7 @@ describe('renderToolCallDescription', () => {
     describe('edge cases', () => {
         it('should handle empty arguments', () => {
             const toolCall: Partial<ToolCall> = {
-                FunctionName: 'tagCustomersCommerce7',
+                FunctionName: 'tagCustomersCommerce7Internal',
                 Arguments: JSON.stringify({})
             };
 
@@ -63,7 +63,7 @@ describe('renderToolCallDescription', () => {
 
         it('should handle null arguments', () => {
             const toolCall: Partial<ToolCall> = {
-                FunctionName: 'tagCustomersCommerce7',
+                FunctionName: 'tagCustomersCommerce7Internal',
                 Arguments: JSON.stringify(null)
             };
 

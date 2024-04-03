@@ -18,7 +18,7 @@ export const renderToolCallDescription = (toolCall: Partial<ToolCall>) => {
         case undefined:
             fullDescription = NO_DESCRIPTION_AVAILABLE;
             break;
-        case 'tagCustomersCommerce7':
+        case 'tagCustomersCommerce7Internal':
             const numCustomers = parsedArguments?.customerNumbers?.length;
             if (!numCustomers || !parsedArguments.tagName) return 'Tag Customers in Commerce7';
             const sOrNoS = numCustomers === 1 ? '' : 's';
