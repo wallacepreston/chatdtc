@@ -25,7 +25,7 @@ export const renderToolCallDescription = (toolCall: Partial<ToolCall>) => {
 
             fullDescription = `Tag ${numCustomers} customer${sOrNoS} in Commerce7, with Tag Name "${parsedArguments.tagName}"`;
             break;
-        case 'tagOrdersCommerce7':
+        case 'tagOrdersCommerce7Internal':
             const numOrders = parsedArguments?.orderNumbers?.length;
             if (!numOrders || !parsedArguments.tagName) return 'Tag Orders in Commerce7';
             const sOrNoSOrders = numOrders === 1 ? '' : 's';
