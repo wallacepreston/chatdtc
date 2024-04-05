@@ -2,12 +2,14 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import { useThinking } from '../contexts/thinking';
+import { Typography } from '@mui/material';
 
 interface LinearBufferProps {
     id: string;
+    loadingMessage?: string;
 }
 
-const LinearBuffer = ({ id }: LinearBufferProps) => {
+const LinearBuffer = ({ id, loadingMessage }: LinearBufferProps) => {
     const [buffer, setBuffer] = React.useState(10);
     const { thinkingChats } = useThinking();
     const progress = thinkingChats[id]?.progress || 0;
@@ -36,7 +38,14 @@ const LinearBuffer = ({ id }: LinearBufferProps) => {
     }, []);
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center', height: '15px' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', height: '' }}>
+            {loadingMessage && (
+                <Box sx={{ maxWidth: '40%' }}>
+                    <Typography variant='body2' color='text.secondary'>
+                        {loadingMessage}
+                    </Typography>
+                </Box>
+            )}
             <Box sx={{ flexGrow: 1, ml: 1 }}>
                 <LinearProgress variant='buffer' value={progress} valueBuffer={buffer} color='primary' />{' '}
             </Box>

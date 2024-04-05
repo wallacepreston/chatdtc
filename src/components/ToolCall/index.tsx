@@ -34,6 +34,17 @@ const ToolCalls = ({ toolCalls, runId, getMessages, chat_id }: ToolCallProps) =>
             )
     );
 
+    const hasTaggingInToolCalls = toolCallsToConfirm.some(toolCall =>
+        ['tagCustomersCommerce7Internal', 'tagOrdersCommerce7Internal'].includes(toolCall.FunctionName as string)
+    );
+
+    const confirmationMessage = (
+        <>
+            Based on your input, we need your approval before performing the following actions.{' '}
+            {hasTaggingInToolCalls && <b>We highly recommend you review the content of the file before authorizing.</b>}
+        </>
+    );
+
     const allDeclined = toolCallsToSubmit.every(toolCall => toolCall.Status === 'declined');
 
     useEffect(() => {
@@ -128,9 +139,7 @@ const ToolCalls = ({ toolCalls, runId, getMessages, chat_id }: ToolCallProps) =>
                 <Grid item xs={10}>
                     <MessageBox role='assistant'>
                         <Box sx={{ p: 2 }}>
-                            <Typography>
-                                Based on your input, we need your approval before performing the following actions.
-                            </Typography>
+                            <Typography>{confirmationMessage}</Typography>
                         </Box>
                         <Divider light />
                         <Box sx={{ p: 2 }}>

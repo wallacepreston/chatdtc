@@ -100,6 +100,7 @@ const ChatPage = () => {
     const { setStatus } = useStatus();
     const { balance } = user;
     const insufficientBalance = !assistantMessages.length && (!balance || balance < 3);
+    const [loadingMessage, setLoadingMessage] = useState<string>('');
 
     const lastRun = thread?.Runs?.[0];
 
@@ -259,8 +260,10 @@ const ChatPage = () => {
         }
     };
 
-    const loadingListenerForChatPage = (data: { chat_id: string; content: string }) => {
+    const loadingListenerForChatPage = (data: { chat_id: string; content: string; message: string }) => {
         if (data.chat_id === id) {
+            // TODO - setLoadingMessage
+            if (data.message) setLoadingMessage(data.message);
             scrollToBottom();
         }
     };
@@ -346,7 +349,7 @@ const ChatPage = () => {
         // should only ever return ONE of these
 
         if (thinking) {
-            return <LinearBuffer id={id} />;
+            return <LinearBuffer id={id} loadingMessage={loadingMessage} />;
         }
         if (lastRunExpired) {
             return <ExpiredRunMessage status={lastRunStatus as ExpiredRunStatus} />;
