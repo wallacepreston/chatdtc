@@ -198,6 +198,7 @@ const ChatPage = () => {
 
     // at the beginning, get all messages
     useEffect(() => {
+        setLoadingMessage(''); // Don't retain the loadingMessage from a different chat
         getMessages();
     }, [id, thinking]);
 
