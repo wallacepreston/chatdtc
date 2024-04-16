@@ -35,7 +35,7 @@ import c from 'highlight.js/lib/languages/c';
 import 'highlight.js/styles/atom-one-dark.css';
 import { useThinking } from '../contexts/thinking';
 import ChatMessage from '../components/ChatMessage';
-import { CHAT_DTC_TITLE, MAX_USER_MESSAGES, REACT_APP_API_URL } from '../constants/api';
+import { CHAT_DTC_TITLE, REACT_APP_API_URL } from '../constants/api';
 
 import type { Message } from '../components/ChatMessage';
 import useApi from '../hooks/api';
@@ -46,6 +46,7 @@ import { useStatus } from '../contexts/status';
 import socket from '../util/socket';
 import ToolCalls from '../components/ToolCall';
 import { getCompletedToolCalls, getToolCallsForMessage } from '../components/ToolCall/helpers';
+import { useFeatureFlags } from '../contexts/featureFlags';
 
 hljs.registerLanguage('javascript', javascript);
 hljs.registerLanguage('typescript', typescript);
@@ -79,6 +80,8 @@ const ChatPage = () => {
     const { id } = useParams<{ id: string }>();
     const authHeader = useAuthHeader();
     const navigate = useNavigate();
+    const featureFlags = useFeatureFlags();
+    const MAX_USER_MESSAGES = Number(featureFlags.Max_User_Messages);
 
     const scrollDiv = useRef<HTMLDivElement>(null);
 

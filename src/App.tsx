@@ -18,6 +18,7 @@ import SelectWineryModal from './components/selectWineryModal';
 import { UserProvider } from './contexts/user';
 import { ChatProvider } from './contexts/chat';
 import LoginAsUserPage from './pages/LoginAsUserPage';
+import { FeatureFlagsProvider } from './contexts/featureFlags';
 
 const App = () => {
     return (
@@ -31,38 +32,40 @@ const App = () => {
                             cookieDomain={window.location.hostname}
                             cookieSecure={false}
                         >
-                            <UserProvider>
-                                <ChatProvider>
-                                    <Notifications />
-                                    <Status />
-                                    <Router>
-                                        <SelectWineryModal />
-                                        <Routes>
-                                            <Route
-                                                path='/'
-                                                element={
-                                                    <RequireAuth loginPath='/auth'>
-                                                        <MainPage />
-                                                    </RequireAuth>
-                                                }
-                                            />
-                                            <Route
-                                                path='/c/:id'
-                                                element={
-                                                    <RequireAuth loginPath='/auth'>
-                                                        <ChatPage />
-                                                    </RequireAuth>
-                                                }
-                                            />
-                                            <Route path='/share/:id' element={<SharePage />} />
-                                            <Route path='/auth' element={<AuthPage />} />
-                                            <Route path='/auth/login' element={<LoginPage />} />
-                                            <Route path='/auth/login-as' element={<LoginAsUserPage />} />
-                                            <Route path='*' element={<NotFoundPage />} />
-                                        </Routes>
-                                    </Router>
-                                </ChatProvider>
-                            </UserProvider>
+                            <FeatureFlagsProvider>
+                                <UserProvider>
+                                    <ChatProvider>
+                                        <Notifications />
+                                        <Status />
+                                        <Router>
+                                            <SelectWineryModal />
+                                            <Routes>
+                                                <Route
+                                                    path='/'
+                                                    element={
+                                                        <RequireAuth loginPath='/auth'>
+                                                            <MainPage />
+                                                        </RequireAuth>
+                                                    }
+                                                />
+                                                <Route
+                                                    path='/c/:id'
+                                                    element={
+                                                        <RequireAuth loginPath='/auth'>
+                                                            <ChatPage />
+                                                        </RequireAuth>
+                                                    }
+                                                />
+                                                <Route path='/share/:id' element={<SharePage />} />
+                                                <Route path='/auth' element={<AuthPage />} />
+                                                <Route path='/auth/login' element={<LoginPage />} />
+                                                <Route path='/auth/login-as' element={<LoginAsUserPage />} />
+                                                <Route path='*' element={<NotFoundPage />} />
+                                            </Routes>
+                                        </Router>
+                                    </ChatProvider>
+                                </UserProvider>
+                            </FeatureFlagsProvider>
                         </AuthProvider>
                     </ThinkingProvider>
                 </StatusProvider>

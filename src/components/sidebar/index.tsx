@@ -87,7 +87,6 @@ const SideBar = () => {
     const { user, setUser } = useUser();
     const { chats, getChats } = useChats();
     const { Last_Winery_id: lastWineryId } = user;
-    console.log('>>>>>>> user', user);
 
     const customChatCategories = getCustomChatCategories(chats);
 

@@ -6,13 +6,14 @@ import Footer from '../components/footer';
 import { useParams, useNavigate } from 'react-router-dom';
 import 'highlight.js/styles/atom-one-dark.css';
 import ChatMessage from '../components/ChatMessage';
-import { CHAT_DTC_TITLE, MAX_USER_MESSAGES } from '../constants/api';
+import { CHAT_DTC_TITLE } from '../constants/api';
 
 import type { Message as ChatMessageProps } from '../components/ChatMessage';
 import useApi from '../hooks/api';
 import { useUser } from '../contexts/user';
 import { Chat } from '../contexts/chat';
 import { getCompletedToolCalls, getToolCallsForMessage } from '../components/ToolCall/helpers';
+import { useFeatureFlags } from '../contexts/featureFlags';
 
 const SharePage = () => {
     const { id } = useParams<{ id: string }>();
@@ -24,6 +25,9 @@ const SharePage = () => {
     const [title, setTitle] = useState<string>('');
     const [thread, setThread] = useState<Chat>({ Thread_OpenAI_id: '', Winery_id: '', Runs: [] });
     const [lastUpdated, setLastUpdated] = useState<string>('');
+    const featureFlags = useFeatureFlags();
+    const MAX_USER_MESSAGES = Number(featureFlags.Max_User_Messages);
+
     const userMessages = messages.filter(message => message.Role === 'user');
     const messageCount = userMessages.length;
     const isOverMaxMessages = messageCount >= MAX_USER_MESSAGES;
