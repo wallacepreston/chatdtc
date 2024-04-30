@@ -23,20 +23,24 @@ export const renderToolCallDescription = (toolCall: Partial<ToolCall>) => {
             if (!numCustomers || !parsedArguments.tagName) return 'Tag Customers in Commerce7';
             const sOrNoS = numCustomers === 1 ? '' : 's';
 
-            fullDescription = `Tag ${numCustomers} customer${sOrNoS} in Commerce7, with Tag Name "${parsedArguments.tagName}"`;
+            fullDescription = `Tag ${numCustomers} customer${sOrNoS} in Commerce7, with Tag Name "${decodeURI(
+                parsedArguments.tagName
+            )}"`;
             break;
         case 'tagOrdersCommerce7Internal':
             const numOrders = parsedArguments?.objectCount;
             if (!numOrders || !parsedArguments.tagName) return 'Tag Orders in Commerce7';
             const sOrNoSOrders = numOrders === 1 ? '' : 's';
 
-            fullDescription = `Tag ${numOrders} order${sOrNoSOrders} in Commerce7, with Tag Name "${parsedArguments.tagName}"`;
+            fullDescription = `Tag ${numOrders} order${sOrNoSOrders} in Commerce7, with Tag Name "${decodeURI(
+                parsedArguments.tagName
+            )}"`;
             break;
         case 'createOrderTagInCommerce7':
-            fullDescription = `Create new Order Tag in Commerce7, called "${parsedArguments.tagName}"`;
+            fullDescription = `Create new Order Tag in Commerce7, called "${decodeURI(parsedArguments.tagName)}"`;
             break;
         case 'createCustomerTagInCommerce7':
-            fullDescription = `Create new Customer Tag in Commerce7, called "${parsedArguments.tagName}"`;
+            fullDescription = `Create new Customer Tag in Commerce7, called "${decodeURI(parsedArguments.tagName)}"`;
             break;
         default:
             fullDescription = `${functionDescription}`;
